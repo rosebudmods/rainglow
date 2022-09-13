@@ -1,5 +1,6 @@
 package io.ix0rai.rainglow.mixin;
 
+import io.ix0rai.rainglow.Rainglow;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.entity.passive.SquidEntity;
@@ -21,12 +22,13 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
-        this.getDataTracker().startTracking(COLOUR, "blue");
+        // generate random colour
+        this.getDataTracker().startTracking(COLOUR, Rainglow.COLOUR_IDS.get(random.nextInt(Rainglow.COLOUR_IDS.size())));
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        nbt.putString("Colour", "blue");
+        nbt.putString("colour", this.getDataTracker().get(COLOUR));
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
