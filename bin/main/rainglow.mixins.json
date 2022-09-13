@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.ix0rai.rainglow.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "GlowSquidEntityMixin"
+  ],
+  "client": [
+    "GlowSquidEntityRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "rainglow",
+  "version": "${version}",
+  "name": "Rainglow",
+  "description": "rainbow glow squids!",
+  "authors": [
+    "ix0rai"
+  ],
+  "contact": {
+    "website": "https://modrinth.com/rainglow",
+    "repo": "https://github.com/ix0rai"
+  },
+  "license": "MIT",
+  "icon": "assets/rainglow/icon.png",
+  "environment": "*",
+  "mixins": [
+    "rainglow.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "minecraft": "1.19.2"
+  }
+}
