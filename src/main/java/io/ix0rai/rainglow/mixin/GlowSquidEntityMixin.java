@@ -5,8 +5,11 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,5 +39,32 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
         this.getDataTracker().set(COLOUR, nbt.getString(COLOUR_KEY));
+    }
+
+    /**
+     * @author ix0rai
+     * @reason change particles based on colour
+     */
+    @Override
+    @Overwrite
+    public void tickMovement() {
+        super.tickMovement();
+        int i = this.getDarkTicksRemaining();
+        if (i > 0) {
+            this.setDarkTicksRemaining(i - 1);
+        }
+
+        // todo: pass index of colour in list to particle
+        this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), this.dataTracker.get(COLOUR).equals("red") ? 1.0 : 0.0, 0.0, 0.0);
+    }
+
+    @Shadow
+    public int getDarkTicksRemaining() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Shadow
+    private void setDarkTicksRemaining(int ticks) {
+        throw new UnsupportedOperationException();
     }
 }
