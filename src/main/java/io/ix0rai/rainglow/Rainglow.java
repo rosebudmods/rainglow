@@ -20,7 +20,7 @@ public class Rainglow {
         COLOUR = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
 
         addTexture("blue", new Identifier("textures/entity/squid/glow_squid.png"));
-        addTexture("red", new Identifier("textures/entity/squid/glow_squid.png"));
+        addTexture("red", new Identifier("textures/entity/squid/red.png"));
     }
 
     private static void addTexture(String colour, Identifier texture) {

@@ -15,6 +15,8 @@ import static io.ix0rai.rainglow.Rainglow.COLOUR;
 
 @Mixin(GlowSquidEntity.class)
 public abstract class GlowSquidEntityMixin extends SquidEntity {
+    private static final String COLOUR_KEY = "Colour";
+
     protected GlowSquidEntityMixin(EntityType<? extends SquidEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
@@ -28,11 +30,11 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        nbt.putString("colour", this.getDataTracker().get(COLOUR));
+        nbt.putString(COLOUR_KEY, this.getDataTracker().get(COLOUR));
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.getDataTracker().set(COLOUR, nbt.getString("Colour"));
+        this.getDataTracker().set(COLOUR, nbt.getString(COLOUR_KEY));
     }
 }
