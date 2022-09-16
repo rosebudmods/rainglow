@@ -4,11 +4,13 @@
   "package": "io.ix0rai.rainglow.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "GlowSquidEntityMixin"
+    "GlowSquidEntityMixin",
+    "SquidEntityMixin"
   ],
   "client": [
     "GlowParticleMixin",
-    "GlowSquidEntityRendererMixin"
+    "GlowSquidEntityRendererMixin",
+    "SquidInkParticleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

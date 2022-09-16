@@ -32,7 +32,7 @@ public class GlowParticleMixin {
             GlowParticle glowParticle = new GlowParticle(clientWorld, d, e, f, 0.5 - GlowParticle.RANDOM.nextDouble(), h, 0.5 - GlowParticle.RANDOM.nextDouble(), this.spriteProvider);
 
             // we check the g value to see what the colour is
-            Pair<RGB, RGB> rgbs = Rainglow.COLOUR_RGBS.get((int) g);
+            Pair<RGB, RGB> rgbs = Rainglow.PASSIVE_PARTICLE_RGBS.get((int) g);
             if (GlowParticle.RANDOM.nextBoolean()) {
                 glowParticle.setColor(rgbs.getLeft().r(), rgbs.getLeft().g(), rgbs.getLeft().b());
             } else {
