@@ -34,14 +34,15 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity {
         this.playSound(this.getSquirtSound(), this.getSoundVolume(), this.getSoundPitch());
         Vec3d vec3d = this.applyBodyRotations(new Vec3d(0.0, -1.0, 0.0)).add(this.getX(), this.getY(), this.getZ());
 
-        for(int i = 0; i < 30; ++i) {
+        for(int i = 0; i < 30; i ++) {
             Vec3d vec3d2 = this.applyBodyRotations(new Vec3d(this.random.nextFloat() * 0.6 - 0.3, -1.0, this.random.nextFloat() * 0.6 - 0.3));
             Vec3d vec3d3 = vec3d2.multiply(0.3 + (this.random.nextFloat() * 2.0F));
 
             // send in custom colour data
             // we do some horribly cursed math to remove some precision from x pos and pass in our colour as the second decimal point
             String colour = this.dataTracker.get(Rainglow.COLOUR);
-            ((ServerWorld) this.world).spawnParticles(this.getInkParticle(), (Math.round(vec3d.x * 10)) / 10D + (double) Rainglow.COLOUR_IDS.indexOf(colour) / 100D, vec3d.y + 0.5, vec3d.z, 0, vec3d3.x, vec3d3.y, vec3d3.z, 0.1);
+            int index = Rainglow.COLOUR_IDS.indexOf(colour);
+            ((ServerWorld) this.world).spawnParticles(this.getInkParticle(), (Math.round(vec3d.x * 10)) / 10D + index / 1000D, vec3d.y + 0.5, vec3d.z, 0, vec3d3.x, vec3d3.y, vec3d3.z, 0.1);
         }
     }
 }

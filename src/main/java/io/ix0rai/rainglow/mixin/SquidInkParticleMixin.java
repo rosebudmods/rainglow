@@ -25,10 +25,18 @@ public class SquidInkParticleMixin {
      */
     @Overwrite
     public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
+        // protect from things from like .05 turning into .04999999999999999
+        d = Math.round(d * 1000.0) / 1000.0;
+
         int firstDecimalPoint = (int) (Math.floor(d * 10) - Math.floor(d) * 10);
         int secondDecimalPoint = (int) (Math.floor(d * 100) - Math.floor(d) * 100) - firstDecimalPoint * 10;
+        int thirdDecimalPoint = (int) (Math.floor(d * 1000) - Math.floor(d) * 1000) - secondDecimalPoint * 10 - firstDecimalPoint * 100;
 
-        RGB rgb = Rainglow.INK_PARTICLE_RGB.get(secondDecimalPoint);
+        // take decimal points and use them to determine the colour
+        // we preserve one decimal point of x precision, so we grab the particle index from the second and third decimal point
+        int colourIndex = thirdDecimalPoint == 0 ? secondDecimalPoint : (int) ((secondDecimalPoint + (thirdDecimalPoint / 10.0)) * 10);
+
+        RGB rgb = Rainglow.INK_PARTICLE_RGB.get(colourIndex);
         return new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorHelper.Argb.getArgb(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider);
     }
 }

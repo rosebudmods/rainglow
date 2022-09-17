@@ -31,7 +31,7 @@ public class Rainglow {
                 new RGB(204, 31, 102)
         );
 
-        // add custom colours
+        // custom colours
         addColour(
                 "red",
                 new Identifier("textures/entity/squid/red.png"),
@@ -43,6 +43,11 @@ public class Rainglow {
 
     private static void addColour(String colour, Identifier texture, RGB rgb, RGB altRgb, RGB inkRgb) {
         TEXTURES.put(colour, texture);
+
+        if (TEXTURES.size() == 100) {
+            throw new RuntimeException("too many glow squid colours registered! only up to 99 are allowed");
+        }
+
         COLOUR_IDS.add(colour);
         PASSIVE_PARTICLE_RGBS.add(new Pair<>(rgb, altRgb));
         INK_PARTICLE_RGB.add(inkRgb);
