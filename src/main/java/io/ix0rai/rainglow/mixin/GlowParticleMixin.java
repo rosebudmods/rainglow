@@ -6,7 +6,6 @@ import net.minecraft.client.particle.GlowParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.util.Pair;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,12 +31,8 @@ public class GlowParticleMixin {
             GlowParticle glowParticle = new GlowParticle(clientWorld, d, e, f, 0.5 - GlowParticle.RANDOM.nextDouble(), h, 0.5 - GlowParticle.RANDOM.nextDouble(), this.spriteProvider);
 
             // we check the g value to see what the colour is
-            Pair<RGB, RGB> rgbs = Rainglow.PASSIVE_PARTICLE_RGBS.get((int) g);
-            if (GlowParticle.RANDOM.nextBoolean()) {
-                glowParticle.setColor(rgbs.getLeft().r(), rgbs.getLeft().g(), rgbs.getLeft().b());
-            } else {
-                glowParticle.setColor(rgbs.getRight().r(), rgbs.getRight().g(), rgbs.getRight().b());
-            }
+            RGB rgb = Rainglow.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
+            glowParticle.setColor(rgb.r(), rgb.g(), rgb.b());
 
             glowParticle.velocityY *= 0.2;
             if (g == 0.0 && i == 0.0) {

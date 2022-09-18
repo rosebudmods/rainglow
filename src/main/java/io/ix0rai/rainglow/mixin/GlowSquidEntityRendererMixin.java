@@ -15,6 +15,10 @@ public class GlowSquidEntityRendererMixin {
      */
     @Overwrite
     public Identifier getTexture(GlowSquidEntity glowSquidEntity) {
-        return Rainglow.getTexture(glowSquidEntity.getDataTracker().get(Rainglow.COLOUR));
+        try {
+            return Rainglow.getTexture(glowSquidEntity.getDataTracker().get(Rainglow.COLOUR));
+        } catch (Exception e) {
+            return Rainglow.getDefaultTexture();
+        }
     }
 }

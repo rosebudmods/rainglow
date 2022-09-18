@@ -28,7 +28,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
         // generate random colour
-        this.getDataTracker().startTracking(COLOUR, Rainglow.COLOUR_IDS.get(random.nextInt(Rainglow.COLOUR_IDS.size())));
+        this.getDataTracker().startTracking(COLOUR, Rainglow.getColourId(random.nextInt(Rainglow.getColourCount())));
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
@@ -56,7 +56,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
 
         String colour = this.dataTracker.get(COLOUR);
         // we add 100 to g to let the mixin know that we want to override the method
-        this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.COLOUR_IDS.indexOf(colour) + 100, 0, 0);
+        this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
     }
 
     @Shadow
