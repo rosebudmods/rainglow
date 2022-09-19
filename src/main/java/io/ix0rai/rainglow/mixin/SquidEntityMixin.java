@@ -40,9 +40,15 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity {
 
             // send in custom colour data
             // we do some horribly cursed math to remove some precision from x pos and pass in our colour as the second decimal point
-            String colour = this.dataTracker.get(Rainglow.COLOUR);
-            int index = Rainglow.getColourIndex(colour);
-            ((ServerWorld) this.world).spawnParticles(this.getInkParticle(), (Math.round(vec3d.x * 10)) / 10D + index / 1000D, vec3d.y + 0.5, vec3d.z, 0, vec3d3.x, vec3d3.y, vec3d3.z, 0.1);
+            try {
+                String colour = this.dataTracker.get(Rainglow.COLOUR);
+                int index = Rainglow.getColourIndex(colour);
+                ((ServerWorld) this.world).spawnParticles(this.getInkParticle(), (Math.round(vec3d.x * 10)) / 10D + index / 1000D, vec3d.y + 0.5, vec3d.z, 0, vec3d3.x, vec3d3.y, vec3d3.z, 0.1);
+            } catch (Exception e) {
+                // if colour tracker data is not present do not try to send it
+                // this behaviour will occur when a normal squid squirts
+                ((ServerWorld) this.world).spawnParticles(this.getInkParticle(), vec3d.x, vec3d.y + 0.5, vec3d.z, 0, vec3d3.x, vec3d3.y, vec3d3.z, 0.1);
+            }
         }
     }
 }
