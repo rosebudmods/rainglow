@@ -38,7 +38,13 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.getDataTracker().set(COLOUR, nbt.getString(COLOUR_KEY));
+        String colour = nbt.getString(COLOUR_KEY);
+        // if read colour does not exist in the colour map, generate the squid a new one
+        if (Rainglow.isColourLoaded(colour)) {
+            this.getDataTracker().set(COLOUR, colour);
+        } else {
+            this.getDataTracker().set(COLOUR, Rainglow.getColourId(random.nextInt(Rainglow.getColourCount())));
+        }
     }
 
     /**

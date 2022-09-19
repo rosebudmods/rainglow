@@ -89,4 +89,8 @@ public class Rainglow {
     public static Identifier getDefaultTexture() {
         return TEXTURES.get("blue");
     }
+
+    public static boolean isColourLoaded(String colour) {
+        return COLOUR_IDS.contains(colour);
+    }
 }
