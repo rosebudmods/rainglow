@@ -18,6 +18,11 @@
   "mixins": [
     "rainglow.mixins.json"
   ],
+  "entrypoints": {
+    "modmenu": [
+      "io.ix0rai.rainglow.config.RainglowModMenu"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.14.9",
     "minecraft": "1.19.2"

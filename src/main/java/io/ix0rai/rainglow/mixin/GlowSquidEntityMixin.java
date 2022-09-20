@@ -60,7 +60,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
             this.setDarkTicksRemaining(i - 1);
         }
 
-        String colour = this.dataTracker.get(COLOUR);
+        String colour = Rainglow.getColour(dataTracker, this.random);
         // we add 100 to g to let the mixin know that we want to override the method
         this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
     }

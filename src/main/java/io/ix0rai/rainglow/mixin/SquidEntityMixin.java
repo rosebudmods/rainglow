@@ -40,7 +40,7 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity {
 
             try {
                 // send in custom colour data
-                String colour = this.dataTracker.get(Rainglow.COLOUR);
+                String colour = Rainglow.getColour(this.dataTracker, this.random);
                 int index = Rainglow.getColourIndex(colour);
                 // round x to 1 decimal place and append index data to the next two
                 ((ServerWorld) this.world).spawnParticles(this.getInkParticle(), (Math.round(vec3d.x * 10)) / 10D + index / 1000D, vec3d.y + 0.5, vec3d.z, 0, vec3d3.x, vec3d3.y, vec3d3.z, 0.1);

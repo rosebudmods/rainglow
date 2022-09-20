@@ -1,0 +1,8 @@
+{
+  "rainglow.config.title": "Rainglow Configuration",
+  "rainglow.config.mode": "Mode",
+  "rainglow.config.save": "Save",
+  "rainglow.tooltip.mode": "Rainglow Mode dictates which colours are currently available for squids",
+  "rainglow.mode.default": "Default",
+  "rainglow.mode.only_red": "Only Red"
+}
