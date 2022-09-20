@@ -10,6 +10,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.random.RandomGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 public class Rainglow {
     public static final String MOD_ID = "rainglow";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final RainglowConfig CONFIG = new RainglowConfig();
     public static final TrackedData<String> COLOUR;
     private static final Map<String, Identifier> TEXTURES = new HashMap<>();
