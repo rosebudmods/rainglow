@@ -3,6 +3,7 @@
   "rainglow.config.mode": "Mode",
   "rainglow.config.save": "Save",
   "rainglow.tooltip.mode": "Rainglow Mode dictates which colours are currently available for squids",
-  "rainglow.mode.default": "Default",
-  "rainglow.mode.only_red": "Only Red"
+  "rainglow.mode.rainbow": "Rainbow",
+  "rainglow.mode.all_colours": "All Colours",
+  "rainglow.mode.trans_pride": "Trans Pride!"
 }
