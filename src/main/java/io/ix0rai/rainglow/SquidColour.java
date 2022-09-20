@@ -12,52 +12,51 @@ public enum SquidColour {
     ),
     RED(
             "red",
-            new Identifier("textures/entity/squid/red.png"),
             new RGB(1.0F, 1.0F, 0.8F),
             new RGB(1.0F, 0.4F, 0.4F),
             new RGB(200, 0, 0)
     ),
     GREEN(
             "green",
-            new Identifier("textures/entity/squid/green.png"),
             new RGB(0.6F, 1.0F, 0.8F),
             new RGB(0.08F, 1.0F, 0.4F),
             new RGB(0, 200, 0)
     ),
     PINK(
             "pink",
-            new Identifier("textures/entity/squid/pink.png"),
             new RGB(1.0F, 0.6F, 0.8F),
             new RGB(1.0F, 0.08F, 0.4F),
             new RGB(200, 0, 200)
     ),
     YELLOW(
             "yellow",
-            new Identifier("textures/entity/squid/yellow.png"),
             new RGB(1.0F, 1.0F, 0.8F),
             new RGB(1.0F, 1.0F, 0.4F),
             new RGB(200, 200, 0)
     ),
     ORANGE(
             "orange",
-            new Identifier("textures/entity/squid/orange.png"),
             new RGB(1.0F, 1.0F, 0.8F),
             new RGB(1.0F, 0.4F, 0.4F),
             new RGB(200, 100, 0)
     ),
     INDIGO(
             "indigo",
-            new Identifier("textures/entity/squid/indigo.png"),
             new RGB(0.6F, 1.0F, 0.8F),
             new RGB(0.08F, 0.4F, 1.0F),
             new RGB(0, 0, 200)
     ),
     PURPLE(
             "purple",
-            new Identifier("textures/entity/squid/purple.png"),
             new RGB(0.6F, 1.0F, 0.8F),
             new RGB(0.08F, 0.4F, 1.0F),
             new RGB(100, 0, 200)
+    ),
+    WHITE(
+            "white",
+            new RGB(1.0F, 1.0F, 1.0F),
+            new RGB(1.0F, 1.0F, 1.0F),
+            new RGB(200, 200, 200)
     );
 
     private final String id;
@@ -65,6 +64,10 @@ public enum SquidColour {
     private final RGB passiveParticleRgb;
     private final RGB altPassiveParticleRgb;
     private final RGB inkRgb;
+
+    SquidColour(String id, RGB passiveParticleRgb, RGB altPassiveParticleRgb, RGB inkRgb) {
+        this(id, new Identifier("textures/entity/squid/" + id + ".png"), passiveParticleRgb, altPassiveParticleRgb, inkRgb);
+    }
 
     SquidColour(String id, Identifier texture, RGB passiveParticleRgb, RGB altPassiveParticleRgb, RGB inkRgb) {
         this.id = id;

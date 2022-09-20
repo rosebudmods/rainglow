@@ -36,7 +36,7 @@ public class RainglowConfigScreen extends SpruceScreen {
         );
 
         this.resetOption = SpruceSimpleActionOption.reset(btn -> {
-            this.mode = RainglowMode.DEFAULT;
+            this.mode = RainglowMode.RAINBOW;
             MinecraftClient client = MinecraftClient.getInstance();
             this.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
         });

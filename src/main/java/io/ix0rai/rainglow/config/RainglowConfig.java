@@ -23,7 +23,7 @@ public class RainglowConfig {
     }
 
     public RainglowMode getMode() {
-        return RainglowMode.byId(config.getOrElse(MODE_KEY, RainglowMode.DEFAULT.getName())).orElse(RainglowMode.DEFAULT);
+        return RainglowMode.byId(config.getOrElse(MODE_KEY, RainglowMode.RAINBOW.getName())).orElse(RainglowMode.RAINBOW);
     }
 
     public void setMode(RainglowMode mode) {
