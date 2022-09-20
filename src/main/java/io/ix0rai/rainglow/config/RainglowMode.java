@@ -11,10 +11,23 @@ import java.util.Optional;
 
 public enum RainglowMode {
     DEFAULT(Rainglow.translatableText("mode.default"), Formatting.GREEN, List.of(
-            SquidColour.BLUE,
             SquidColour.RED,
+            SquidColour.ORANGE,
+            SquidColour.YELLOW,
             SquidColour.GREEN,
+            SquidColour.BLUE,
+            SquidColour.INDIGO,
+            SquidColour.PURPLE,
             SquidColour.PINK
+    )),
+    RAINBOW(Rainglow.translatableText("mode.rainbow"), Formatting.LIGHT_PURPLE, List.of(
+            SquidColour.RED,
+            SquidColour.ORANGE,
+            SquidColour.YELLOW,
+            SquidColour.GREEN,
+            SquidColour.BLUE,
+            SquidColour.INDIGO,
+            SquidColour.PURPLE
     )),
     ONLY_RED(Rainglow.translatableText("mode.only_red"), Formatting.RED, List.of(
             SquidColour.RED,

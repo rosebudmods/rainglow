@@ -30,6 +30,7 @@ public class RainglowConfigScreen extends SpruceScreen {
                 option -> option.getDisplayText(mode.getTranslatedText()),
                 Text.translatable(Rainglow.MOD_ID + ".tooltip.mode",
                         RainglowMode.DEFAULT.getTranslatedText(),
+                        RainglowMode.RAINBOW.getTranslatedText(),
                         RainglowMode.ONLY_RED.getTranslatedText()
                 )
         );

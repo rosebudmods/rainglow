@@ -34,4 +34,36 @@ public record SquidColour(String id, Identifier texture, RGB passiveParticleRgb,
             new RGB(1.0F, 0.08F, 0.4F),
             new RGB(200, 0, 200)
     );
+
+    public static final SquidColour YELLOW = new SquidColour(
+            "yellow",
+            new Identifier("textures/entity/squid/yellow.png"),
+            new RGB(1.0F, 1.0F, 0.8F),
+            new RGB(1.0F, 1.0F, 0.4F),
+            new RGB(200, 200, 0)
+    );
+
+    public static final SquidColour ORANGE = new SquidColour(
+            "orange",
+            new Identifier("textures/entity/squid/orange.png"),
+            new RGB(1.0F, 1.0F, 0.8F),
+            new RGB(1.0F, 0.4F, 0.4F),
+            new RGB(200, 100, 0)
+    );
+
+    public static final SquidColour INDIGO = new SquidColour(
+            "indigo",
+            new Identifier("textures/entity/squid/indigo.png"),
+            new RGB(0.6F, 1.0F, 0.8F),
+            new RGB(0.08F, 0.4F, 1.0F),
+            new RGB(0, 0, 200)
+    );
+
+    public static final SquidColour PURPLE = new SquidColour(
+            "purple",
+            new Identifier("textures/entity/squid/purple.png"),
+            new RGB(0.6F, 1.0F, 0.8F),
+            new RGB(0.08F, 0.4F, 1.0F),
+            new RGB(100, 0, 200)
+    );
 }
