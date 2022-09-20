@@ -35,7 +35,7 @@ public class Rainglow {
         COLOUR_IDS.clear();
         PASSIVE_PARTICLE_RGBS.clear();
         INK_PARTICLE_RGBS.clear();
-        mode.getColours().forEach(colour -> addColour(colour.id(), colour.texture(), colour.passiveParticleRgb(), colour.altPassiveParticleRgb(), colour.inkRgb()));
+        mode.getColours().forEach(colour -> addColour(colour.getId(), colour.getTexture(), colour.getPassiveParticleRgb(), colour.getAltPassiveParticleRgb(), colour.getInkRgb()));
     }
 
     private static void addColour(String colour, Identifier texture, RGB rgb, RGB altRgb, RGB inkRgb) {

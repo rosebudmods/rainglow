@@ -13,6 +13,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class RainglowConfigScreen extends SpruceScreen {
     private final Screen parent;
 
@@ -29,9 +31,7 @@ public class RainglowConfigScreen extends SpruceScreen {
                 amount -> mode = mode.next(),
                 option -> option.getDisplayText(mode.getTranslatedText()),
                 Text.translatable(Rainglow.MOD_ID + ".tooltip.mode",
-                        RainglowMode.DEFAULT.getTranslatedText(),
-                        RainglowMode.RAINBOW.getTranslatedText(),
-                        RainglowMode.ONLY_RED.getTranslatedText()
+                        List.of(RainglowMode.values())
                 )
         );
 
