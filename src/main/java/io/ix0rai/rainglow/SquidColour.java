@@ -57,6 +57,18 @@ public enum SquidColour {
             new RGB(1.0F, 1.0F, 1.0F),
             new RGB(1.0F, 1.0F, 1.0F),
             new RGB(200, 200, 200)
+    ),
+    GRAY(
+            "gray",
+            new RGB(0.6F, 0.6F, 0.6F),
+            new RGB(0.4F, 0.4F, 0.4F),
+            new RGB(100, 100, 100)
+    ),
+    BLACK(
+            "black",
+            new RGB(0.0F, 0.0F, 0.0F),
+            new RGB(0.0F, 0.0F, 0.0F),
+            new RGB(0, 0, 0)
     );
 
     private final String id;

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public enum RainglowMode {
-    RAINBOW(Rainglow.translatableText("mode.rainbow"), Formatting.LIGHT_PURPLE, List.of(
+    RAINBOW(Rainglow.translatableText("mode.rainbow"), Formatting.LIGHT_PURPLE,
             SquidColour.RED,
             SquidColour.ORANGE,
             SquidColour.YELLOW,
@@ -18,28 +18,49 @@ public enum RainglowMode {
             SquidColour.BLUE,
             SquidColour.INDIGO,
             SquidColour.PURPLE
-    )),
-    ALL_COLOURS(Rainglow.translatableText("mode.all_colours"), Formatting.GREEN, List.of(
+    ),
+    ALL_COLOURS(Rainglow.translatableText("mode.all_colours"), Formatting.GREEN,
             SquidColour.values()
-    )),
-    TRANS_PRIDE(Rainglow.translatableText("mode.trans_pride"), Formatting.AQUA, List.of(
+    ),
+    TRANS_PRIDE(Rainglow.translatableText("mode.trans_pride"), Formatting.AQUA,
             SquidColour.BLUE,
             SquidColour.WHITE,
             SquidColour.PINK
-    )),
-    LESBIAN_PRIDE(Rainglow.translatableText("mode.lesbian_pride"), Formatting.DARK_PURPLE, List.of(
+    ),
+    LESBIAN_PRIDE(Rainglow.translatableText("mode.lesbian_pride"), Formatting.DARK_PURPLE,
             SquidColour.RED,
             SquidColour.ORANGE,
             SquidColour.WHITE,
             SquidColour.PINK,
             SquidColour.PURPLE
-    ));
+    ),
+    BI_PRIDE(Rainglow.translatableText("mode.bi_pride"), Formatting.BLUE,
+            SquidColour.BLUE,
+            SquidColour.PINK,
+            SquidColour.PURPLE
+    ),
+    GAY_PRIDE(Rainglow.translatableText("mode.gay_pride"), Formatting.DARK_AQUA,
+            SquidColour.BLUE,
+            SquidColour.GREEN,
+            SquidColour.WHITE
+    ),
+    PAN_PRIDE(Rainglow.translatableText("mode.pan_pride"), Formatting.GOLD,
+            SquidColour.PINK,
+            SquidColour.YELLOW,
+            SquidColour.BLUE
+    ),
+    ACE_PRIDE(Rainglow.translatableText("mode.ace_pride"), Formatting.GRAY,
+            SquidColour.BLACK,
+            SquidColour.GRAY,
+            SquidColour.WHITE,
+            SquidColour.PURPLE
+    );
 
     private final Text text;
     private final List<SquidColour> colours;
 
-    RainglowMode(Text text, Formatting formatting, List<SquidColour> colours) {
-        this.colours = colours;
+    RainglowMode(Text text, Formatting formatting, SquidColour... colours) {
+        this.colours = List.of(colours);
         this.text = text.copy().formatted(formatting);
     }
 
