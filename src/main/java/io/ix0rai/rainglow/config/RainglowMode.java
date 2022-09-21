@@ -26,6 +26,13 @@ public enum RainglowMode {
             SquidColour.BLUE,
             SquidColour.WHITE,
             SquidColour.PINK
+    )),
+    LESBIAN_PRIDE(Rainglow.translatableText("mode.lesbian_pride"), Formatting.DARK_PURPLE, List.of(
+            SquidColour.RED,
+            SquidColour.ORANGE,
+            SquidColour.WHITE,
+            SquidColour.PINK,
+            SquidColour.PURPLE
     ));
 
     private final Text text;
