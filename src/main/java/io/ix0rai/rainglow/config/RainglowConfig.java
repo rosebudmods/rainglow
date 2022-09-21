@@ -1,6 +1,7 @@
 package io.ix0rai.rainglow.config;
 
 import io.ix0rai.rainglow.Rainglow;
+import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +11,7 @@ import java.nio.file.Paths;
 public class RainglowConfig {
     private String mode;
     private static final String CONFIG_FILE_NAME = "rainglow.toml";
-    private static final Path CONFIG_FILE_PATH = Paths.get("config/" + CONFIG_FILE_NAME);
+    private static final Path CONFIG_FILE_PATH = Paths.get(FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME).toUri());
 
     private static final String MODE_KEY = "mode";
 
