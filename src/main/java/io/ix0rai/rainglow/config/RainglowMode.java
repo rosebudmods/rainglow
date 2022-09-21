@@ -54,6 +54,12 @@ public enum RainglowMode {
             SquidColour.GRAY,
             SquidColour.WHITE,
             SquidColour.PURPLE
+    ),
+    ENBY_PRIDE(Rainglow.translatableText("mode.enby_pride"), Formatting.DARK_GRAY,
+            SquidColour.YELLOW,
+            SquidColour.WHITE,
+            SquidColour.BLACK,
+            SquidColour.PURPLE
     );
 
     private final Text text;
