@@ -34,7 +34,7 @@ public class SquidInkParticleMixin {
 
         // take decimal points and use them to determine the colour
         // we preserve one decimal point of x precision, so we grab the particle index from the second and third decimal point
-        int colourIndex = thirdDecimalPoint == 0 ? secondDecimalPoint : (int) ((secondDecimalPoint + (thirdDecimalPoint / 10.0)) * 10);
+        int colourIndex = (int) ((secondDecimalPoint + (thirdDecimalPoint / 10.0)) * 10);
 
         RGB rgb = Rainglow.getInkRgb(colourIndex);
         return new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorUtil.ARGB32.getArgb(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider);
