@@ -25,8 +25,8 @@ public class Rainglow {
     public static final TrackedData<String> COLOUR;
     private static final Map<String, Identifier> TEXTURES = new HashMap<>();
     private static final List<String> COLOUR_IDS = new ArrayList<>();
-    private static final List<Pair<RGB, RGB>> PASSIVE_PARTICLE_RGBS = new ArrayList<>();
-    private static final List<RGB> INK_PARTICLE_RGBS = new ArrayList<>();
+    private static final List<Pair<SquidColour.RGB, SquidColour.RGB>> PASSIVE_PARTICLE_RGBS = new ArrayList<>();
+    private static final List<SquidColour.RGB> INK_PARTICLE_RGBS = new ArrayList<>();
 
     static {
         COLOUR = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
@@ -38,19 +38,19 @@ public class Rainglow {
         COLOUR_IDS.clear();
         PASSIVE_PARTICLE_RGBS.clear();
         INK_PARTICLE_RGBS.clear();
-        mode.getColours().forEach(colour -> addColour(colour.getId(), colour.getTexture(), colour.getPassiveParticleRgb(), colour.getAltPassiveParticleRgb(), colour.getInkRgb()));
+        mode.getColours().forEach(Rainglow::addColour);
     }
 
-    private static void addColour(String colour, Identifier texture, RGB rgb, RGB altRgb, RGB inkRgb) {
-        TEXTURES.put(colour, texture);
+    private static void addColour(SquidColour colour) {
+        TEXTURES.put(colour.getId(), colour.getTexture());
 
         if (TEXTURES.size() == 100) {
             throw new RuntimeException("too many glow squid colours registered! only up to 99 are allowed");
         }
 
-        COLOUR_IDS.add(colour);
-        PASSIVE_PARTICLE_RGBS.add(new Pair<>(rgb, altRgb));
-        INK_PARTICLE_RGBS.add(inkRgb);
+        COLOUR_IDS.add(colour.getId());
+        PASSIVE_PARTICLE_RGBS.add(new Pair<>(colour.getPassiveParticleRgb(), colour.getAltPassiveParticleRgb()));
+        INK_PARTICLE_RGBS.add(colour.getInkRgb());
     }
 
     public static Identifier getTexture(String colour) {
@@ -65,12 +65,12 @@ public class Rainglow {
         return COLOUR_IDS.get(index);
     }
 
-    public static RGB getInkRgb(int index) {
+    public static SquidColour.RGB getInkRgb(int index) {
         return INK_PARTICLE_RGBS.get(index);
     }
 
-    public static RGB getPassiveParticleRGB(int index, RandomGenerator random) {
-        Pair<RGB, RGB> rgbs = PASSIVE_PARTICLE_RGBS.get(index);
+    public static SquidColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
+        Pair<SquidColour.RGB, SquidColour.RGB> rgbs = PASSIVE_PARTICLE_RGBS.get(index);
         return random.nextBoolean() ? rgbs.getLeft() : rgbs.getRight();
     }
 

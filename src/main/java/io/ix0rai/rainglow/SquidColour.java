@@ -108,4 +108,8 @@ public enum SquidColour {
     public RGB getInkRgb() {
         return this.inkRgb;
     }
+
+    public record RGB(float r, float g, float b) {
+
+    }
 }

@@ -1,7 +1,7 @@
 package io.ix0rai.rainglow.mixin;
 
-import io.ix0rai.rainglow.RGB;
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.SquidColour;
 import net.minecraft.client.particle.GlowParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
@@ -31,7 +31,7 @@ public class GlowParticleMixin {
             GlowParticle glowParticle = new GlowParticle(clientWorld, d, e, f, 0.5 - GlowParticle.RANDOM.nextDouble(), h, 0.5 - GlowParticle.RANDOM.nextDouble(), this.spriteProvider);
 
             // we check the g value to see what the colour is
-            RGB rgb = Rainglow.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
+            SquidColour.RGB rgb = Rainglow.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
             glowParticle.setColor(rgb.r(), rgb.g(), rgb.b());
 
             glowParticle.velocityY *= 0.2;

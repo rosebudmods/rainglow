@@ -1,7 +1,7 @@
 package io.ix0rai.rainglow.mixin;
 
-import io.ix0rai.rainglow.RGB;
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.SquidColour;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.particle.SquidInkParticle;
@@ -36,7 +36,7 @@ public class SquidInkParticleMixin {
         // we preserve one decimal point of x precision, so we grab the particle index from the second and third decimal point
         int colourIndex = (int) ((secondDecimalPoint + (thirdDecimalPoint / 10.0)) * 10);
 
-        RGB rgb = Rainglow.getInkRgb(colourIndex);
+        SquidColour.RGB rgb = Rainglow.getInkRgb(colourIndex);
         return new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorUtil.ARGB32.getArgb(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider);
     }
 }
