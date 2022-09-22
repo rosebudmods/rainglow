@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RainglowConfig {
     private String mode;
@@ -23,7 +25,19 @@ public class RainglowConfig {
             // parse config file (badly)
             String content = Files.readString(CONFIG_FILE_PATH);
             String secondHalf = content.split(MODE_KEY + " = ")[1];
-            modeToSet = secondHalf.split("\"")[1].split("\"")[0];
+
+            String modeName = secondHalf.split("\"")[1].split("\"")[0];
+
+            List<String> modeNames = new ArrayList<>();
+            for (RainglowMode rainglowMode :RainglowMode.values()) {
+                modeNames.add(rainglowMode.getName());
+            }
+
+            if (modeNames.contains(modeName)) {
+                modeToSet = modeName;
+            } else {
+                Rainglow.LOGGER.warn("parsed mode from config did not exist; using default");
+            }
         } catch (IOException e) {
             Rainglow.LOGGER.info("config file not found; creating new");
         } catch (ArrayIndexOutOfBoundsException e) {
