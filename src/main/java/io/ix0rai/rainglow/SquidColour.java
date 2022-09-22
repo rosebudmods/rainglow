@@ -24,21 +24,21 @@ public enum SquidColour {
     ),
     PINK(
             "pink",
-            new RGB(1.0F, 0.6F, 0.8F),
-            new RGB(1.0F, 0.08F, 0.4F),
-            new RGB(200, 0, 200)
+            new RGB(0.6F, 0F, 0.5F),
+            new RGB(1.0F, 0.1F, 1.0F),
+            new RGB(200, 0, 0)
     ),
     YELLOW(
             "yellow",
             new RGB(1.0F, 1.0F, 0.8F),
             new RGB(1.0F, 1.0F, 0.4F),
-            new RGB(200, 200, 0)
+            new RGB(200, 0, 0)
     ),
     ORANGE(
             "orange",
-            new RGB(1.0F, 1.0F, 0.8F),
-            new RGB(1.0F, 0.4F, 0.4F),
-            new RGB(200, 100, 0)
+            new RGB(1.0F, 0.2F, 0.3F),
+            new RGB(1.0F, 0F, 0.1F),
+            new RGB(200, 0, 0)
     ),
     INDIGO(
             "indigo",
@@ -48,9 +48,9 @@ public enum SquidColour {
     ),
     PURPLE(
             "purple",
-            new RGB(0.6F, 1.0F, 0.8F),
-            new RGB(0.08F, 0.4F, 1.0F),
-            new RGB(100, 0, 200)
+            new RGB(0.3F, 0F, 0.25F),
+            new RGB(0.5F, 0.05F, 0.5F),
+            new RGB(200, 0, 100)
     ),
     WHITE(
             "white",
