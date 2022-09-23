@@ -8,7 +8,6 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 import net.minecraft.util.random.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +21,12 @@ public class Rainglow {
     public static final String MOD_ID = "rainglow";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final RainglowConfig CONFIG = new RainglowConfig();
+
     public static final TrackedData<String> COLOUR;
+
+    private static final List<SquidColour> COLOURS = new ArrayList<>();
+    // we maintain a hash map of textures as well to speed up lookup as much as possible
     private static final Map<String, Identifier> TEXTURES = new HashMap<>();
-    private static final List<String> COLOUR_IDS = new ArrayList<>();
-    private static final List<Pair<SquidColour.RGB, SquidColour.RGB>> PASSIVE_PARTICLE_RGBS = new ArrayList<>();
-    private static final List<SquidColour.RGB> INK_PARTICLE_RGBS = new ArrayList<>();
 
     static {
         COLOUR = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
@@ -35,22 +35,17 @@ public class Rainglow {
 
     public static void setMode(RainglowMode mode) {
         TEXTURES.clear();
-        COLOUR_IDS.clear();
-        PASSIVE_PARTICLE_RGBS.clear();
-        INK_PARTICLE_RGBS.clear();
+        COLOURS.clear();
         mode.getColours().forEach(Rainglow::addColour);
     }
 
     private static void addColour(SquidColour colour) {
+        COLOURS.add(colour);
         TEXTURES.put(colour.getId(), colour.getTexture());
 
-        if (TEXTURES.size() == 100) {
+        if (COLOURS.size() >= 100) {
             throw new RuntimeException("too many glow squid colours registered! only up to 99 are allowed");
         }
-
-        COLOUR_IDS.add(colour.getId());
-        PASSIVE_PARTICLE_RGBS.add(new Pair<>(colour.getPassiveParticleRgb(), colour.getAltPassiveParticleRgb()));
-        INK_PARTICLE_RGBS.add(colour.getInkRgb());
     }
 
     public static Identifier getTexture(String colour) {
@@ -58,28 +53,28 @@ public class Rainglow {
     }
 
     public static int getColourIndex(String colour) {
-        return COLOUR_IDS.indexOf(colour);
+        return COLOURS.indexOf(SquidColour.get(colour));
     }
 
     public static String getColourId(int index) {
-        return COLOUR_IDS.get(index);
+        return COLOURS.get(index).getId();
     }
 
     public static SquidColour.RGB getInkRgb(int index) {
-        return INK_PARTICLE_RGBS.get(index);
+        return COLOURS.get(index).getInkRgb();
     }
 
     public static SquidColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
-        Pair<SquidColour.RGB, SquidColour.RGB> rgbs = PASSIVE_PARTICLE_RGBS.get(index);
-        return random.nextBoolean() ? rgbs.getLeft() : rgbs.getRight();
+        SquidColour colour = COLOURS.get(index);
+        return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
     public static int getColourCount() {
-        return COLOUR_IDS.size();
+        return COLOURS.size();
     }
 
     public static Identifier getDefaultTexture() {
-        return TEXTURES.get(COLOUR_IDS.get(0));
+        return TEXTURES.get(COLOURS.get(0).getId());
     }
 
     public static String getColour(DataTracker tracker, RandomGenerator random) {
@@ -93,7 +88,7 @@ public class Rainglow {
     }
 
     public static boolean isColourLoaded(String colour) {
-        return COLOUR_IDS.contains(colour);
+        return COLOURS.contains(SquidColour.get(colour));
     }
 
     public static String translatableTextKey(String key) {

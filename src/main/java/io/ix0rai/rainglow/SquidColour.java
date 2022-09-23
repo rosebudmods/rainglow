@@ -109,6 +109,16 @@ public enum SquidColour {
         return this.inkRgb;
     }
 
+    public static SquidColour get(String id) {
+        for (SquidColour colour : SquidColour.values()) {
+            if (colour.getId().equals(id)) {
+                return colour;
+            }
+        }
+
+        return null;
+    }
+
     public record RGB(float r, float g, float b) {
 
     }
