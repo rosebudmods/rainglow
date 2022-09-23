@@ -56,10 +56,6 @@ public class Rainglow {
         return COLOURS.indexOf(SquidColour.get(colour));
     }
 
-    public static String getColourId(int index) {
-        return COLOURS.get(index).getId();
-    }
-
     public static SquidColour.RGB getInkRgb(int index) {
         return COLOURS.get(index).getInkRgb();
     }
@@ -69,8 +65,8 @@ public class Rainglow {
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
-    public static int getColourCount() {
-        return COLOURS.size();
+    public static SquidColour generateRandomColour(RandomGenerator random) {
+        return COLOURS.get(random.nextInt(COLOURS.size()));
     }
 
     public static Identifier getDefaultTexture() {
@@ -80,7 +76,7 @@ public class Rainglow {
     public static String getColour(DataTracker tracker, RandomGenerator random) {
         String colour = tracker.get(COLOUR);
         if (!isColourLoaded(colour)) {
-            tracker.set(COLOUR, getColourId(random.nextInt(Rainglow.getColourCount())));
+            tracker.set(COLOUR, generateRandomColour(random).getId());
             colour = tracker.get(COLOUR);
         }
 

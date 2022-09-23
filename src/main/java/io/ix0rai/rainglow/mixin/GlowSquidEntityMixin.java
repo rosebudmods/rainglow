@@ -28,7 +28,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
         // generate random colour
-        this.getDataTracker().startTracking(COLOUR, Rainglow.getColourId(random.nextInt(Rainglow.getColourCount())));
+        this.getDataTracker().startTracking(COLOUR, Rainglow.generateRandomColour(random).getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
@@ -43,7 +43,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
         if (Rainglow.isColourLoaded(colour)) {
             this.getDataTracker().set(COLOUR, colour);
         } else {
-            this.getDataTracker().set(COLOUR, Rainglow.getColourId(random.nextInt(Rainglow.getColourCount())));
+            this.getDataTracker().set(COLOUR, Rainglow.generateRandomColour(random).getId());
         }
     }
 
