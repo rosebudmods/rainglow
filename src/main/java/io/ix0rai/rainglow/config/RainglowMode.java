@@ -27,7 +27,7 @@ public enum RainglowMode {
             SquidColour.WHITE,
             SquidColour.PINK
     ),
-    LESBIAN_PRIDE(Rainglow.translatableText("mode.lesbian_pride"), Formatting.DARK_PURPLE,
+    LESBIAN_PRIDE(Rainglow.translatableText("mode.lesbian_pride"), Formatting.RED,
             SquidColour.RED,
             SquidColour.ORANGE,
             SquidColour.WHITE,
@@ -49,13 +49,13 @@ public enum RainglowMode {
             SquidColour.YELLOW,
             SquidColour.BLUE
     ),
-    ACE_PRIDE(Rainglow.translatableText("mode.ace_pride"), Formatting.GRAY,
+    ACE_PRIDE(Rainglow.translatableText("mode.ace_pride"), Formatting.DARK_GRAY,
             SquidColour.BLACK,
             SquidColour.GRAY,
             SquidColour.WHITE,
             SquidColour.PURPLE
     ),
-    ENBY_PRIDE(Rainglow.translatableText("mode.enby_pride"), Formatting.DARK_GRAY,
+    ENBY_PRIDE(Rainglow.translatableText("mode.enby_pride"), Formatting.DARK_PURPLE,
             SquidColour.YELLOW,
             SquidColour.WHITE,
             SquidColour.BLACK,
