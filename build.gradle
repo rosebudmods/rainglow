@@ -44,12 +44,10 @@ loom {
     accessWidenerPath = file("src/main/resources/rainglow.accesswidener")
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = Integer.parseInt(project.java_version)
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release = targetJavaVersion
-    }
+    it.options.release = targetJavaVersion
 }
 
 java {
