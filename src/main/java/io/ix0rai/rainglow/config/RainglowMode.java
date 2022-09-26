@@ -67,6 +67,13 @@ public enum RainglowMode {
             SquidColour.BLACK,
             SquidColour.PURPLE
     ),
+    GENDERFLUID(Rainglow.translatableText("mode.genderfluid_pride"), Formatting.WHITE,
+            SquidColour.PURPLE,
+            SquidColour.WHITE,
+            SquidColour.BLACK,
+            SquidColour.PINK,
+            SquidColour.BLUE
+    ),
     MONOCHROME(Rainglow.translatableText("mode.monochrome"), Formatting.GRAY,
             SquidColour.BLACK,
             SquidColour.GRAY,
