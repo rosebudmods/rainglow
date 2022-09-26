@@ -60,6 +60,11 @@ public enum RainglowMode {
             SquidColour.WHITE,
             SquidColour.BLACK,
             SquidColour.PURPLE
+    ),
+    MONOCHROME(Rainglow.translatableText("mode.monochrome"), Formatting.GRAY,
+            SquidColour.BLACK,
+            SquidColour.GRAY,
+            SquidColour.WHITE
     );
 
     private final Text text;
