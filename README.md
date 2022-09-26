@@ -1,4 +1,4 @@
-![banner](https://raw.githubusercontent.com/ix0rai/rainglow/raw/master/src/main/resources/assets/rainglow/banner.png)
+![banner](https://user-images.githubusercontent.com/66223394/192178022-ec50749c-0dc2-4250-80c5-f9f2251da38e.png)
 
 ## [discord](https://discord.gg/TN9gaXJ6E8) | [github](https://github.com/ix0rai/rainglow) | [modrinth](https://modrinth.com/mod/rainglow) | [curseforge](https://www.curseforge.com/minecraft/mc-mods/rainglow)
 
