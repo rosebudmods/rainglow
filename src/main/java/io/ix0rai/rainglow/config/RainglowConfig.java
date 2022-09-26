@@ -29,19 +29,19 @@ public class RainglowConfig {
             String modeName = secondHalf.split("\"")[1].split("\"")[0];
 
             List<String> modeNames = new ArrayList<>();
-            for (RainglowMode rainglowMode :RainglowMode.values()) {
+            for (RainglowMode rainglowMode : RainglowMode.values()) {
                 modeNames.add(rainglowMode.getName());
             }
 
             if (modeNames.contains(modeName)) {
                 modeToSet = modeName;
             } else {
-                Rainglow.LOGGER.warn("parsed mode from config did not exist; using default");
+                Rainglow.LOGGER.warn("parsed mode \"" + modeName + "\" from config is not valid; using default");
             }
         } catch (IOException e) {
-            Rainglow.LOGGER.info("config file not found; creating new");
+            Rainglow.LOGGER.info("config file not found or corrupted; creating new");
         } catch (ArrayIndexOutOfBoundsException e) {
-            Rainglow.LOGGER.warn("failed to read config file, using default mode (rainbow) and creating new config file");
+            Rainglow.LOGGER.warn("failed to parse config file; creating new");
         } finally {
             // set mode and write to config file
             this.mode = modeToSet;
@@ -52,6 +52,7 @@ public class RainglowConfig {
     private void writeMode(String mode) {
         try {
             Files.writeString(CONFIG_FILE_PATH, MODE_KEY + " = \"" + mode + "\"");
+            Rainglow.LOGGER.info("wrote mode \"" + mode + "\" to config file");
         } catch (IOException e) {
             Rainglow.LOGGER.warn("could not write to config file!");
         }
