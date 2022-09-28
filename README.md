@@ -15,7 +15,8 @@ It also includes configurability through different modes, including pride modes!
 #### server-side optional!
 This mod does not need to be installed on the server to function!
 It works from the client side, so you can install it on your client and play on any server without needing to ask the server owner to install it.
-However, without a server installation glow squids will forget and reroll their colours whenever you rejoin the world.
+However, without a server installation glow squids will forget their colours when you leave the world and get new random ones when you rejoin.
+Colours cannot be synced between players without installing rainglow on the server.
 
 ## mod integrations
 - mod menu (config screen)
