@@ -18,6 +18,21 @@ It works from the client side, so you can install it on your client and play on 
 However, without a server installation glow squids will forget their colours when you leave the world and get new random ones when you rejoin.
 Colours cannot be synced between players without installing rainglow on the server.
 
+### available modes
+##### basic
+- rainbow - red, orange, yellow, green, blue, indigo, violet
+- all colours - just what the name says
+- monochrome - white, grey, and black
+##### pride
+- transgender pride - blue, white and pink
+- lesbian pride - red, orange, white, pink and purple
+- bisexual pride - blue, pink and purple
+- pansexual pride - pink, yellow and blue
+- asexual pride - black, gray, white and purple
+- aromantic pride - black, gray, white and green
+- genderfluid pride - blue, pink, purple, white and black
+- nonbinary pride - yellow, white, black and purple
+
 ## mod integrations
 - mod menu (config screen)
 
