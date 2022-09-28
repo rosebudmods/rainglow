@@ -88,7 +88,15 @@ public class Rainglow {
     }
 
     public static String translatableTextKey(String key) {
+        if (key.split("\\.").length != 2) {
+            throw new IllegalArgumentException("key must be in format \"category.key\"");
+        }
+
         return MOD_ID + "." + key;
+    }
+
+    public static Text translatableText(String key, Object... args) {
+        return Text.translatable(translatableTextKey(key), args);
     }
 
     public static Text translatableText(String key) {

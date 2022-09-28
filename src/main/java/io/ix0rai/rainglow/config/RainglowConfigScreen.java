@@ -10,7 +10,6 @@ import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
 import io.ix0rai.rainglow.Rainglow;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class RainglowConfigScreen extends SpruceScreen {
         this.modeOption = new SpruceCyclingOption(Rainglow.translatableTextKey("config.mode"),
                 amount -> mode = mode.next(),
                 option -> option.getDisplayText(mode.getTranslatedText()),
-                Text.translatable(Rainglow.MOD_ID + ".tooltip.mode",
+                Rainglow.translatableText("tooltip.mode",
                         List.of(RainglowMode.values())
                 )
         );
