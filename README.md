@@ -23,6 +23,7 @@ Colours cannot be synced between players without installing rainglow on the serv
 - rainbow - red, orange, yellow, green, blue, indigo, violet
 - all colours - just what the name says
 - monochrome - white, grey, and black
+- vanilla - just blue!
 ##### pride
 - transgender pride - blue, white and pink
 - lesbian pride - red, orange, white, pink and purple
