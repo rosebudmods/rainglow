@@ -1,5 +1,0 @@
-- added automatic modrinth publishing
-- added "vanilla" mode (only blue)
-- internal cleanup
-- add missing modmenu metadata
-- update description to match mod pages

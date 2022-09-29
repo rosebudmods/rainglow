@@ -51,13 +51,19 @@ modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "rainglow"
     versionNumber = project.version
+    versionName = "rainglow " + project.version.toString().split("\\+")[0] + " for mc " + project.version.toString().split("\\+mc")[1]
     versionType = "beta"
     uploadFile = remapJar
     gameVersions = ["1.19", "1.19.1", "1.19.2"]
+    loaders = ["quilt", "fabric"]
     dependencies {
         optional.project "modmenu"
     }
 
+    // clear changelog
+    rootProject.file("CHANGELOG.md").setText("")
+
+    // sync readme
     tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 }
 
