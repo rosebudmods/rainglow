@@ -48,7 +48,9 @@ loom {
 modrinth {
     syncBodyFrom = rootProject.file("README.md").text
     changelog = rootProject.file("CHANGELOG.md").text
-    token = System.getenv("MODRINTH_TOKEN")
+    System.out.println("Enter your Modrinth API key: ")
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in))
+    token = br.readLine()
     projectId = "rainglow"
     versionNumber = project.version
     versionName = "rainglow " + project.version.toString().split("\\+")[0] + " for mc " + project.version.toString().split("\\+mc")[1]
