@@ -3,14 +3,17 @@
   "id": "rainglow",
   "version": "${version}",
   "name": "Rainglow",
-  "description": "rainbow glow squids!",
+  "description": "make your glow squids gorgeous!!",
+
   "authors": [
     "ix0rai"
   ],
+
   "contact": {
     "website": "https://modrinth.com/rainglow",
     "repo": "https://github.com/ix0rai"
   },
+
   "license": "MIT",
   "icon": "assets/rainglow/icon.png",
   "environment": "*",
@@ -18,13 +21,25 @@
   "mixins": [
     "rainglow.mixins.json"
   ],
+
   "entrypoints": {
     "modmenu": [
       "io.ix0rai.rainglow.config.RainglowModMenu"
     ]
   },
+
   "depends": {
     "fabricloader": ">=0.14.9",
     "minecraft": ">=1.19"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/TN9gaXJ6E8",
+        "modmenu.issues": "https://github.com/ix0rai/bodacious_berries/issues",
+        "modmenu.website": "https://modrinth.com/rainglow"
+      }
+    }
   }
 }
