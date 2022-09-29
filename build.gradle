@@ -3,6 +3,7 @@ plugins {
     id "fabric-loom" version "1.0-SNAPSHOT"
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id "org.quiltmc.quilt-mappings-on-loom" version "4.2.0"
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 version = project.mod_version
@@ -42,6 +43,22 @@ processResources {
 
 loom {
     accessWidenerPath = file("src/main/resources/rainglow.accesswidener")
+}
+
+modrinth {
+    syncBodyFrom = rootProject.file("README.md").text
+    changelog = rootProject.file("CHANGELOG.md").text
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "rainglow"
+    versionNumber = project.version
+    versionType = "beta"
+    uploadFile = remapJar
+    gameVersions = ["1.19", "1.19.1", "1.19.2"]
+    dependencies {
+        optional.project "modmenu"
+    }
+
+    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 }
 
 def targetJavaVersion = Integer.parseInt(project.java_version)
