@@ -45,29 +45,26 @@ loom {
     accessWidenerPath = file("src/main/resources/rainglow.accesswidener")
 }
 
-modrinth {
-    syncBodyFrom = rootProject.file("README.md").text
-    changelog = rootProject.file("CHANGELOG.md").text
-    System.out.println("Enter your Modrinth API key: ")
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in))
-    token = br.readLine()
-    projectId = "rainglow"
-    versionNumber = project.version
-    versionName = "rainglow " + project.version.toString().split("\\+")[0] + " for mc " + project.version.toString().split("\\+mc")[1]
-    versionType = "beta"
-    uploadFile = remapJar
-    gameVersions = ["1.19", "1.19.1", "1.19.2"]
-    loaders = ["quilt", "fabric"]
-    dependencies {
-        optional.project "modmenu"
-    }
-
-    // clear changelog
-    rootProject.file("CHANGELOG.md").setText("")
-
-    // sync readme
-    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
-}
+//modrinth {
+//    syncBodyFrom = rootProject.file("README.md").text
+//    changelog = rootProject.file("CHANGELOG.md").text
+//    System.out.println("Enter your Modrinth API key: ")
+//    BufferedReader br = new BufferedReader(new InputStreamReader(System.in))
+//    token = br.readLine()
+//    projectId = "rainglow"
+//    versionNumber = project.version
+//    versionName = "rainglow " + project.version.toString().split("\\+")[0] + " for mc " + project.version.toString().split("\\+mc")[1]
+//    versionType = "beta"
+//    uploadFile = remapJar
+//    gameVersions = ["1.19", "1.19.1", "1.19.2"]
+//    loaders = ["quilt", "fabric"]
+//    dependencies {
+//        optional.project "modmenu"
+//    }
+//
+//    // sync readme
+//    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+//}
 
 def targetJavaVersion = Integer.parseInt(project.java_version)
 tasks.withType(JavaCompile).configureEach {
