@@ -18,6 +18,7 @@ public class RainglowConfigScreen extends SpruceScreen {
     private final Screen parent;
 
     private final SpruceOption modeOption;
+    private final SpruceOption customOption;
     private final SpruceOption resetOption;
     private RainglowMode mode;
 
@@ -32,6 +33,12 @@ public class RainglowConfigScreen extends SpruceScreen {
                 Rainglow.translatableText("tooltip.mode",
                         List.of(RainglowMode.values())
                 )
+        );
+
+        this.customOption = new SpruceSimpleActionOption(Rainglow.translatableTextKey("config.custom"),
+                (position, width, message, action) -> new SpruceButtonWidget(position, width, 20, message, action),
+                btn -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this)),
+                null
         );
 
         this.resetOption = SpruceSimpleActionOption.reset(btn -> {
@@ -57,7 +64,7 @@ public class RainglowConfigScreen extends SpruceScreen {
         int buttonHeight = 20;
 
         SpruceOptionListWidget options = new SpruceOptionListWidget(Position.of(0, 22), this.width, this.height - (35 + 22));
-        options.addOptionEntry(this.modeOption, null);
+        options.addOptionEntry(this.modeOption, this.customOption);
         this.addDrawableChild(options);
 
         this.addDrawableChild(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));

@@ -37,6 +37,11 @@ public class Rainglow {
         TEXTURES.clear();
         COLOURS.clear();
         mode.getColours().forEach(Rainglow::addColour);
+
+        if (COLOURS.isEmpty()) {
+            Rainglow.LOGGER.info("no colours were added to the list, adding blue so that the game doesn't crash");
+            addColour(SquidColour.BLUE);
+        }
     }
 
     private static void addColour(SquidColour colour) {
@@ -70,7 +75,7 @@ public class Rainglow {
     }
 
     public static Identifier getDefaultTexture() {
-        return TEXTURES.get(COLOURS.get(0).getId());
+        return SquidColour.BLUE.getTexture();
     }
 
     public static String getColour(DataTracker tracker, RandomGenerator random) {

@@ -24,6 +24,7 @@ Colours cannot be synced between players without installing rainglow on the serv
 - all colours - just what the name says
 - monochrome - white, grey, and black
 - vanilla - just blue!
+- custom - allows you to set your own colours
 ##### pride
 - transgender pride - blue, white and pink
 - lesbian pride - red, orange, white, pink and purple

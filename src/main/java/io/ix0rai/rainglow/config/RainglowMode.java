@@ -81,7 +81,8 @@ public enum RainglowMode {
     ),
     VANILLA(Rainglow.translatableText("mode.vanilla"), Formatting.WHITE,
             SquidColour.BLUE
-    );
+    ),
+    CUSTOM(Rainglow.translatableText("mode.custom"), Formatting.DARK_PURPLE);
 
     private final Text text;
     private final List<SquidColour> colours;
@@ -92,7 +93,11 @@ public enum RainglowMode {
     }
 
     public List<SquidColour> getColours() {
-        return this.colours;
+        if (this.equals(CUSTOM)) {
+            return Rainglow.CONFIG.getCustom();
+        } else {
+            return this.colours;
+        }
     }
 
     public RainglowMode next() {
