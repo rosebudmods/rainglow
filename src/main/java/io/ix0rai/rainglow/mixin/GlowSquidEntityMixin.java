@@ -1,6 +1,7 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.SquidColour;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.entity.passive.SquidEntity;
@@ -8,8 +9,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -51,27 +50,13 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
      * @author ix0rai
      * @reason change particles based on colour
      */
-    @Override
-    @Overwrite
-    public void tickMovement() {
-        super.tickMovement();
-        int i = this.getDarkTicksRemaining();
-        if (i > 0) {
-            this.setDarkTicksRemaining(i - 1);
-        }
-
+    @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"), cancellable = true)
+    public void tickMovement(CallbackInfo ci) {
         String colour = Rainglow.getColour(dataTracker, this.random);
-        // we add 100 to g to let the mixin know that we want to override the method
-        this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
-    }
-
-    @Shadow
-    public int getDarkTicksRemaining() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Shadow
-    private void setDarkTicksRemaining(int ticks) {
-        throw new UnsupportedOperationException();
+        if (!colour.equals(SquidColour.BLUE.getId())) {
+            // we add 100 to g to let the mixin know that we want to override the method
+            this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
+            ci.cancel();
+        }
     }
 }
