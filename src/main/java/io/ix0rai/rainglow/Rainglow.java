@@ -36,12 +36,13 @@ public class Rainglow {
     public static void setMode(RainglowMode mode) {
         TEXTURES.clear();
         COLOURS.clear();
-        mode.getColours().forEach(Rainglow::addColour);
 
-        if (COLOURS.isEmpty()) {
+        List<SquidColour> colours = mode == RainglowMode.CUSTOM ? CONFIG.getCustom() : mode.getColours();
+        if (colours.isEmpty()) {
             Rainglow.LOGGER.info("no colours were added to the list, adding blue so that the game doesn't crash");
-            addColour(SquidColour.BLUE);
+            colours.add(SquidColour.BLUE);
         }
+        colours.forEach(Rainglow::addColour);
     }
 
     private static void addColour(SquidColour colour) {

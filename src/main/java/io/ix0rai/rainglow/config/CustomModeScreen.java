@@ -1,7 +1,6 @@
 package io.ix0rai.rainglow.config;
 
 import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.SpruceTexts;
 import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
 import dev.lambdaurora.spruceui.option.SpruceOption;
 import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
@@ -14,11 +13,16 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CustomModeScreen extends SpruceScreen {
     private final Screen parent;
 
     private final SpruceOption clearOption;
     private final SpruceBooleanOption[] colourToggles = new SpruceBooleanOption[SquidColour.values().length];
+
+    private final boolean[] toggleStates = new boolean[SquidColour.values().length];
 
     public CustomModeScreen(@Nullable Screen parent) {
         super(Rainglow.translatableText("config.title"));
@@ -26,15 +30,13 @@ public class CustomModeScreen extends SpruceScreen {
 
         for (int i = 0; i < SquidColour.values().length; i ++) {
             final SquidColour colour = SquidColour.values()[i];
-            colourToggles[i] = new SpruceBooleanOption(Rainglow.translatableTextKey("colour." + colour.getId()),
-                    () -> Rainglow.CONFIG.getCustom().contains(colour),
-                    enable -> {
-                        if (enable) {
-                            Rainglow.CONFIG.addColourToCustom(colour);
-                        } else {
-                            Rainglow.CONFIG.removeColourFromCustom(colour);
-                        }
-                    },
+            final int index = i;
+
+            toggleStates[index] = Rainglow.CONFIG.getCustom().contains(colour);
+
+            colourToggles[index] = new SpruceBooleanOption(Rainglow.translatableTextKey("colour." + colour.getId()),
+                    () -> toggleStates[index],
+                    enable -> toggleStates[index] = enable,
                     null,
                     true
             );
@@ -43,7 +45,7 @@ public class CustomModeScreen extends SpruceScreen {
         this.clearOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.clear"),
             btn -> {
                 for (int i = 0; i < SquidColour.values().length; i ++) {
-                    Rainglow.CONFIG.removeColourFromCustom(SquidColour.values()[i]);
+                    toggleStates[i] = false;
                 }
 
                 MinecraftClient client = MinecraftClient.getInstance();
@@ -78,8 +80,19 @@ public class CustomModeScreen extends SpruceScreen {
 
         this.addDrawableChild(this.clearOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150,
-                buttonHeight, SpruceTexts.GUI_DONE,
-                buttonWidget -> this.closeScreen()
+                buttonHeight, Rainglow.translatableText("config.save"),
+                buttonWidget -> {
+                    List<SquidColour> newCustom = new ArrayList<>();
+
+                    for (int i = 0; i < SquidColour.values().length; i ++) {
+                        if (toggleStates[i]) {
+                            newCustom.add(SquidColour.values()[i]);
+                        }
+                    }
+
+                    Rainglow.CONFIG.setCustom(newCustom);
+                    this.closeScreen();
+                }
         ));
     }
 }

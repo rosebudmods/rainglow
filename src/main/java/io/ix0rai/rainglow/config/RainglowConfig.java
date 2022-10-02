@@ -70,16 +70,4 @@ public class RainglowConfig {
         }
         ConfigIo.writeCustomColours(custom, true);
     }
-
-    public void addColourToCustom(SquidColour colour) {
-        List<SquidColour> newCustom = this.getCustom();
-        newCustom.add(colour);
-        this.setCustom(newCustom);
-    }
-
-    public void removeColourFromCustom(SquidColour colour) {
-        List<SquidColour> newCustom = this.getCustom();
-        newCustom.remove(colour);
-        this.setCustom(newCustom);
-    }
 }
