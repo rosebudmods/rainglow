@@ -118,4 +118,8 @@ public enum RainglowMode {
     public static Optional<RainglowMode> byId(String id) {
         return Arrays.stream(values()).filter(mode -> mode.getName().equalsIgnoreCase(id)).findFirst();
     }
+
+    public static RainglowMode getDefault() {
+        return RAINBOW;
+    }
 }
