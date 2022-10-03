@@ -8,9 +8,9 @@
     "SquidEntityMixin"
   ],
   "client": [
-    "GlowParticleMixin",
-    "GlowSquidEntityRendererMixin",
-    "SquidInkParticleMixin"
+    "client.GlowParticleMixin",
+    "client.GlowSquidEntityRendererMixin",
+    "client.SquidInkParticleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

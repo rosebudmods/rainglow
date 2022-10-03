@@ -1,4 +1,4 @@
-package io.ix0rai.rainglow.mixin;
+package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.SquidColour;
