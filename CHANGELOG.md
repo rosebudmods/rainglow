@@ -1,0 +1,5 @@
+- improve orange particles
+- add new mode: custom! custom mode allows you to select which squids you'd like in your game
+- redone and more reliable config reading and writing
+- less invasive mixins - fixes compatibility with other mods such as more babies
+- internal cleanup
