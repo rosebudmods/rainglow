@@ -29,8 +29,8 @@ public enum SquidColour {
             new RGB(200, 0, 0)
     ),
     ORANGE(
-            new RGB(1.0F, 0.2F, 0.3F),
-            new RGB(1.0F, 0F, 0.1F),
+            new RGB(1.0F, 0.5F, 0.0F),
+            new RGB(1.0F, 0.4F, 0.4F),
             new RGB(200, 0, 0)
     ),
     INDIGO(
