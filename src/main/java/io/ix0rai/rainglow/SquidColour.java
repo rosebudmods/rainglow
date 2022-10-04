@@ -65,7 +65,7 @@ public enum SquidColour {
     private static final HashMap<String, SquidColour> BY_ID = new HashMap<>();
 
     static {
-        Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.name(), mode));
+        Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.getId(), mode));
     }
 
     private final Identifier texture;

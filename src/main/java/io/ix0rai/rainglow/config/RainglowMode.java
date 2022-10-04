@@ -87,7 +87,7 @@ public enum RainglowMode {
     private static final Map<String, RainglowMode> BY_ID = new HashMap<>();
 
     static {
-       Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.name(), mode));
+       Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.getName(), mode));
     }
 
     private final Text text;
