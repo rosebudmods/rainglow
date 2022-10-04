@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 public class RainglowConfig {
-    private String mode;
+    private RainglowMode mode;
     private List<SquidColour> custom;
 
     public RainglowConfig() {
         Map<String, String> config = ConfigIo.readConfig();
 
         // set mode and write to config file
-        String rainglowMode = RainglowMode.getDefault().getName();
+        RainglowMode rainglowMode = RainglowMode.getDefault();
         if (config.containsKey(ConfigIo.MODE_KEY)) {
-            String parsedMode = ConfigIo.parseTomlString(config.get(ConfigIo.MODE_KEY));
-            if (RainglowMode.byId(parsedMode).isPresent()) {
+            RainglowMode parsedMode = RainglowMode.byId(ConfigIo.parseTomlString(config.get(ConfigIo.MODE_KEY)));
+            if (parsedMode != null) {
                 rainglowMode = parsedMode;
             }
         }
@@ -28,28 +28,25 @@ public class RainglowConfig {
             List<String> colours = ConfigIo.parseTomlList(config.get(ConfigIo.CUSTOM_KEY));
 
             for (String colour : colours) {
-                if (SquidColour.get(colour) != null) {
-                    customColours.add(SquidColour.get(colour));
+                SquidColour squidColour = SquidColour.get(colour);
+                if (squidColour != null) {
+                    customColours.add(squidColour);
                 }
             }
         }
 
         if (customColours.isEmpty()) {
-            customColours = getDefaultCustomColours();
+            customColours = RainglowMode.getDefaultCustom();
         }
 
         this.mode = rainglowMode;
         this.custom = customColours;
-        ConfigIo.writeMode(rainglowMode, false);
+        ConfigIo.writeMode(rainglowMode.getName(), false);
         ConfigIo.writeCustomColours(customColours, false);
     }
 
-    private static List<SquidColour> getDefaultCustomColours() {
-        return List.of(SquidColour.BLUE, SquidColour.PINK, SquidColour.WHITE);
-    }
-
     public RainglowMode getMode() {
-        return RainglowMode.byId(this.mode).orElse(RainglowMode.RAINBOW);
+        return this.mode;
     }
 
     public List<SquidColour> getCustom() {
@@ -57,17 +54,14 @@ public class RainglowConfig {
     }
 
     public void setMode(RainglowMode mode) {
-        this.mode = mode.getName();
+        this.mode = mode;
         Rainglow.setMode(mode);
         ConfigIo.writeMode(mode.getName(), true);
     }
 
     public void setCustom(List<SquidColour> custom) {
         this.custom = custom;
-        // refresh custom mode if currently applied
-        if (this.getMode() == RainglowMode.CUSTOM) {
-            Rainglow.setMode(RainglowMode.CUSTOM);
-        }
+        Rainglow.refreshColours();
         ConfigIo.writeCustomColours(custom, true);
     }
 }
