@@ -45,6 +45,13 @@ public class Rainglow {
         colours.forEach(Rainglow::addColour);
     }
 
+    public static void refreshColours() {
+        // we only ever need to refresh the colours of custom mode, all other sets of colours are immutable
+        if (CONFIG.getMode() == RainglowMode.CUSTOM) {
+            setMode(RainglowMode.CUSTOM);
+        }
+    }
+
     private static void addColour(SquidColour colour) {
         COLOURS.add(colour);
         TEXTURES.put(colour.getId(), colour.getTexture());

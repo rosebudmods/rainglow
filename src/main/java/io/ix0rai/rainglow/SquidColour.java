@@ -2,6 +2,9 @@ package io.ix0rai.rainglow;
 
 import net.minecraft.util.Identifier;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 public enum SquidColour {
     BLUE(
             new RGB(0.6F, 1.0F, 0.8F),
@@ -59,6 +62,12 @@ public enum SquidColour {
             new RGB(0, 0, 0)
     );
 
+    private static final HashMap<String, SquidColour> BY_ID = new HashMap<>();
+
+    static {
+        Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.name(), mode));
+    }
+
     private final Identifier texture;
     private final RGB passiveParticleRgb;
     private final RGB altPassiveParticleRgb;
@@ -99,13 +108,7 @@ public enum SquidColour {
     }
 
     public static SquidColour get(String id) {
-        for (SquidColour colour : SquidColour.values()) {
-            if (colour.getId().equals(id)) {
-                return colour;
-            }
-        }
-
-        return null;
+        return BY_ID.get(id);
     }
 
     public record RGB(float r, float g, float b) {

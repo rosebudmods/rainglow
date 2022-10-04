@@ -28,8 +28,8 @@ public class RainglowConfigScreen extends SpruceScreen {
         this.mode = Rainglow.CONFIG.getMode();
 
         this.modeOption = new SpruceCyclingOption(Rainglow.translatableTextKey("config.mode"),
-                amount -> mode = mode.next(),
-                option -> option.getDisplayText(mode.getTranslatedText()),
+                amount -> mode = mode.cycle(),
+                option -> option.getDisplayText(mode.getText()),
                 Rainglow.translatableText("tooltip.mode",
                         List.of(RainglowMode.values())
                 )

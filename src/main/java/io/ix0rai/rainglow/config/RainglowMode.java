@@ -6,8 +6,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public enum RainglowMode {
     RAINBOW(Rainglow.translatableText("mode.rainbow"), Formatting.LIGHT_PURPLE,
@@ -83,31 +84,34 @@ public enum RainglowMode {
             SquidColour.BLUE
     ),
     CUSTOM(Rainglow.translatableText("mode.custom"), Formatting.DARK_PURPLE);
+    private static final Map<String, RainglowMode> BY_ID = new HashMap<>();
+
+    static {
+       Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.name(), mode));
+    }
 
     private final Text text;
     private final List<SquidColour> colours;
 
     RainglowMode(Text text, Formatting formatting, SquidColour... colours) {
-        this.colours = List.of(colours);
+        this.colours = Arrays.stream(colours).toList();
         this.text = text.copy().formatted(formatting);
     }
 
     public List<SquidColour> getColours() {
-        if (this.equals(CUSTOM)) {
+        if (this == CUSTOM) {
             return Rainglow.CONFIG.getCustom();
         } else {
             return this.colours;
         }
     }
 
-    public RainglowMode next() {
-        if (values().length == this.ordinal() + 1) {
-            return values()[0];
-        }
-        return values()[this.ordinal() + 1];
+    public RainglowMode cycle() {
+        // cycle to next in list, wrapping around to 0 if the next ordinal is larger than the enum's size
+        return values()[this.ordinal() + 1 >= values().length ? 0 : this.ordinal() + 1];
     }
 
-    public Text getTranslatedText() {
+    public Text getText() {
         return this.text;
     }
 
@@ -115,11 +119,15 @@ public enum RainglowMode {
         return this.name().toLowerCase();
     }
 
-    public static Optional<RainglowMode> byId(String id) {
-        return Arrays.stream(values()).filter(mode -> mode.getName().equalsIgnoreCase(id)).findFirst();
+    public static RainglowMode byId(String id) {
+        return BY_ID.get(id);
     }
 
     public static RainglowMode getDefault() {
         return RAINBOW;
+    }
+
+    public static List<SquidColour> getDefaultCustom() {
+        return TRANS_PRIDE.getColours();
     }
 }
