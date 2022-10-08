@@ -1,1 +1,3 @@
-- fix exception spawning ink particles when connected to a server
+- optimise config reading and writing
+- optimise colour lookups (improvements to in game performance)
+- mixin compatibility improvements
