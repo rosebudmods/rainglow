@@ -1,3 +1,4 @@
 - optimise config reading and writing
 - optimise colour lookups (improvements to in game performance)
 - mixin compatibility improvements
+- improve config file with prettier screen and more info

@@ -1,5 +1,6 @@
 {
   "rainglow.config.title": "Rainglow Configuration",
+  "rainglow.config.current_colours": "Currently enabled colours:",
   "rainglow.config.mode": "Mode",
   "rainglow.config.save": "Save",
   "rainglow.config.clear": "Clear",

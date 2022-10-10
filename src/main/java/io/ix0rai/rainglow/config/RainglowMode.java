@@ -3,7 +3,7 @@ package io.ix0rai.rainglow.config;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.SquidColour;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.text.TextColor;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public enum RainglowMode {
-    RAINBOW(Rainglow.translatableText("mode.rainbow"), Formatting.LIGHT_PURPLE,
+    RAINBOW(Rainglow.translatableText("mode.rainbow"), TextColor.fromRgb(0xAA208F),
             SquidColour.RED,
             SquidColour.ORANGE,
             SquidColour.YELLOW,
@@ -20,70 +20,70 @@ public enum RainglowMode {
             SquidColour.INDIGO,
             SquidColour.PURPLE
     ),
-    ALL_COLOURS(Rainglow.translatableText("mode.all_colours"), Formatting.GREEN,
+    ALL_COLOURS(Rainglow.translatableText("mode.all_colours"), TextColor.fromRgb(0x00FF00),
             SquidColour.values()
     ),
-    TRANS_PRIDE(Rainglow.translatableText("mode.trans_pride"), Formatting.AQUA,
+    TRANS_PRIDE(Rainglow.translatableText("mode.trans_pride"), TextColor.fromRgb(0xD472E5),
             SquidColour.BLUE,
             SquidColour.WHITE,
             SquidColour.PINK
     ),
-    LESBIAN_PRIDE(Rainglow.translatableText("mode.lesbian_pride"), Formatting.RED,
+    LESBIAN_PRIDE(Rainglow.translatableText("mode.lesbian_pride"), TextColor.fromRgb(0xDB4B32),
             SquidColour.RED,
             SquidColour.ORANGE,
             SquidColour.WHITE,
             SquidColour.PINK,
             SquidColour.PURPLE
     ),
-    BI_PRIDE(Rainglow.translatableText("mode.bi_pride"), Formatting.BLUE,
+    BI_PRIDE(Rainglow.translatableText("mode.bi_pride"), TextColor.fromRgb(0x292784),
             SquidColour.BLUE,
             SquidColour.PINK,
             SquidColour.PURPLE
     ),
-    GAY_PRIDE(Rainglow.translatableText("mode.gay_pride"), Formatting.DARK_AQUA,
+    GAY_PRIDE(Rainglow.translatableText("mode.gay_pride"), TextColor.fromRgb(0x009391),
             SquidColour.BLUE,
             SquidColour.GREEN,
             SquidColour.WHITE
     ),
-    PAN_PRIDE(Rainglow.translatableText("mode.pan_pride"), Formatting.GOLD,
+    PAN_PRIDE(Rainglow.translatableText("mode.pan_pride"), TextColor.fromRgb(0xCEA800),
             SquidColour.PINK,
             SquidColour.YELLOW,
             SquidColour.BLUE
     ),
-    ACE_PRIDE(Rainglow.translatableText("mode.ace_pride"), Formatting.DARK_GRAY,
+    ACE_PRIDE(Rainglow.translatableText("mode.ace_pride"), TextColor.fromRgb(0xA252BF),
             SquidColour.BLACK,
             SquidColour.GRAY,
             SquidColour.WHITE,
             SquidColour.PURPLE
     ),
-    ARO_PRIDE(Rainglow.translatableText("mode.aro_pride"), Formatting.GREEN,
+    ARO_PRIDE(Rainglow.translatableText("mode.aro_pride"), TextColor.fromRgb(0x61D85B),
             SquidColour.BLACK,
             SquidColour.GRAY,
             SquidColour.WHITE,
             SquidColour.GREEN
     ),
-    ENBY_PRIDE(Rainglow.translatableText("mode.enby_pride"), Formatting.DARK_PURPLE,
+    ENBY_PRIDE(Rainglow.translatableText("mode.enby_pride"), TextColor.fromRgb(0x531F82),
             SquidColour.YELLOW,
             SquidColour.WHITE,
             SquidColour.BLACK,
             SquidColour.PURPLE
     ),
-    GENDERFLUID(Rainglow.translatableText("mode.genderfluid_pride"), Formatting.WHITE,
+    GENDERFLUID(Rainglow.translatableText("mode.genderfluid_pride"), TextColor.fromRgb(0xA02CB7),
             SquidColour.PURPLE,
             SquidColour.WHITE,
             SquidColour.BLACK,
             SquidColour.PINK,
             SquidColour.BLUE
     ),
-    MONOCHROME(Rainglow.translatableText("mode.monochrome"), Formatting.GRAY,
+    MONOCHROME(Rainglow.translatableText("mode.monochrome"), TextColor.fromRgb(0xB7B7B7),
             SquidColour.BLACK,
             SquidColour.GRAY,
             SquidColour.WHITE
     ),
-    VANILLA(Rainglow.translatableText("mode.vanilla"), Formatting.WHITE,
+    VANILLA(Rainglow.translatableText("mode.vanilla"), TextColor.fromRgb(0xFFFFFF),
             SquidColour.BLUE
     ),
-    CUSTOM(Rainglow.translatableText("mode.custom"), Formatting.DARK_PURPLE);
+    CUSTOM(Rainglow.translatableText("mode.custom"), TextColor.fromRgb(0x00FFE1));
     private static final Map<String, RainglowMode> BY_ID = new HashMap<>();
 
     static {
@@ -93,9 +93,9 @@ public enum RainglowMode {
     private final Text text;
     private final List<SquidColour> colours;
 
-    RainglowMode(Text text, Formatting formatting, SquidColour... colours) {
+    RainglowMode(Text text, TextColor formatting, SquidColour... colours) {
         this.colours = Arrays.stream(colours).toList();
-        this.text = text.copy().formatted(formatting);
+        this.text = text.copy().setStyle(text.getStyle().withColor(formatting));
     }
 
     public List<SquidColour> getColours() {
