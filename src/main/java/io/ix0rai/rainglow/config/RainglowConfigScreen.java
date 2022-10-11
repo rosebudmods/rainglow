@@ -26,13 +26,23 @@ public class RainglowConfigScreen extends SpruceScreen {
     private final SpruceOption resetOption;
     private RainglowMode mode;
 
+    private SpruceLabelWidget coloursToApplyLabel;
+
     public RainglowConfigScreen(@Nullable Screen parent) {
         super(Rainglow.translatableText("config.title"));
         this.parent = parent;
         this.mode = Rainglow.CONFIG.getMode();
 
         this.modeOption = new SpruceCyclingOption(Rainglow.translatableTextKey("config.mode"),
-                amount -> mode = mode.cycle(),
+                amount -> {
+                    mode = mode.cycle();
+                    this.remove(coloursToApplyLabel);
+                    StringBuilder coloursToApply = new StringBuilder(Language.getInstance().get(Rainglow.translatableTextKey("config.colours_to_apply")));
+                    appendColours(coloursToApply, this.mode);
+                    Style style = Style.EMPTY.withColor(this.mode.getText().getStyle().getColor());
+                    this.coloursToApplyLabel = new SpruceLabelWidget(Position.of(this, this.width / 2 - 108, this.height / 4 + 20), Text.literal(coloursToApply.toString()).setStyle(style), this.width, true);
+                    this.addDrawableChild(coloursToApplyLabel);
+                },
                 option -> option.getDisplayText(mode.getText()),
                 Rainglow.translatableText("tooltip.mode",
                         List.of(RainglowMode.values())
@@ -72,11 +82,17 @@ public class RainglowConfigScreen extends SpruceScreen {
         this.addDrawableChild(this.customOption.createWidget(Position.of(this.width / 2 + 5, this.height / 6 - buttonHeight + buttonOffset), 200));
 
         this.addDrawableChild(new SpruceLabelWidget(Position.of(this, 0, this.height / 9), Rainglow.translatableText("config.title"), this.width, true));
+
         StringBuilder text = new StringBuilder(Language.getInstance().get(Rainglow.translatableTextKey("config.current_colours")));
-        for (SquidColour colour : Rainglow.CONFIG.getMode().getColours()) {
-            text.append("\n").append(Language.getInstance().get(Rainglow.translatableTextKey("colour." + colour.getId())));
-        }
-        this.addDrawableChild(new SpruceLabelWidget(Position.of(this, 0, this.height / 4 + buttonHeight), Text.of(text.toString()).copy().setStyle(Style.EMPTY.withColor(Rainglow.CONFIG.getMode().getText().getStyle().getColor())), this.width, true));
+        appendColours(text, Rainglow.CONFIG.getMode());
+        Style style = Style.EMPTY.withColor(Rainglow.CONFIG.getMode().getText().getStyle().getColor());
+        this.addDrawableChild(new SpruceLabelWidget(Position.of(this, this.width / 2 - 318, this.height / 4 + buttonHeight), Text.literal(text.toString()).setStyle(style), this.width, true));
+
+        StringBuilder coloursToApply = new StringBuilder(Language.getInstance().get(Rainglow.translatableTextKey("config.colours_to_apply")));
+        appendColours(coloursToApply, this.mode);
+        style = Style.EMPTY.withColor(this.mode.getText().getStyle().getColor());
+        this.coloursToApplyLabel = new SpruceLabelWidget(Position.of(this, this.width / 2 - 108, this.height / 4 + buttonHeight), Text.literal(coloursToApply.toString()).setStyle(style), this.width, true);
+        this.addDrawableChild(coloursToApplyLabel);
 
         this.addDrawableChild(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150,
@@ -86,5 +102,11 @@ public class RainglowConfigScreen extends SpruceScreen {
                     Rainglow.CONFIG.setMode(this.mode);
                 }
         ));
+    }
+
+    private void appendColours(StringBuilder text, RainglowMode mode) {
+        for (SquidColour colour : mode.getColours()) {
+            text.append("\n").append(Language.getInstance().get(Rainglow.translatableTextKey("colour." + colour.getId())));
+        }
     }
 }

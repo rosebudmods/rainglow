@@ -35,7 +35,7 @@ public enum RainglowMode {
             SquidColour.PINK,
             SquidColour.PURPLE
     ),
-    BI_PRIDE(Rainglow.translatableText("mode.bi_pride"), TextColor.fromRgb(0x292784),
+    BI_PRIDE(Rainglow.translatableText("mode.bi_pride"), TextColor.fromRgb(0x0063A0),
             SquidColour.BLUE,
             SquidColour.PINK,
             SquidColour.PURPLE
@@ -62,7 +62,7 @@ public enum RainglowMode {
             SquidColour.WHITE,
             SquidColour.GREEN
     ),
-    ENBY_PRIDE(Rainglow.translatableText("mode.enby_pride"), TextColor.fromRgb(0x531F82),
+    ENBY_PRIDE(Rainglow.translatableText("mode.enby_pride"), TextColor.fromRgb(0x705CA8),
             SquidColour.YELLOW,
             SquidColour.WHITE,
             SquidColour.BLACK,
@@ -84,6 +84,7 @@ public enum RainglowMode {
             SquidColour.BLUE
     ),
     CUSTOM(Rainglow.translatableText("mode.custom"), TextColor.fromRgb(0x00FFE1));
+
     private static final Map<String, RainglowMode> BY_ID = new HashMap<>();
 
     static {
