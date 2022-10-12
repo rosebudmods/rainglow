@@ -34,12 +34,14 @@ public class GlowParticleMixin {
             SquidColour.RGB rgb = Rainglow.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
             glowParticle.setColor(rgb.r(), rgb.g(), rgb.b());
 
+            // set velocities - I don't entirely understand why this is necessary, it's copied from vanilla code
             glowParticle.velocityY *= 0.2;
             if (g == 0.0 && i == 0.0) {
                 glowParticle.velocityX *= 0.1;
                 glowParticle.velocityZ *= 0.1;
             }
 
+            // set expiry date of particle and return
             glowParticle.setMaxAge((int) (8.0 / (clientWorld.random.nextDouble() * 0.8 + 0.2)));
             cir.setReturnValue(glowParticle);
         }

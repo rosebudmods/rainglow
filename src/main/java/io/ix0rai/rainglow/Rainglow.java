@@ -87,6 +87,7 @@ public class Rainglow {
     }
 
     public static String getColour(DataTracker tracker, RandomGenerator random) {
+        // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(COLOUR);
         if (!isColourLoaded(colour)) {
             tracker.set(COLOUR, generateRandomColour(random).getId());

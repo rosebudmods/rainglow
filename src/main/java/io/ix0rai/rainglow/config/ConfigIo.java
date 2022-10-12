@@ -1,7 +1,6 @@
 package io.ix0rai.rainglow.config;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.SquidColour;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class ConfigIo {
         }
     }
 
-    public static List<String> parseTomlList(String list) {
+    public static List<String> parseTomlStringList(String list) {
         List<String> parsedList = new ArrayList<>();
 
         // trim brackets
@@ -93,17 +92,17 @@ public class ConfigIo {
         }
     }
 
-    public static void writeCustomColours(List<SquidColour> customColours, boolean log) {
+    public static void writeStringList(List<?> list, boolean log) {
         try {
             // convert to toml-friendly format
             StringBuilder customColoursString = new StringBuilder();
-            for (int i = 0; i < customColours.size(); i ++) {
-                customColoursString.append("\"").append(customColours.get(i).getId()).append("\"").append(i == customColours.size() - 1 ? "" : ", ");
+            for (int i = 0; i < list.size(); i ++) {
+                customColoursString.append("\"").append(list.get(i).toString()).append("\"").append(i == list.size() - 1 ? "" : ", ");
             }
 
             write(CUSTOM_KEY, "[" + customColoursString + "]");
             if (log) {
-                Rainglow.LOGGER.info("wrote custom colours \"" + customColours + "\" to config file");
+                Rainglow.LOGGER.info("wrote list \"" + list + "\" to config file");
             }
         } catch (IOException e) {
             Rainglow.LOGGER.warn("could not write custom colours to config file!");

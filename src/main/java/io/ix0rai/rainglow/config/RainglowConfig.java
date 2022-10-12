@@ -12,9 +12,10 @@ public class RainglowConfig {
     private List<SquidColour> custom;
 
     public RainglowConfig() {
+        // read config from file
         Map<String, String> config = ConfigIo.readConfig();
 
-        // set mode and write to config file
+        // parse mode
         RainglowMode rainglowMode = RainglowMode.getDefault();
         if (config.containsKey(ConfigIo.MODE_KEY)) {
             RainglowMode parsedMode = RainglowMode.byId(ConfigIo.parseTomlString(config.get(ConfigIo.MODE_KEY)));
@@ -23,9 +24,11 @@ public class RainglowConfig {
             }
         }
 
+        // parse colours for custom mode
+        // note: we cannot get the default colours from the enum to start off as it's an immutable list
         List<SquidColour> customColours = new ArrayList<>();
         if (config.containsKey(ConfigIo.CUSTOM_KEY)) {
-            List<String> colours = ConfigIo.parseTomlList(config.get(ConfigIo.CUSTOM_KEY));
+            List<String> colours = ConfigIo.parseTomlStringList(config.get(ConfigIo.CUSTOM_KEY));
 
             for (String colour : colours) {
                 SquidColour squidColour = SquidColour.get(colour);
@@ -35,14 +38,16 @@ public class RainglowConfig {
             }
         }
 
+        // reset colours if parsing failed
         if (customColours.isEmpty()) {
             customColours = RainglowMode.getDefaultCustom();
         }
 
+        // set and write
         this.mode = rainglowMode;
         this.custom = customColours;
-        ConfigIo.writeMode(rainglowMode.getName(), false);
-        ConfigIo.writeCustomColours(customColours, false);
+        ConfigIo.writeMode(rainglowMode.getId(), false);
+        ConfigIo.writeStringList(customColours, false);
     }
 
     public RainglowMode getMode() {
@@ -56,12 +61,12 @@ public class RainglowConfig {
     public void setMode(RainglowMode mode) {
         this.mode = mode;
         Rainglow.setMode(mode);
-        ConfigIo.writeMode(mode.getName(), true);
+        ConfigIo.writeMode(mode.getId(), true);
     }
 
     public void setCustom(List<SquidColour> custom) {
         this.custom = custom;
         Rainglow.refreshColours();
-        ConfigIo.writeCustomColours(custom, true);
+        ConfigIo.writeStringList(custom, true);
     }
 }

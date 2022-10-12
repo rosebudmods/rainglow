@@ -20,6 +20,8 @@ public class GlowSquidEntityRendererMixin {
     public void getTexture(GlowSquidEntity glowSquidEntity, CallbackInfoReturnable<Identifier> cir) {
         String colour = glowSquidEntity.getDataTracker().get(Rainglow.COLOUR);
 
+        // if the colour is blue we don't need to override the method
+        // this optimises a tiny bit
         if (!colour.equals(SquidColour.BLUE.getId())) {
             Identifier texture = Rainglow.getTexture(glowSquidEntity.getDataTracker().get(Rainglow.COLOUR));
             cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture());

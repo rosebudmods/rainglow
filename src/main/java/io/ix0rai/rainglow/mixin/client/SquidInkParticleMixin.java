@@ -36,12 +36,16 @@ public class SquidInkParticleMixin {
         // we preserve one decimal point of x precision, so we grab the particle index from the second and third decimal point
         int colourIndex = (int) ((secondDecimalPoint + (thirdDecimalPoint / 10.0)) * 10);
 
+        // if we get an exception (index out of bounds), we know that the sender of the particle does not have rainglow installed or has a different config
+        // this will get a few rare false positives, but that's unavoidable since we have so little context
+        // when we catch an exception we use white as it looks the most normal
         SquidColour.RGB rgb;
         try {
             rgb = Rainglow.getInkRgb(colourIndex);
-        } catch (Exception ignored) {
+        } catch (IndexOutOfBoundsException ignored) {
             rgb = SquidColour.WHITE.getInkRgb();
         }
+
         return new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorUtil.ARGB32.getArgb(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider);
     }
 }
