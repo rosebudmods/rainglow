@@ -14,11 +14,11 @@ public abstract class RainglowScreen extends SpruceScreen {
     }
 
     @Override
-    public void closeScreen() {
+    public void onClose() {
         if (this.client != null) {
             this.client.setScreen(this.parent);
         } else {
-            super.closeScreen();
+            super.onClose();
         }
     }
 }
