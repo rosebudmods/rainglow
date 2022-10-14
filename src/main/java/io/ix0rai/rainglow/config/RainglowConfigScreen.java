@@ -12,8 +12,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.Toast;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
-import net.minecraft.text.Text;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,7 +109,7 @@ public class RainglowConfigScreen extends RainglowScreen {
         }
         // set colour to the mode's text colour
         Style style = Style.EMPTY.withColor(mode.getText().getStyle().getColor());
-        return new SpruceLabelWidget(Position.of(this, x, y), Text.literal(text.toString()).setStyle(style), this.width, true);
+        return new SpruceLabelWidget(Position.of(this, x, y), new LiteralText(text.toString()).setStyle(style), this.width, true);
     }
 
     private static void sendConfigLockedToast() {

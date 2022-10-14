@@ -23,7 +23,7 @@ configurations {
 dependencies {
     // versions defined in gradle.properties
     minecraft("com.mojang:minecraft:${project.minecraft_version}")
-    mappings("org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.quilt_mappings}:intermediary-v2")
+    mappings("net.fabricmc:yarn:${project.minecraft_version}+build.${project.yarn_mappings}:v2")
     modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
 
     include(modImplementation("dev.lambdaurora:spruceui:${project.spruceui_version}"))

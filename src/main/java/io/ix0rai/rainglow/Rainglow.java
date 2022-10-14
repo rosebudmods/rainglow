@@ -15,8 +15,8 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.random.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
@@ -95,12 +96,12 @@ public class Rainglow implements ModInitializer {
         return COLOURS.get(index).getInkRgb();
     }
 
-    public static SquidColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
+    public static SquidColour.RGB getPassiveParticleRGB(int index, Random random) {
         SquidColour colour = COLOURS.get(index);
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
-    public static String generateRandomColourId(RandomGenerator random) {
+    public static String generateRandomColourId(Random random) {
         return COLOURS.get(random.nextInt(COLOURS.size())).getId();
     }
 
@@ -121,11 +122,11 @@ public class Rainglow implements ModInitializer {
     }
 
     public static Text translatableText(String key, Object... args) {
-        return Text.translatable(translatableTextKey(key), args);
+        return new TranslatableText(translatableTextKey(key), args);
     }
 
     public static Text translatableText(String key) {
-        return Text.translatable(translatableTextKey(key));
+        return new TranslatableText(translatableTextKey(key));
     }
 
     public static TrackedData<String> getTrackedColourData() {
@@ -140,7 +141,7 @@ public class Rainglow implements ModInitializer {
         return colour;
     }
 
-    public static String getColour(DataTracker tracker, RandomGenerator random) {
+    public static String getColour(DataTracker tracker, Random random) {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(getTrackedColourData());
         if (!isColourLoaded(colour)) {

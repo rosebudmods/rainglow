@@ -1,11 +1,11 @@
 package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.Rainglow;
+import net.minecraft.client.gui.hud.BackgroundHelper;
 import io.ix0rai.rainglow.data.SquidColour;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.particle.SquidInkParticle;
-import net.minecraft.client.util.ColorUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import org.spongepowered.asm.mixin.Final;
@@ -46,6 +46,6 @@ public class SquidInkParticleMixin {
             rgb = SquidColour.WHITE.getInkRgb();
         }
 
-        return new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorUtil.ARGB32.getArgb(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider);
+        return new SquidInkParticle(clientWorld, d, e, f, g, h, i, BackgroundHelper.ColorMixer.getArgb(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider);
     }
 }
