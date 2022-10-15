@@ -16,9 +16,6 @@ public class ConfigIo {
     private static final String CONFIG_FILE_NAME = "rainglow.toml";
     private static final Path CONFIG_FILE_PATH = Paths.get(FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME).toUri());
 
-    public static final String MODE_KEY = "mode";
-    public static final String CUSTOM_KEY = "custom";
-
     public static String parseTomlString(String string) {
         try {
             return string.split("\"")[1].split("\"")[0];
@@ -81,31 +78,31 @@ public class ConfigIo {
         return configData;
     }
 
-    public static void writeMode(String mode, boolean log) {
+    public static void writeString(String key, String string, boolean log) {
         try {
-            write(MODE_KEY, "\"" + mode + "\"");
+            write(key, "\"" + string + "\"");
             if (log) {
-                Rainglow.LOGGER.info("wrote mode \"" + mode + "\" to config file");
+                Rainglow.LOGGER.info("wrote string \"" + string + "\" to config file");
             }
         } catch (IOException e) {
             Rainglow.LOGGER.warn("could not write mode to config file!");
         }
     }
 
-    public static void writeStringList(List<?> list, boolean log) {
+    public static void writeStringList(String key, List<?> list, boolean log) {
         try {
             // convert to toml-friendly format
-            StringBuilder customColoursString = new StringBuilder();
+            StringBuilder tomlCompatibleList = new StringBuilder();
             for (int i = 0; i < list.size(); i ++) {
-                customColoursString.append("\"").append(list.get(i).toString()).append("\"").append(i == list.size() - 1 ? "" : ", ");
+                tomlCompatibleList.append("\"").append(list.get(i).toString()).append("\"").append(i == list.size() - 1 ? "" : ", ");
             }
 
-            write(CUSTOM_KEY, "[" + customColoursString + "]");
+            write(key, "[" + tomlCompatibleList + "]");
             if (log) {
                 Rainglow.LOGGER.info("wrote list \"" + list + "\" to config file");
             }
         } catch (IOException e) {
-            Rainglow.LOGGER.warn("could not write custom colours to config file!");
+            Rainglow.LOGGER.warn("could not write string list \"" + list + "\" to config file!");
         }
     }
 
