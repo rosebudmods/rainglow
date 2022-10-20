@@ -1,4 +1,2 @@
-- optimise config reading and writing
-- optimise colour lookups (improvements to in game performance)
-- mixin compatibility improvements
-- config screen now displays the currently enabled colours, the colours in the currently selected mode, and is prettier
+- internal improvements
+- stability improvements to config reading and writing
