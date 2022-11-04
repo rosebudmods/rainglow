@@ -94,6 +94,10 @@ public class RainglowMode {
         return List.of(SquidColour.BLUE, SquidColour.WHITE, SquidColour.PINK);
     }
 
+    public static void printLoadedModes() {
+        Rainglow.LOGGER.info("Loaded modes: " + MODES);
+    }
+
     @Override
     public String toString() {
         return this.getId();

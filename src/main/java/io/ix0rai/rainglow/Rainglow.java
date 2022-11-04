@@ -72,6 +72,9 @@ public class Rainglow implements ModInitializer {
                     }
                 }
 
+                // log
+                RainglowMode.printLoadedModes();
+
                 // load config
                 CONFIG.reloadFromFile();
                 setMode(CONFIG.getMode());
