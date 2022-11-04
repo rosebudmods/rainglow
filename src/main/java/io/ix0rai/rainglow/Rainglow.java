@@ -1,23 +1,34 @@
 package io.ix0rai.rainglow;
 
+import com.google.gson.Gson;
 import io.ix0rai.rainglow.config.RainglowConfig;
-import io.ix0rai.rainglow.config.RainglowMode;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.GlowSquidEntity;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.random.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Rainglow {
+public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final RainglowConfig CONFIG = new RainglowConfig();
@@ -30,16 +41,51 @@ public class Rainglow {
 
     static {
         COLOUR = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
-        setMode(CONFIG.getMode());
+    }
+
+    @Override
+    public void onInitialize() {
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+            @Override
+            public Identifier getFabricId() {
+                return new Identifier(MOD_ID, "custom_modes");
+            }
+
+            @Override
+            public void reload(ResourceManager manager) {
+                // remove existing modes to avoid adding duplicates
+                RainglowMode.clearModes();
+
+                // load custom modes from rainglow/custom_modes in the datapack
+                // we only load files whose name ends with .json
+                Map<Identifier, Resource> map = manager.findResources("custom_modes", id -> id.getNamespace().equals(MOD_ID) && id.getPath().endsWith(".json"));
+
+                // run over all loaded resources and parse them to rainglow modes
+                // then add them to our mode map
+                for(Map.Entry<Identifier, Resource> entry : map.entrySet()) {
+                    try (InputStream stream = entry.getValue().open()) {
+                        Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                        RainglowMode.JsonMode result = new Gson().fromJson(reader, RainglowMode.JsonMode.class);
+                        RainglowMode.addMode(new RainglowMode(result));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                // load config
+                CONFIG.reloadFromFile();
+                setMode(CONFIG.getMode());
+            }
+        });
     }
 
     public static void setMode(RainglowMode mode) {
         TEXTURES.clear();
         COLOURS.clear();
 
-        List<SquidColour> colours = mode == RainglowMode.CUSTOM ? CONFIG.getCustom() : mode.getColours();
+        List<SquidColour> colours = mode.isCustom() ? CONFIG.getCustom() : mode.getColours();
         if (colours.isEmpty()) {
-            Rainglow.LOGGER.info("no colours were added to the list, adding blue so that the game doesn't crash");
+            Rainglow.LOGGER.info("no colours were present in the internal collection, adding blue so that the game doesn't crash");
             colours.add(SquidColour.BLUE);
         }
         colours.forEach(Rainglow::addColour);
@@ -47,8 +93,8 @@ public class Rainglow {
 
     public static void refreshColours() {
         // we only ever need to refresh the colours of custom mode, all other sets of colours are immutable
-        if (CONFIG.getMode() == RainglowMode.CUSTOM) {
-            setMode(RainglowMode.CUSTOM);
+        if (CONFIG.getMode().isCustom()) {
+            setMode(RainglowMode.byId("custom"));
         }
     }
 

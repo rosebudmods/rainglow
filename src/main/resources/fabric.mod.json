@@ -23,6 +23,9 @@
   ],
 
   "entrypoints": {
+    "main": [
+      "io.ix0rai.rainglow.Rainglow"
+    ],
     "modmenu": [
       "io.ix0rai.rainglow.config.RainglowModMenu"
     ]

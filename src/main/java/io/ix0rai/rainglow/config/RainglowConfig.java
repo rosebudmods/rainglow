@@ -1,6 +1,7 @@
 package io.ix0rai.rainglow.config;
 
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.RainglowMode;
 import io.ix0rai.rainglow.SquidColour;
 
 import java.util.ArrayList;
@@ -15,6 +16,10 @@ public class RainglowConfig {
     private List<SquidColour> custom;
 
     public RainglowConfig() {
+        // we cannot load the config here because it would be loaded before modes, since it's statically initialised
+    }
+
+    public void reloadFromFile() {
         // read config from file
         Map<String, String> config = ConfigIo.readConfig();
 

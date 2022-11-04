@@ -6,6 +6,7 @@ import dev.lambdaurora.spruceui.option.SpruceOption;
 import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
 import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.RainglowMode;
 import io.ix0rai.rainglow.SquidColour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -51,7 +52,7 @@ public class RainglowConfigScreen extends RainglowScreen {
 
         // resets the config to default values
         this.resetOption = SpruceSimpleActionOption.reset(btn -> {
-            this.mode = RainglowMode.RAINBOW;
+            this.mode = RainglowMode.getDefault();
             MinecraftClient client = MinecraftClient.getInstance();
             this.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
         });
