@@ -17,14 +17,24 @@ public class RainglowMode {
     private final String id;
     private final List<SquidColour> colours = new ArrayList<>();
     private final Text text;
+    private final boolean existsLocally;
 
-    public RainglowMode(JsonMode mode) {
-        this.id = mode.id;
-        for (String colour : mode.colourIds) {
+    public RainglowMode(JsonMode mode, boolean existsLocally) {
+        this(
+                mode.id,
+                mode.colourIds,
+                Rainglow.translatableText("mode." + mode.id).copy().setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt(mode.textColour, 16)))),
+                existsLocally
+        );
+    }
+
+    public RainglowMode(String id, List<String> colourIds, Text text, boolean existsLocally) {
+        this.id = id;
+        for (String colour : colourIds) {
             this.colours.add(SquidColour.get(colour));
         }
-
-        this.text = Rainglow.translatableText("mode." + this.getId()).copy().setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt(mode.textColour, 16))));
+        this.text = text;
+        this.existsLocally = existsLocally;
 
         MODES.put(this.id, this);
     }
@@ -70,6 +80,10 @@ public class RainglowMode {
         return this.id;
     }
 
+    public boolean existsLocally() {
+        return this.existsLocally;
+    }
+
     public static RainglowMode byId(String id) {
         return MODES.get(id);
     }
@@ -82,8 +96,12 @@ public class RainglowMode {
         MODES.put(mode.id, mode);
     }
 
-    public static void clearModes() {
-        MODES.clear();
+    public static void clearUniversalModes() {
+        for (RainglowMode mode : MODES.values()) {
+            if (mode.existsLocally()) {
+                MODES.remove(mode.id);
+            }
+        }
     }
 
     public static Collection<RainglowMode> values() {
@@ -95,7 +113,7 @@ public class RainglowMode {
     }
 
     public static void printLoadedModes() {
-        Rainglow.LOGGER.info("Loaded modes: " + MODES);
+        Rainglow.LOGGER.info("loaded modes: " + MODES);
     }
 
     @Override

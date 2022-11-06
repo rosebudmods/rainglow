@@ -2,7 +2,9 @@ package io.ix0rai.rainglow;
 
 import com.google.gson.Gson;
 import io.ix0rai.rainglow.config.RainglowConfig;
+import io.ix0rai.rainglow.networking.RainglowNetworking;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.entity.data.DataTracker;
@@ -48,13 +50,15 @@ public class Rainglow implements ModInitializer {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
             public Identifier getFabricId() {
-                return new Identifier(MOD_ID, "custom_modes");
+                return id("custom_modes");
             }
 
             @Override
             public void reload(ResourceManager manager) {
                 // remove existing modes to avoid adding duplicates
-                RainglowMode.clearModes();
+                // this only clears modes that exist on both the server and the client
+                // otherwise we would have to re-request the mode data packet on every reload
+                RainglowMode.clearUniversalModes();
 
                 // load custom modes from rainglow/custom_modes in the datapack
                 // we only load files whose name ends with .json
@@ -62,11 +66,11 @@ public class Rainglow implements ModInitializer {
 
                 // run over all loaded resources and parse them to rainglow modes
                 // then add them to our mode map
-                for(Map.Entry<Identifier, Resource> entry : map.entrySet()) {
+                for (Map.Entry<Identifier, Resource> entry : map.entrySet()) {
                     try (InputStream stream = entry.getValue().open()) {
                         Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
                         RainglowMode.JsonMode result = new Gson().fromJson(reader, RainglowMode.JsonMode.class);
-                        RainglowMode.addMode(new RainglowMode(result));
+                        RainglowMode.addMode(new RainglowMode(result, true));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -76,10 +80,33 @@ public class Rainglow implements ModInitializer {
                 RainglowMode.printLoadedModes();
 
                 // load config
-                CONFIG.reloadFromFile();
-                setMode(CONFIG.getMode());
+                if (!CONFIG.isInitialised() || CONFIG.editUnlocked()) {
+                    CONFIG.reloadFromFile();
+                    setMode(CONFIG.getMode());
+                }
             }
         });
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            if (CONFIG.isServerSyncEnabled()) {
+                // send modes to client
+                RainglowNetworking.sendModeData(handler.player);
+
+                // send config to client
+                RainglowNetworking.syncConfig(handler.player);
+            }
+        });
+
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            if (CONFIG.isServerSyncEnabled()) {
+                // remove player from mode
+                RainglowNetworking.unlockConfig(handler.player);
+            }
+        });
+    }
+
+    public static Identifier id(String id) {
+        return new Identifier(MOD_ID, id);
     }
 
     public static void setMode(RainglowMode mode) {

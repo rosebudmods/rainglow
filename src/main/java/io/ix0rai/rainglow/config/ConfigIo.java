@@ -16,6 +16,10 @@ public class ConfigIo {
     private static final String CONFIG_FILE_NAME = "rainglow.toml";
     private static final Path CONFIG_FILE_PATH = Paths.get(FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME).toUri());
 
+    public static boolean parseTomlBoolean(String value) {
+        return value.equals("true");
+    }
+
     public static String parseTomlString(String string) {
         try {
             return string.split("\"")[1].split("\"")[0];
@@ -85,7 +89,18 @@ public class ConfigIo {
                 Rainglow.LOGGER.info("wrote string \"" + string + "\" to config file");
             }
         } catch (IOException e) {
-            Rainglow.LOGGER.warn("could not write mode to config file!");
+            Rainglow.LOGGER.warn("could not write string to config file!");
+        }
+    }
+
+    public static void writeBoolean(String key, boolean bool, boolean log) {
+        try {
+            write(key, bool ? "true" : "false");
+            if (log) {
+                Rainglow.LOGGER.info("wrote boolean \"" + bool + "\" to config file");
+            }
+        } catch (IOException e) {
+            Rainglow.LOGGER.warn("could not write boolean to config file!");
         }
     }
 

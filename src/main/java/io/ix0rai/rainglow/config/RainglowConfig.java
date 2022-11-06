@@ -11,9 +11,14 @@ import java.util.Map;
 public class RainglowConfig {
     public static final String MODE_KEY = "mode";
     public static final String CUSTOM_KEY = "custom";
+    public static final String SERVER_SYNC_KEY = "enable_server_sync";
 
     private RainglowMode mode;
     private List<SquidColour> custom;
+    private boolean enableServerSync;
+
+    private boolean editLocked = false;
+    private boolean isInitialised = false;
 
     public RainglowConfig() {
         // we cannot load the config here because it would be loaded before modes, since it's statically initialised
@@ -46,6 +51,12 @@ public class RainglowConfig {
             }
         }
 
+        // parse server sync
+        boolean serverSync = true;
+        if (config.containsKey(SERVER_SYNC_KEY)) {
+            serverSync = ConfigIo.parseTomlBoolean(config.get(SERVER_SYNC_KEY));
+        }
+
         // reset colours if parsing failed
         if (customColours.isEmpty()) {
             customColours = RainglowMode.getDefaultCustom();
@@ -54,8 +65,12 @@ public class RainglowConfig {
         // set and write
         this.mode = rainglowMode;
         this.custom = customColours;
+        this.enableServerSync = serverSync;
         ConfigIo.writeString(MODE_KEY, rainglowMode.getId(), false);
         ConfigIo.writeStringList(CUSTOM_KEY, customColours, false);
+        ConfigIo.writeBoolean(SERVER_SYNC_KEY, serverSync, false);
+
+        this.isInitialised = true;
     }
 
     public RainglowMode getMode() {
@@ -66,15 +81,35 @@ public class RainglowConfig {
         return this.custom;
     }
 
-    public void setMode(RainglowMode mode) {
-        this.mode = mode;
-        Rainglow.setMode(mode);
-        ConfigIo.writeString(MODE_KEY, mode.getId(), true);
+    public boolean isServerSyncEnabled() {
+        return this.enableServerSync;
     }
 
-    public void setCustom(List<SquidColour> custom) {
+    public boolean editUnlocked() {
+        return !this.editLocked;
+    }
+
+    public boolean isInitialised() {
+        return this.isInitialised;
+    }
+
+    public void setMode(RainglowMode mode, boolean write) {
+        this.mode = mode;
+        Rainglow.setMode(mode);
+        if (write) {
+            ConfigIo.writeString(MODE_KEY, mode.getId(), true);
+        }
+    }
+
+    public void setCustom(List<SquidColour> custom, boolean write) {
         this.custom = custom;
         Rainglow.refreshColours();
-        ConfigIo.writeStringList(CUSTOM_KEY, custom, true);
+        if (write) {
+            ConfigIo.writeStringList(CUSTOM_KEY, custom, true);
+        }
+    }
+
+    public void setEditLocked(boolean editLocked) {
+        this.editLocked = editLocked;
     }
 }
