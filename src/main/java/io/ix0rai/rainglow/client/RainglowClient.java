@@ -7,9 +7,11 @@ import io.ix0rai.rainglow.networking.RainglowNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,6 +33,9 @@ public class RainglowClient implements ClientModInitializer {
 
                 // lock the config from reloading on resource reload
                 Rainglow.CONFIG.setEditLocked(true);
+
+                // log
+                Rainglow.LOGGER.info("received config from server: set mode to " + mode + " and custom colours to " + colourIds);
             });
         });
 
@@ -38,17 +43,35 @@ public class RainglowClient implements ClientModInitializer {
             Collection<RainglowMode> modes = RainglowNetworking.readModeData(buf);
 
             client.execute(() -> {
+                List<String> newModeIds = new ArrayList<>();
+
                 // add modes that do not exist on the client to the map
                 for (RainglowMode mode : modes) {
                     if (!mode.existsLocally()) {
+                        newModeIds.add(mode.getId());
                         RainglowMode.addMode(mode);
                     }
+                }
+
+                // log
+                if (!newModeIds.isEmpty()) {
+                    Rainglow.LOGGER.info("received new modes from server: " + newModeIds);
                 }
             });
         });
 
         ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.UNLOCK_CONFIG_ID, (client, handler, buf, responseSender) ->
             client.execute(() -> Rainglow.CONFIG.setEditLocked(false))
+        );
+
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
+            client.execute(() -> {
+                // unlock config
+                Rainglow.CONFIG.setEditLocked(false);
+
+                // reset values to those configured in file
+                Rainglow.CONFIG.reloadFromFile();
+            })
         );
     }
 }

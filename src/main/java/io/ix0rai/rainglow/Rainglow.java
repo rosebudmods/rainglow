@@ -96,13 +96,6 @@ public class Rainglow implements ModInitializer {
                 RainglowNetworking.syncConfig(handler.player);
             }
         });
-
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            if (CONFIG.isServerSyncEnabled()) {
-                // remove player from mode
-                RainglowNetworking.unlockConfig(handler.player);
-            }
-        });
     }
 
     public static Identifier id(String id) {
