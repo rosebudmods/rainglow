@@ -97,7 +97,9 @@ public class RainglowMode {
     }
 
     public static void clearUniversalModes() {
-        for (RainglowMode mode : MODES.values()) {
+        Collection<RainglowMode> modes = List.copyOf(MODES.values());
+
+        for (RainglowMode mode : modes) {
             if (mode.existsLocally()) {
                 MODES.remove(mode.id);
             }
