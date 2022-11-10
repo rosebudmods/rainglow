@@ -21,6 +21,9 @@ import static io.ix0rai.rainglow.Rainglow.COLOUR;
 
 @Mixin(GlowSquidEntity.class)
 public abstract class GlowSquidEntityMixin extends SquidEntity {
+    // todo
+    //  java.lang.IllegalStateException: Invalid entity data item type for field 16 on entity GlowSquidEntity['Glow Squid'/633, l='ClientLevel', x=108.37, y=9.98, z=24.43]: old=purple(class java.lang.String), new=25(class java.lang.Integer)
+    //  ??????????????????????????
     private static final String COLOUR_KEY = "Colour";
 
     protected GlowSquidEntityMixin(EntityType<? extends SquidEntity> entityType, World world) {

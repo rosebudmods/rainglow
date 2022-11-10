@@ -1,0 +1,9 @@
+{
+  "id": "monochrome",
+  "textColour": "B7B7B7",
+  "colourIds": [
+    "black",
+    "gray",
+    "white"
+  ]
+}

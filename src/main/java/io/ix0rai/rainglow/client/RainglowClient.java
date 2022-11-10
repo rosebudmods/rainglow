@@ -2,6 +2,7 @@ package io.ix0rai.rainglow.client;
 
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.RainglowMode;
+import io.ix0rai.rainglow.RainglowResourceReloader;
 import io.ix0rai.rainglow.SquidColour;
 import io.ix0rai.rainglow.networking.RainglowNetworking;
 import net.fabricmc.api.ClientModInitializer;
@@ -9,7 +10,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.resource.ResourceType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +56,11 @@ public class RainglowClient implements ClientModInitializer {
                     }
                 }
 
+                // now that we have modes, we can load the config
+                if (!Rainglow.CONFIG.isInitialised()) {
+                    Rainglow.CONFIG.reloadFromFile();
+                }
+
                 // log
                 if (!newModeIds.isEmpty()) {
                     Rainglow.LOGGER.info("received new modes from server: " + newModeIds);
@@ -66,12 +74,24 @@ public class RainglowClient implements ClientModInitializer {
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
             client.execute(() -> {
-                // unlock config
-                Rainglow.CONFIG.setEditLocked(false);
+                if (Rainglow.CONFIG.isEditLocked()) {
+                    // unlock config
+                    Rainglow.CONFIG.setEditLocked(false);
 
-                // reset values to those configured in file
-                Rainglow.CONFIG.reloadFromFile();
+                    // reset values to those configured in file
+                    Rainglow.CONFIG.reloadFromFile();
+                }
             })
         );
+
+        // this is a bit of a hack, but as far as I can tell it's the only option
+        // default modes need to be present on the server and the client
+        // and since we store them in a datapack, that's impossible
+        // a client connecting to a vanilla server would have no way to read the data
+        // given that I haven't been able to find a way to access data packs from the client
+        // maybe there's a solution
+        // for now, this is what we're doing
+        // I may investigate a better way in the future
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener((RainglowResourceReloader) () -> Rainglow.id("client_mode_data"));
     }
 }

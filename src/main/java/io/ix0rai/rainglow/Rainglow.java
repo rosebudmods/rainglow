@@ -6,13 +6,10 @@ import io.ix0rai.rainglow.networking.RainglowNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.GlowSquidEntity;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -20,11 +17,6 @@ import net.minecraft.util.random.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +26,7 @@ public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final RainglowConfig CONFIG = new RainglowConfig();
+    public static final Gson GSON = new Gson();
 
     public static final TrackedData<String> COLOUR;
 
@@ -47,45 +40,7 @@ public class Rainglow implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
-            @Override
-            public Identifier getFabricId() {
-                return id("custom_modes");
-            }
-
-            @Override
-            public void reload(ResourceManager manager) {
-                // remove existing modes to avoid adding duplicates
-                // this only clears modes that exist on both the server and the client
-                // otherwise we would have to re-request the mode data packet on every reload
-                RainglowMode.clearUniversalModes();
-
-                // load custom modes from rainglow/custom_modes in the datapack
-                // we only load files whose name ends with .json
-                Map<Identifier, Resource> map = manager.findResources("custom_modes", id -> id.getNamespace().equals(MOD_ID) && id.getPath().endsWith(".json"));
-
-                // run over all loaded resources and parse them to rainglow modes
-                // then add them to our mode map
-                for (Map.Entry<Identifier, Resource> entry : map.entrySet()) {
-                    try (InputStream stream = entry.getValue().open()) {
-                        Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-                        RainglowMode.JsonMode result = new Gson().fromJson(reader, RainglowMode.JsonMode.class);
-                        RainglowMode.addMode(new RainglowMode(result, true));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                // log
-                RainglowMode.printLoadedModes();
-
-                // load config
-                if (!CONFIG.isInitialised() || CONFIG.editUnlocked()) {
-                    CONFIG.reloadFromFile();
-                    setMode(CONFIG.getMode());
-                }
-            }
-        });
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener((RainglowResourceReloader) () -> id("server_mode_data"));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             if (CONFIG.isServerSyncEnabled()) {

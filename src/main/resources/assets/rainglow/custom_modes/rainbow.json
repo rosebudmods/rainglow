@@ -1,0 +1,13 @@
+{
+  "id": "rainbow",
+  "textColour": "AA208F",
+  "colourIds": [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "indigo",
+    "purple"
+  ]
+}

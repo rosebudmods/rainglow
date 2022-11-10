@@ -85,8 +85,8 @@ public class RainglowConfig {
         return this.enableServerSync;
     }
 
-    public boolean editUnlocked() {
-        return !this.editLocked;
+    public boolean isEditLocked() {
+        return this.editLocked;
     }
 
     public boolean isInitialised() {
