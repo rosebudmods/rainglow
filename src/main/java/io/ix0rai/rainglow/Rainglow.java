@@ -6,10 +6,6 @@ import io.ix0rai.rainglow.networking.RainglowNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -28,15 +24,9 @@ public class Rainglow implements ModInitializer {
     public static final RainglowConfig CONFIG = new RainglowConfig();
     public static final Gson GSON = new Gson();
 
-    public static final TrackedData<String> COLOUR;
-
     private static final List<SquidColour> COLOURS = new ArrayList<>();
     // we maintain a hash map of textures as well to speed up lookup as much as possible
     private static final Map<String, Identifier> TEXTURES = new HashMap<>();
-
-    static {
-        COLOUR = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
-    }
 
     @Override
     public void onInitialize() {
@@ -108,17 +98,6 @@ public class Rainglow implements ModInitializer {
 
     public static Identifier getDefaultTexture() {
         return SquidColour.BLUE.getTexture();
-    }
-
-    public static String getColour(DataTracker tracker, RandomGenerator random) {
-        // generate random colour if the squid's colour isn't currently loaded
-        String colour = tracker.get(COLOUR);
-        if (!isColourLoaded(colour)) {
-            tracker.set(COLOUR, generateRandomColour(random).getId());
-            colour = tracker.get(COLOUR);
-        }
-
-        return colour;
     }
 
     public static boolean isColourLoaded(String colour) {
