@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,14 +81,18 @@ public class RainglowClient implements ClientModInitializer {
             })
         );
 
-        // this is a bit of a hack, but as far as I can tell it's the only option
-        // default modes need to be present on the server and the client
-        // and since we store them in a datapack, that's impossible
-        // a client connecting to a vanilla server would have no way to read the data
-        // given that I haven't been able to find a way to access data packs from the client
-        // maybe there's a solution
-        // for now, this is what we're doing
-        // I may investigate a better way in the future
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener((RainglowResourceReloader) () -> Rainglow.id("client_mode_data"));
+        // load default modes from the client
+        // this is required to keep compatibility with vanilla servers, as they can't send their modes
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new RainglowResourceReloader() {
+            @Override
+            public Identifier getFabricId() {
+                return Rainglow.id("client_mode_data");
+            }
+
+            @Override
+            public void log() {
+                Rainglow.LOGGER.info("loaded default modes");
+            }
+        });
     }
 }

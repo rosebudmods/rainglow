@@ -29,12 +29,12 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
         // generate random colour
-        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(), Rainglow.generateRandomColour(random).getId());
+        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(), Rainglow.generateRandomColourId(this.random));
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        nbt.putString(COLOUR_NBT_KEY, Rainglow.getColour(this.getDataTracker(), this.getRandom()));
+        nbt.putString(COLOUR_NBT_KEY, Rainglow.getColour(this.getDataTracker(), this.random));
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
@@ -44,7 +44,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
         if (Rainglow.isColourLoaded(colour)) {
             this.getDataTracker().set(Rainglow.getTrackedColourData(), colour);
         } else {
-            this.getDataTracker().set(Rainglow.getTrackedColourData(), Rainglow.generateRandomColour(random).getId());
+            this.getDataTracker().set(Rainglow.getTrackedColourData(), Rainglow.generateRandomColourId(this.random));
         }
     }
 
@@ -54,7 +54,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
      */
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"), cancellable = true)
     public void tickMovement(CallbackInfo ci) {
-        String colour = Rainglow.getColour(dataTracker, this.random);
+        String colour = Rainglow.getColour(this.dataTracker, this.random);
         if (!colour.equals(SquidColour.BLUE.getId())) {
             // we add 100 to g to let the mixin know that we want to override the method
             this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);

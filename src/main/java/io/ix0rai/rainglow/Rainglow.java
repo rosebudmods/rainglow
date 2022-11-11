@@ -61,7 +61,7 @@ public class Rainglow implements ModInitializer {
 
         List<SquidColour> colours = mode.getColours();
         if (colours.isEmpty()) {
-            Rainglow.LOGGER.info("no colours were present in the internal collection, adding blue so that the game doesn't crash");
+            LOGGER.info("no colours were present in the internal collection, adding blue so that the game doesn't crash");
             colours.add(SquidColour.BLUE);
         }
         colours.forEach(Rainglow::addColour);
@@ -100,8 +100,8 @@ public class Rainglow implements ModInitializer {
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
-    public static SquidColour generateRandomColour(RandomGenerator random) {
-        return COLOURS.get(random.nextInt(COLOURS.size()));
+    public static String generateRandomColourId(RandomGenerator random) {
+        return COLOURS.get(random.nextInt(COLOURS.size())).getId();
     }
 
     public static Identifier getDefaultTexture() {
@@ -143,8 +143,8 @@ public class Rainglow implements ModInitializer {
     public static String getColour(DataTracker tracker, RandomGenerator random) {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(getTrackedColourData());
-        if (!Rainglow.isColourLoaded(colour)) {
-            tracker.set(getTrackedColourData(), Rainglow.generateRandomColour(random).getId());
+        if (!isColourLoaded(colour)) {
+            tracker.set(getTrackedColourData(), generateRandomColourId(random));
             colour = tracker.get(getTrackedColourData());
         }
 

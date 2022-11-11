@@ -14,6 +14,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public interface RainglowResourceReloader extends SimpleSynchronousResourceReloadListener {
+    default void log() {
+        RainglowMode.printLoadedModes();
+    }
+
     @Override
     default void reload(ResourceManager manager) {
         // remove existing modes to avoid adding duplicates
@@ -38,7 +42,7 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
         }
 
         // log
-        RainglowMode.printLoadedModes();
+        this.log();
 
         // load config
         if (!Rainglow.CONFIG.isInitialised() || !Rainglow.CONFIG.isEditLocked()) {
