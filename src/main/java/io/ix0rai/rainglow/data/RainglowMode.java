@@ -54,13 +54,11 @@ public class RainglowMode {
     public List<SquidColour> getColours() {
         // custom colours are handled by the config instead of the enum
         // all colours mode is handled through code so that I don't have to update if new colours are added
-        if (this.isCustom()) {
-            return Rainglow.CONFIG.getCustom();
-        } else if (this.getId().equals("all_colours")) {
-            return List.of(SquidColour.values());
-        } else {
-            return this.colours;
-        }
+        return switch (this.getId()) {
+            case "custom" -> Rainglow.CONFIG.getCustom();
+            case "all_colours" -> List.of(SquidColour.values());
+            default -> this.colours;
+        };
     }
 
     public RainglowMode cycle() {
@@ -82,10 +80,6 @@ public class RainglowMode {
 
     public Text getText() {
         return this.text;
-    }
-
-    public boolean isCustom() {
-        return this.getId().equals("custom");
     }
 
     public String getId() {
@@ -127,7 +121,18 @@ public class RainglowMode {
     }
 
     public static void printLoadedModes() {
-        Rainglow.LOGGER.info("loaded modes: " + MODES);
+        StringBuilder formatted = new StringBuilder();
+        for (RainglowMode mode : MODES.values()) {
+            // custom may be null since colour data is loaded pre-config
+            int colourCount = mode.getColours() != null ? mode.getColours().size() : 0;
+
+            formatted.append(mode.getId()).append(" (").append(colourCount).append(" colours), ");
+        }
+
+        // remove trailing space and comma
+        formatted.append("\b\b");
+
+        Rainglow.LOGGER.info("loaded modes: [" + formatted + "]");
     }
 
     @Override
@@ -135,6 +140,10 @@ public class RainglowMode {
         return this.getId();
     }
 
+    /**
+     * represents modes loaded from json files
+     * these are always converted to RainglowMode objects before use
+     */
     public static class JsonMode {
         public String id;
         public List<String> colourIds;
@@ -144,15 +153,6 @@ public class RainglowMode {
             this.id = id;
             this.colourIds = colourIds;
             this.textColour = textColour;
-        }
-
-        @Override
-        public String toString() {
-            return "Mode{" +
-                    "id='" + id + '\'' +
-                    ", colourIds=" + colourIds +
-                    ", textColour='" + textColour + '\'' +
-                    '}';
         }
     }
 }

@@ -59,7 +59,7 @@ public class Rainglow implements ModInitializer {
         TEXTURES.clear();
         COLOURS.clear();
 
-        List<SquidColour> colours = mode.isCustom() ? CONFIG.getCustom() : mode.getColours();
+        List<SquidColour> colours = mode.getColours();
         if (colours.isEmpty()) {
             Rainglow.LOGGER.info("no colours were present in the internal collection, adding blue so that the game doesn't crash");
             colours.add(SquidColour.BLUE);
@@ -69,7 +69,7 @@ public class Rainglow implements ModInitializer {
 
     public static void refreshColours() {
         // we only ever need to refresh the colours of custom mode, all other sets of colours are immutable
-        if (CONFIG.getMode().isCustom()) {
+        if (CONFIG.getMode().getId().equals("custom")) {
             setMode(RainglowMode.byId("custom"));
         }
     }
