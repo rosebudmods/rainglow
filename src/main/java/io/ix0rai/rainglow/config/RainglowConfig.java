@@ -1,8 +1,8 @@
 package io.ix0rai.rainglow.config;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.RainglowMode;
-import io.ix0rai.rainglow.SquidColour;
+import io.ix0rai.rainglow.data.RainglowMode;
+import io.ix0rai.rainglow.data.SquidColour;
 
 import java.util.ArrayList;
 import java.util.List;

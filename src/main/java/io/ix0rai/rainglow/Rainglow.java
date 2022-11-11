@@ -2,10 +2,17 @@ package io.ix0rai.rainglow;
 
 import com.google.gson.Gson;
 import io.ix0rai.rainglow.config.RainglowConfig;
-import io.ix0rai.rainglow.networking.RainglowNetworking;
+import io.ix0rai.rainglow.data.RainglowMode;
+import io.ix0rai.rainglow.data.RainglowNetworking;
+import io.ix0rai.rainglow.data.RainglowResourceReloader;
+import io.ix0rai.rainglow.data.SquidColour;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -27,6 +34,7 @@ public class Rainglow implements ModInitializer {
     private static final List<SquidColour> COLOURS = new ArrayList<>();
     // we maintain a hash map of textures as well to speed up lookup as much as possible
     private static final Map<String, Identifier> TEXTURES = new HashMap<>();
+    private static TrackedData<String> colour;
 
     @Override
     public void onInitialize() {
@@ -118,5 +126,28 @@ public class Rainglow implements ModInitializer {
 
     public static Text translatableText(String key) {
         return Text.translatable(translatableTextKey(key));
+    }
+
+    public static TrackedData<String> getTrackedColourData() {
+        // we cannot statically load the tracked data because then it gets registered too early
+        // it breaks the squids' other tracked data, their dark ticks after being hurt
+        // this is a workaround to make sure the data is registered at the right time
+        // we simply ensure it isn't loaded until it's needed, and that fixes the issue
+        if (colour == null) {
+            colour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
+        }
+
+        return colour;
+    }
+
+    public static String getColour(DataTracker tracker, RandomGenerator random) {
+        // generate random colour if the squid's colour isn't currently loaded
+        String colour = tracker.get(getTrackedColourData());
+        if (!Rainglow.isColourLoaded(colour)) {
+            tracker.set(getTrackedColourData(), Rainglow.generateRandomColour(random).getId());
+            colour = tracker.get(getTrackedColourData());
+        }
+
+        return colour;
     }
 }

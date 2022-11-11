@@ -1,8 +1,6 @@
-package io.ix0rai.rainglow.networking;
+package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.RainglowMode;
-import io.ix0rai.rainglow.SquidColour;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
@@ -16,7 +14,6 @@ import java.util.List;
 public class RainglowNetworking {
     public static final Identifier CONFIG_SYNC_ID = Rainglow.id("config_sync");
     public static final Identifier MODE_SYNC_ID = Rainglow.id("mode_sync");
-    public static final Identifier UNLOCK_CONFIG_ID = Rainglow.id("unlock_config");
 
     public static void syncConfig(ServerPlayerEntity player) {
         PacketByteBuf buf = PacketByteBufs.create();
@@ -41,10 +38,6 @@ public class RainglowNetworking {
         buf.writeCollection(modes, RainglowNetworking::writeMode);
 
         ServerPlayNetworking.send(player, MODE_SYNC_ID, buf);
-    }
-
-    public static void unlockConfig(ServerPlayerEntity player) {
-        ServerPlayNetworking.send(player, UNLOCK_CONFIG_ID, PacketByteBufs.empty());
     }
 
     public static Collection<RainglowMode> readModeData(PacketByteBuf buf) {

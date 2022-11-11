@@ -1,5 +1,6 @@
-package io.ix0rai.rainglow;
+package io.ix0rai.rainglow.data;
 
+import io.ix0rai.rainglow.Rainglow;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;

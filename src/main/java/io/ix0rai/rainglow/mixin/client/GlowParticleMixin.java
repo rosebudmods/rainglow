@@ -1,7 +1,7 @@
 package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.SquidColour;
+import io.ix0rai.rainglow.data.SquidColour;
 import net.minecraft.client.particle.GlowParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;

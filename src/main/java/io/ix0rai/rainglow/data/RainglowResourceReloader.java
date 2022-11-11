@@ -1,5 +1,6 @@
-package io.ix0rai.rainglow;
+package io.ix0rai.rainglow.data;
 
+import io.ix0rai.rainglow.Rainglow;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;

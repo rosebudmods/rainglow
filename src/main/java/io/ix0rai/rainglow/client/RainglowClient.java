@@ -1,10 +1,10 @@
 package io.ix0rai.rainglow.client;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.RainglowMode;
-import io.ix0rai.rainglow.RainglowResourceReloader;
-import io.ix0rai.rainglow.SquidColour;
-import io.ix0rai.rainglow.networking.RainglowNetworking;
+import io.ix0rai.rainglow.data.RainglowMode;
+import io.ix0rai.rainglow.data.RainglowResourceReloader;
+import io.ix0rai.rainglow.data.SquidColour;
+import io.ix0rai.rainglow.data.RainglowNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -67,10 +67,6 @@ public class RainglowClient implements ClientModInitializer {
                 }
             });
         });
-
-        ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.UNLOCK_CONFIG_ID, (client, handler, buf, responseSender) ->
-            client.execute(() -> Rainglow.CONFIG.setEditLocked(false))
-        );
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
             client.execute(() -> {
