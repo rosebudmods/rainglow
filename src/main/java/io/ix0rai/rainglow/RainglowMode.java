@@ -29,10 +29,21 @@ public class RainglowMode {
     }
 
     public RainglowMode(String id, List<String> colourIds, Text text, boolean existsLocally) {
+        if (!id.matches("^[a-z0-9_]+$")) {
+            throw new IllegalArgumentException("loaded rainglow mode with id " + id + " which contains invalid characters");
+        }
+
         this.id = id;
+
         for (String colour : colourIds) {
+            SquidColour squidColour = SquidColour.get(colour);
+            if (squidColour == null) {
+                Rainglow.LOGGER.warn("colour {} loaded from mode {} does not exist, skipping", colour, id);
+                continue;
+            }
             this.colours.add(SquidColour.get(colour));
         }
+
         this.text = text;
         this.existsLocally = existsLocally;
 
