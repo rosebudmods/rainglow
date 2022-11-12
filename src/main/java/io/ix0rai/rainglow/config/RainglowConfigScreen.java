@@ -20,92 +20,85 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class RainglowConfigScreen extends RainglowScreen {
-    private SpruceOption modeOption;
-    private SpruceOption customOption;
-    private SpruceOption resetOption;
-    private SpruceOption saveOption;
+    private final SpruceOption modeOption;
+    private final SpruceOption customOption;
+    private final SpruceOption resetOption;
+    private final SpruceOption saveOption;
     private RainglowMode mode;
     // colours to apply is saved in a variable so that it can be removed from the screen when cycling modes
     private SpruceLabelWidget coloursToApplyLabel;
 
     public RainglowConfigScreen(@Nullable Screen parent) {
         super(parent, Rainglow.translatableText("config.title"));
-        if (Rainglow.CONFIG.isInitialised()) {
-            this.mode = Rainglow.CONFIG.getMode();
+        this.mode = Rainglow.CONFIG.getMode();
 
-            // mode option cycles through available modes
-            // it also updates the label to show which colours will be applied
-            this.modeOption = new SpruceCyclingOption(Rainglow.translatableTextKey("config.mode"),
-                    amount -> {
-                        if (!Rainglow.CONFIG.isEditLocked()) {
-                            mode = mode.cycle();
-                            this.remove(coloursToApplyLabel);
-                            this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + 20);
-                            this.addDrawableChild(coloursToApplyLabel);
-                        } else {
-                            sendConfigLockedToast();
-                        }
-                    },
-                    option -> option.getDisplayText(mode.getText()),
-                    Rainglow.translatableText("tooltip.mode",
-                            List.of(RainglowMode.values())
-                    )
-            );
-
-            // opens a screen to toggle which colours are applied in custom mode
-            this.customOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.custom"),
-                    btn -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
-            );
-
-            // resets the config to default values
-            this.resetOption = SpruceSimpleActionOption.reset(btn -> {
-                if (!Rainglow.CONFIG.isEditLocked()) {
-                    this.mode = RainglowMode.getDefault();
-                    MinecraftClient client = MinecraftClient.getInstance();
-                    this.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
-                } else {
-                    sendConfigLockedToast();
-                }
-            });
-
-            // saves values to config file
-            this.saveOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.save"),
-                    buttonWidget -> {
-                        this.closeScreen();
-                        Rainglow.CONFIG.setMode(this.mode, true);
+        // mode option cycles through available modes
+        // it also updates the label to show which colours will be applied
+        this.modeOption = new SpruceCyclingOption(Rainglow.translatableTextKey("config.mode"),
+                amount -> {
+                    if (!Rainglow.CONFIG.isEditLocked()) {
+                        mode = mode.cycle();
+                        this.remove(coloursToApplyLabel);
+                        this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + 20);
+                        this.addDrawableChild(coloursToApplyLabel);
+                    } else {
+                        sendConfigLockedToast();
                     }
-            );
-        }
+                },
+                option -> option.getDisplayText(mode.getText()),
+                Rainglow.translatableText("tooltip.mode",
+                        List.of(RainglowMode.values())
+                )
+        );
+
+        // opens a screen to toggle which colours are applied in custom mode
+        this.customOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.custom"),
+                btn -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
+        );
+
+        // resets the config to default values
+        this.resetOption = SpruceSimpleActionOption.reset(btn -> {
+            if (!Rainglow.CONFIG.isEditLocked()) {
+                this.mode = RainglowMode.getDefault();
+                MinecraftClient client = MinecraftClient.getInstance();
+                this.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
+            } else {
+                sendConfigLockedToast();
+            }
+        });
+
+        // saves values to config file
+        this.saveOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.save"),
+                buttonWidget -> {
+                    this.closeScreen();
+                    Rainglow.CONFIG.setMode(this.mode, true);
+                }
+        );
     }
 
     @Override
     protected void init() {
         super.init();
 
-        if (Rainglow.CONFIG.isInitialised()) {
-            // config title
-            this.addDrawableChild(new SpruceLabelWidget(Position.of(this, 0, this.height / 9), Rainglow.translatableText("config.title"), this.width, true));
+        // config title
+        this.addDrawableChild(new SpruceLabelWidget(Position.of(this, 0, this.height / 9), Rainglow.translatableText("config.title"), this.width, true));
 
-            int buttonHeight = 20;
-            int buttonOffset = 30;
+        int buttonHeight = 20;
+        int buttonOffset = 30;
 
-            // mode cycling option and custom mode screen button
-            this.addDrawableChild(this.modeOption.createWidget(Position.of(this.width / 2 - 205, this.height / 6 - buttonHeight + buttonOffset), 200));
-            this.addDrawableChild(this.customOption.createWidget(Position.of(this.width / 2 + 5, this.height / 6 - buttonHeight + buttonOffset), 200));
+        // mode cycling option and custom mode screen button
+        this.addDrawableChild(this.modeOption.createWidget(Position.of(this.width / 2 - 205, this.height / 6 - buttonHeight + buttonOffset), 200));
+        this.addDrawableChild(this.customOption.createWidget(Position.of(this.width / 2 + 5, this.height / 6 - buttonHeight + buttonOffset), 200));
 
-            // current colours label and colours to apply label
-            SpruceLabelWidget currentColoursLabel = createColourListLabel(Rainglow.translatableTextKey("config.current_colours"), Rainglow.CONFIG.getMode(), this.width / 2 - 318, this.height / 4 + buttonHeight);
-            this.addDrawableChild(currentColoursLabel);
-            this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + buttonHeight);
-            this.addDrawableChild(coloursToApplyLabel);
+        // current colours label and colours to apply label
+        SpruceLabelWidget currentColoursLabel = createColourListLabel(Rainglow.translatableTextKey("config.current_colours"), Rainglow.CONFIG.getMode(), this.width / 2 - 318, this.height / 4 + buttonHeight);
+        this.addDrawableChild(currentColoursLabel);
+        this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + buttonHeight);
+        this.addDrawableChild(coloursToApplyLabel);
 
-            // reset and save buttons
-            this.addDrawableChild(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
-            this.addDrawableChild(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
-        } else {
-            SpruceLabelWidget configNotLoaded = new SpruceLabelWidget(Position.of(this, 0, this.height / 2 - 30), Rainglow.translatableText("config.cannot_be_loaded_outside_world"), this.width, true);
-            this.addDrawableChild(configNotLoaded);
-        }
+        // reset and save buttons
+        this.addDrawableChild(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
+        this.addDrawableChild(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
     }
 
     private SpruceLabelWidget createColourListLabel(String translationKey, RainglowMode mode, int x, int y) {

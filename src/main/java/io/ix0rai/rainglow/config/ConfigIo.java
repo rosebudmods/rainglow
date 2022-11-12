@@ -86,7 +86,7 @@ public class ConfigIo {
         try {
             write(key, "\"" + string + "\"");
             if (log) {
-                Rainglow.LOGGER.info("wrote string \"" + string + "\" to config file");
+                Rainglow.LOGGER.info("wrote string \"" + string + "\" to config file under key " + key);
             }
         } catch (IOException e) {
             Rainglow.LOGGER.warn("could not write string to config file!");
@@ -97,7 +97,7 @@ public class ConfigIo {
         try {
             write(key, bool ? "true" : "false");
             if (log) {
-                Rainglow.LOGGER.info("wrote boolean \"" + bool + "\" to config file");
+                Rainglow.LOGGER.info("wrote boolean \"" + bool + "\" to config file under key " + key);
             }
         } catch (IOException e) {
             Rainglow.LOGGER.warn("could not write boolean to config file!");
@@ -114,7 +114,7 @@ public class ConfigIo {
 
             write(key, "[" + tomlCompatibleList + "]");
             if (log) {
-                Rainglow.LOGGER.info("wrote list \"" + list + "\" to config file");
+                Rainglow.LOGGER.info("wrote list \"" + list + "\" to config file under key " + key);
             }
         } catch (IOException e) {
             Rainglow.LOGGER.warn("could not write string list \"" + list + "\" to config file!");
