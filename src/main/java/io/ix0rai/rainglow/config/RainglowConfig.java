@@ -89,8 +89,8 @@ public class RainglowConfig {
         return this.editLocked;
     }
 
-    public boolean isInitialised() {
-        return this.isInitialised;
+    public boolean isUninitialised() {
+        return !this.isInitialised;
     }
 
     public void setMode(RainglowMode mode, boolean write) {

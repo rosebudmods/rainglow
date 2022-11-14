@@ -58,7 +58,7 @@ public class RainglowClient implements ClientModInitializer {
                 }
 
                 // now that we have modes, we can load the config
-                if (!Rainglow.CONFIG.isInitialised()) {
+                if (Rainglow.CONFIG.isUninitialised()) {
                     Rainglow.CONFIG.reloadFromFile();
                 }
 

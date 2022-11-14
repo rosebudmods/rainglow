@@ -42,7 +42,7 @@ public class GlowParticleMixin {
             }
 
             // set expiry date of particle and return
-            glowParticle.setMaxAge((int) (8.0 / (clientWorld.random.nextDouble() * 0.8 + 0.2)));
+            glowParticle.setMaxAge((int) (8.0 / (clientWorld.getRandom().nextDouble() * 0.8 + 0.2)));
             cir.setReturnValue(glowParticle);
         }
     }

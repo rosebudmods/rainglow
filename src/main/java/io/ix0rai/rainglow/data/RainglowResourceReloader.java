@@ -45,7 +45,7 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
         this.log();
 
         // load config
-        if (!Rainglow.CONFIG.isInitialised() || !Rainglow.CONFIG.isEditLocked()) {
+        if (Rainglow.CONFIG.isUninitialised() || !Rainglow.CONFIG.isEditLocked()) {
             Rainglow.CONFIG.reloadFromFile();
             Rainglow.setMode(Rainglow.CONFIG.getMode());
         }
