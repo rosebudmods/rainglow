@@ -60,7 +60,7 @@ loom {
 //    projectId = "rainglow"
 //    versionNumber = project.version
 //    versionName = "rainglow " + project.version.toString().split("\\+")[0] + " for mc " + project.version.toString().split("\\+mc")[1]
-//    versionType = "beta"
+//    versionType = "release"
 //    uploadFile = remapJar
 //    gameVersions = ["1.19", "1.19.1", "1.19.2"]
 //    loaders = ["quilt", "fabric"]
