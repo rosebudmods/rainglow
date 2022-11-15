@@ -8,9 +8,11 @@ It also includes configurability through different modes, including pride modes!
 
 ## features
 - 10+ different glow squid colours!
-- a configuration file with many modes, including pride modes, rainbow, monochrome, and more!
+- a configuration file with many modes, including pride modes, rainbow, monochrome, and more! documentation on this can be found [here](https://github.com/ix0rai/rainglow/wiki/config)
 - no dependencies - works as soon as you put it in your mods folder
 - lightweight and removable - after removing the mod, your glow squids will simply revert to blue with no damage to your save file
+- server sync - the configuration file can be synced from the server to the client, meaning that all players on your server will use the same options. documentation on this can be found [here](https://github.com/ix0rai/rainglow/wiki/server-sync)
+- custom modes - modes are data-driven, meaning that you can create your own modes and add them to the game! documentation on this can be found [here](https://github.com/ix0rai/rainglow/wiki/creating-custom-modes)
 
 #### server-side optional!
 This mod does not need to be installed on the server to function!
