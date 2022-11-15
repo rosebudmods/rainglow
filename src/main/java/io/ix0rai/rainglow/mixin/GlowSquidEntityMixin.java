@@ -57,7 +57,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
         String colour = Rainglow.getColour(this.getDataTracker(), this.getRandom());
         if (!colour.equals(SquidColour.BLUE.getId())) {
             // we add 100 to g to let the mixin know that we want to override the method
-            this.getWorld().addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
+            this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
             ci.cancel();
         }
     }
@@ -82,10 +82,10 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
                 String colour = Rainglow.getColour(this.getDataTracker(), this.getRandom());
                 int index = Rainglow.getColourIndex(colour);
                 // round x to 1 decimal place and append index data to the next two
-                return ((ServerWorld) this.getWorld()).spawnParticles(particle, (Math.round(x * 10)) / 10D + index / 1000D, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
+                return ((ServerWorld) this.world).spawnParticles(particle, (Math.round(x * 10)) / 10D + index / 1000D, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
             } else {
                 // normal logic for squid
-                return ((ServerWorld) this.getWorld()).spawnParticles(particle, x, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
+                return ((ServerWorld) this.world).spawnParticles(particle, x, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
             }
         }
     }
