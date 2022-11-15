@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GlowSquidEntityRenderer.class)
 public class GlowSquidEntityRendererMixin {
     /**
-     * @reason Use the colour from the entity's NBT data
+     * @reason use the colour from the entity's NBT data for textures
      * @author ix0rai
      */
     @Inject(method = "getTexture*", at = @At("HEAD"), cancellable = true)
