@@ -6,7 +6,7 @@ import dev.lambdaurora.spruceui.option.SpruceOption;
 import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
 import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.SquidColour;
+import io.ix0rai.rainglow.data.SquidColour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.Nullable;
@@ -60,7 +60,7 @@ public class CustomModeScreen extends RainglowScreen {
                         }
                     }
 
-                    Rainglow.CONFIG.setCustom(newCustom);
+                    Rainglow.CONFIG.setCustom(newCustom, true);
                     this.closeScreen();
                 }
         );

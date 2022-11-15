@@ -1,11 +1,19 @@
 package io.ix0rai.rainglow;
 
+import com.google.gson.Gson;
 import io.ix0rai.rainglow.config.RainglowConfig;
-import io.ix0rai.rainglow.config.RainglowMode;
+import io.ix0rai.rainglow.data.RainglowMode;
+import io.ix0rai.rainglow.data.RainglowNetworking;
+import io.ix0rai.rainglow.data.RainglowResourceReloader;
+import io.ix0rai.rainglow.data.SquidColour;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.GlowSquidEntity;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.random.RandomGenerator;
@@ -17,29 +25,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Rainglow {
+public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final RainglowConfig CONFIG = new RainglowConfig();
-
-    public static final TrackedData<String> COLOUR;
+    public static final Gson GSON = new Gson();
 
     private static final List<SquidColour> COLOURS = new ArrayList<>();
     // we maintain a hash map of textures as well to speed up lookup as much as possible
     private static final Map<String, Identifier> TEXTURES = new HashMap<>();
+    private static TrackedData<String> colour;
 
-    static {
-        COLOUR = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
-        setMode(CONFIG.getMode());
+    @Override
+    public void onInitialize() {
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener((RainglowResourceReloader) () -> id("server_mode_data"));
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            if (CONFIG.isServerSyncEnabled()) {
+                // send modes to client
+                RainglowNetworking.sendModeData(handler.player);
+
+                // send config to client
+                RainglowNetworking.syncConfig(handler.player);
+            }
+        });
+    }
+
+    public static Identifier id(String id) {
+        return new Identifier(MOD_ID, id);
     }
 
     public static void setMode(RainglowMode mode) {
         TEXTURES.clear();
         COLOURS.clear();
 
-        List<SquidColour> colours = mode == RainglowMode.CUSTOM ? CONFIG.getCustom() : mode.getColours();
+        List<SquidColour> colours = mode.getColours();
         if (colours.isEmpty()) {
-            Rainglow.LOGGER.info("no colours were added to the list, adding blue so that the game doesn't crash");
+            LOGGER.info("no colours were present in the internal collection, adding blue so that the game doesn't crash");
             colours.add(SquidColour.BLUE);
         }
         colours.forEach(Rainglow::addColour);
@@ -47,8 +69,8 @@ public class Rainglow {
 
     public static void refreshColours() {
         // we only ever need to refresh the colours of custom mode, all other sets of colours are immutable
-        if (CONFIG.getMode() == RainglowMode.CUSTOM) {
-            setMode(RainglowMode.CUSTOM);
+        if (CONFIG.getMode().getId().equals("custom")) {
+            setMode(RainglowMode.byId("custom"));
         }
     }
 
@@ -78,23 +100,12 @@ public class Rainglow {
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
-    public static SquidColour generateRandomColour(RandomGenerator random) {
-        return COLOURS.get(random.nextInt(COLOURS.size()));
+    public static String generateRandomColourId(RandomGenerator random) {
+        return COLOURS.get(random.nextInt(COLOURS.size())).getId();
     }
 
     public static Identifier getDefaultTexture() {
         return SquidColour.BLUE.getTexture();
-    }
-
-    public static String getColour(DataTracker tracker, RandomGenerator random) {
-        // generate random colour if the squid's colour isn't currently loaded
-        String colour = tracker.get(COLOUR);
-        if (!isColourLoaded(colour)) {
-            tracker.set(COLOUR, generateRandomColour(random).getId());
-            colour = tracker.get(COLOUR);
-        }
-
-        return colour;
     }
 
     public static boolean isColourLoaded(String colour) {
@@ -115,5 +126,28 @@ public class Rainglow {
 
     public static Text translatableText(String key) {
         return Text.translatable(translatableTextKey(key));
+    }
+
+    public static TrackedData<String> getTrackedColourData() {
+        // we cannot statically load the tracked data because then it gets registered too early
+        // it breaks the squids' other tracked data, their dark ticks after being hurt
+        // this is a workaround to make sure the data is registered at the right time
+        // we simply ensure it isn't loaded until it's needed, and that fixes the issue
+        if (colour == null) {
+            colour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
+        }
+
+        return colour;
+    }
+
+    public static String getColour(DataTracker tracker, RandomGenerator random) {
+        // generate random colour if the squid's colour isn't currently loaded
+        String colour = tracker.get(getTrackedColourData());
+        if (!isColourLoaded(colour)) {
+            tracker.set(getTrackedColourData(), generateRandomColourId(random));
+            colour = tracker.get(getTrackedColourData());
+        }
+
+        return colour;
     }
 }

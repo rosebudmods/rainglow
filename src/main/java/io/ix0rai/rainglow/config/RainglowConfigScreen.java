@@ -6,9 +6,12 @@ import dev.lambdaurora.spruceui.option.SpruceOption;
 import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
 import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.SquidColour;
+import io.ix0rai.rainglow.data.RainglowMode;
+import io.ix0rai.rainglow.data.SquidColour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.toast.SystemToast;
+import net.minecraft.client.toast.Toast;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Language;
@@ -33,10 +36,14 @@ public class RainglowConfigScreen extends RainglowScreen {
         // it also updates the label to show which colours will be applied
         this.modeOption = new SpruceCyclingOption(Rainglow.translatableTextKey("config.mode"),
                 amount -> {
-                    mode = mode.cycle();
-                    this.remove(coloursToApplyLabel);
-                    this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + 20);
-                    this.addDrawableChild(coloursToApplyLabel);
+                    if (!Rainglow.CONFIG.isEditLocked()) {
+                        mode = mode.cycle();
+                        this.remove(coloursToApplyLabel);
+                        this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + 20);
+                        this.addDrawableChild(coloursToApplyLabel);
+                    } else {
+                        sendConfigLockedToast();
+                    }
                 },
                 option -> option.getDisplayText(mode.getText()),
                 Rainglow.translatableText("tooltip.mode",
@@ -51,16 +58,20 @@ public class RainglowConfigScreen extends RainglowScreen {
 
         // resets the config to default values
         this.resetOption = SpruceSimpleActionOption.reset(btn -> {
-            this.mode = RainglowMode.RAINBOW;
-            MinecraftClient client = MinecraftClient.getInstance();
-            this.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
+            if (!Rainglow.CONFIG.isEditLocked()) {
+                this.mode = RainglowMode.getDefault();
+                MinecraftClient client = MinecraftClient.getInstance();
+                this.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
+            } else {
+                sendConfigLockedToast();
+            }
         });
 
         // saves values to config file
         this.saveOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.save"),
                 buttonWidget -> {
                     this.closeScreen();
-                    Rainglow.CONFIG.setMode(this.mode);
+                    Rainglow.CONFIG.setMode(this.mode, true);
                 }
         );
     }
@@ -99,5 +110,10 @@ public class RainglowConfigScreen extends RainglowScreen {
         // set colour to the mode's text colour
         Style style = Style.EMPTY.withColor(mode.getText().getStyle().getColor());
         return new SpruceLabelWidget(Position.of(this, x, y), Text.literal(text.toString()).setStyle(style), this.width, true);
+    }
+
+    private static void sendConfigLockedToast() {
+        Toast toast = new SystemToast(SystemToast.Type.PACK_LOAD_FAILURE, Rainglow.translatableText("config.server_locked_title"), Rainglow.translatableText("config.server_locked_description"));
+        MinecraftClient.getInstance().getToastManager().add(toast);
     }
 }

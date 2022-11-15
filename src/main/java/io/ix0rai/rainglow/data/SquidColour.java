@@ -1,4 +1,4 @@
-package io.ix0rai.rainglow;
+package io.ix0rai.rainglow.data;
 
 import net.minecraft.util.Identifier;
 

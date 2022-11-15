@@ -1,7 +1,7 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.SquidColour;
+import io.ix0rai.rainglow.data.SquidColour;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
@@ -17,11 +17,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static io.ix0rai.rainglow.Rainglow.COLOUR;
-
 @Mixin(GlowSquidEntity.class)
 public abstract class GlowSquidEntityMixin extends SquidEntity {
-    private static final String COLOUR_KEY = "Colour";
+    private static final String COLOUR_NBT_KEY = "Colour";
 
     protected GlowSquidEntityMixin(EntityType<? extends SquidEntity> entityType, World world) {
         super(entityType, world);
@@ -31,22 +29,22 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
         // generate random colour
-        this.getDataTracker().startTracking(COLOUR, Rainglow.generateRandomColour(random).getId());
+        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(), Rainglow.generateRandomColourId(this.getRandom()));
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        nbt.putString(COLOUR_KEY, this.getDataTracker().get(COLOUR));
+        nbt.putString(COLOUR_NBT_KEY, Rainglow.getColour(this.getDataTracker(), this.getRandom()));
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        String colour = nbt.getString(COLOUR_KEY);
+        String colour = nbt.getString(COLOUR_NBT_KEY);
         // if read colour does not exist in the colour map, generate the squid a new one
         if (Rainglow.isColourLoaded(colour)) {
-            this.getDataTracker().set(COLOUR, colour);
+            this.getDataTracker().set(Rainglow.getTrackedColourData(), colour);
         } else {
-            this.getDataTracker().set(COLOUR, Rainglow.generateRandomColour(random).getId());
+            this.getDataTracker().set(Rainglow.getTrackedColourData(), Rainglow.generateRandomColourId(this.getRandom()));
         }
     }
 
@@ -56,10 +54,10 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
      */
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"), cancellable = true)
     public void tickMovement(CallbackInfo ci) {
-        String colour = Rainglow.getColour(dataTracker, this.random);
+        String colour = Rainglow.getColour(this.getDataTracker(), this.getRandom());
         if (!colour.equals(SquidColour.BLUE.getId())) {
             // we add 100 to g to let the mixin know that we want to override the method
-            this.world.addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
+            this.getWorld().addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
             ci.cancel();
         }
     }
@@ -81,13 +79,13 @@ public abstract class GlowSquidEntityMixin extends SquidEntity {
         private int spawnParticles(ServerWorld instance, ParticleEffect particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed) {
             if (((Object) this) instanceof GlowSquidEntity) {
                 // send in custom colour data
-                String colour = Rainglow.getColour(this.dataTracker, this.random);
+                String colour = Rainglow.getColour(this.getDataTracker(), this.getRandom());
                 int index = Rainglow.getColourIndex(colour);
                 // round x to 1 decimal place and append index data to the next two
-                return ((ServerWorld) this.world).spawnParticles(particle, (Math.round(x * 10)) / 10D + index / 1000D, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
+                return ((ServerWorld) this.getWorld()).spawnParticles(particle, (Math.round(x * 10)) / 10D + index / 1000D, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
             } else {
                 // normal logic for squid
-                return ((ServerWorld) this.world).spawnParticles(particle, x, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
+                return ((ServerWorld) this.getWorld()).spawnParticles(particle, x, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
             }
         }
     }

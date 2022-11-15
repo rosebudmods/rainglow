@@ -1,7 +1,7 @@
 package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.SquidColour;
+import io.ix0rai.rainglow.data.SquidColour;
 import net.minecraft.client.particle.GlowParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
@@ -42,7 +42,7 @@ public class GlowParticleMixin {
             }
 
             // set expiry date of particle and return
-            glowParticle.setMaxAge((int) (8.0 / (clientWorld.random.nextDouble() * 0.8 + 0.2)));
+            glowParticle.setMaxAge((int) (8.0 / (clientWorld.getRandom().nextDouble() * 0.8 + 0.2)));
             cir.setReturnValue(glowParticle);
         }
     }
