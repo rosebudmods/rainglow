@@ -120,7 +120,7 @@ public class ConfigIo {
             Files.writeString(CONFIG_FILE_PATH, String.join("\n", lines));
 
             if (log) {
-                Rainglow.LOGGER.info("wrote " + value + " of type " + type + "to config file under key " + key);
+                Rainglow.LOGGER.info("wrote " + value + " of type \"" + type + "\" to config file under key " + key);
             }
         } catch (IOException e) {
             Rainglow.LOGGER.warn("could not write object " + value + " of type " + type + " to config file under key " + key + "!");
