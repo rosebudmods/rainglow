@@ -123,7 +123,7 @@ public class ConfigIo {
                 Rainglow.LOGGER.info("wrote " + value + " of type \"" + type + "\" to config file under key " + key);
             }
         } catch (IOException e) {
-            Rainglow.LOGGER.warn("could not write object " + value + " of type " + type + " to config file under key " + key + "!");
+            Rainglow.LOGGER.warn("could not write object " + value + " of type " + type + " to config file under key \"" + key + "\"!");
         }
     }
 }
