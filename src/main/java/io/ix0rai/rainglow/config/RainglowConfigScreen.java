@@ -109,7 +109,7 @@ public class RainglowConfigScreen extends RainglowScreen {
         }
         // set colour to the mode's text colour
         Style style = Style.EMPTY.withColor(mode.getText().getStyle().getColor());
-        return new SpruceLabelWidget(Position.of(this, x, y), Text.literal(text.toString()).setStyle(style), this.width, true);
+        return new SpruceLabelWidget(Position.of(this, x + 110, y), Text.literal(text.toString()).setStyle(style), 200, true);
     }
 
     private static void sendConfigLockedToast() {
