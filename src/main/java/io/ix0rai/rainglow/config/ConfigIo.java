@@ -53,18 +53,22 @@ public class ConfigIo {
     }
 
     public static Map<String, String> readConfig() {
-        String content = "";
+        String content;
         try {
             content = Files.readString(CONFIG_FILE_PATH);
         } catch (IOException e) {
-            Rainglow.LOGGER.warn("config file not found or corrupted; failed to read: config will reset to default value");
+            Rainglow.LOGGER.warn("config file not found or corrupted; failed to read: creating new file with default values!");
+            createConfigFile();
+            return new HashMap<>();
         }
 
-        String[] lines = new String[0];
+        String[] lines;
         try {
             lines = content.split("\n");
         } catch (Exception e) {
-            Rainglow.LOGGER.warn("config file not found or corrupted; failed to read: config will reset to default value");
+            Rainglow.LOGGER.warn("config file not found or corrupted; failed to read: creating new file with default values!");
+            createConfigFile();
+            return new HashMap<>();
         }
 
         Map<String, String> configData = new HashMap<>();
@@ -80,6 +84,14 @@ public class ConfigIo {
         }
 
         return configData;
+    }
+
+    public static void createConfigFile() {
+        try {
+            Files.createFile(CONFIG_FILE_PATH);
+        } catch (IOException e) {
+            Rainglow.LOGGER.warn("could not create config file!");
+        }
     }
 
     public static void writeString(String key, String string, boolean log) {
