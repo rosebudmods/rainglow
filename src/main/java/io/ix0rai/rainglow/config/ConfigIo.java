@@ -16,6 +16,10 @@ public class ConfigIo {
     private static final String CONFIG_FILE_NAME = "rainglow.toml";
     private static final Path CONFIG_FILE_PATH = Paths.get(FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME).toUri());
 
+    private ConfigIo() {
+
+    }
+
     public static boolean parseTomlBoolean(String value) {
         return value.equals("true");
     }
@@ -75,6 +79,10 @@ public class ConfigIo {
 
         for (String line : lines) {
             try {
+                if (line.isBlank() || line.startsWith("#")) {
+                    continue;
+                }
+
                 String[] splitLine = line.split("=");
 
                 configData.put(splitLine[0].trim(), splitLine[1].trim());
