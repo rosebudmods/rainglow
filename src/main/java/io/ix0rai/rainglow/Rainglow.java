@@ -20,10 +20,7 @@ import net.minecraft.util.random.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
@@ -35,6 +32,9 @@ public class Rainglow implements ModInitializer {
     // we maintain a hash map of textures as well to speed up lookup as much as possible
     private static final Map<String, Identifier> TEXTURES = new HashMap<>();
     private static TrackedData<String> colour;
+
+    // Keep last generated colour for GetColours - Main cause for spawn de-sync
+    public static String lastGeneratedColour = null;
 
     @Override
     public void onInitialize() {
@@ -144,7 +144,8 @@ public class Rainglow implements ModInitializer {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(getTrackedColourData());
         if (colourUnloaded(colour)) {
-            tracker.set(getTrackedColourData(), generateRandomColourId(random));
+            // Use last generated colour if not null else generate a new colour
+            tracker.set(getTrackedColourData(), Objects.requireNonNullElseGet(Rainglow.lastGeneratedColour, () -> generateRandomColourId(random)));
             colour = tracker.get(getTrackedColourData());
         }
 
