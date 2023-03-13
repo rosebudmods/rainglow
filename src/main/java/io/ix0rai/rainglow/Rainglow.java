@@ -108,8 +108,8 @@ public class Rainglow implements ModInitializer {
         return SquidColour.BLUE.getTexture();
     }
 
-    public static boolean isColourLoaded(String colour) {
-        return COLOURS.contains(SquidColour.get(colour));
+    public static boolean colourUnloaded(String colour) {
+        return !COLOURS.contains(SquidColour.get(colour));
     }
 
     public static String translatableTextKey(String key) {
@@ -143,7 +143,7 @@ public class Rainglow implements ModInitializer {
     public static String getColour(DataTracker tracker, RandomGenerator random) {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(getTrackedColourData());
-        if (!isColourLoaded(colour)) {
+        if (colourUnloaded(colour)) {
             tracker.set(getTrackedColourData(), generateRandomColourId(random));
             colour = tracker.get(getTrackedColourData());
         }
