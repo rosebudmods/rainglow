@@ -1,5 +1,5 @@
 plugins {
-    id "io.github.p03w.machete" version "1.2.0"
+    id "io.github.p03w.machete" version "2.0.0"
     id "fabric-loom" version "1.0-SNAPSHOT"
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id "com.modrinth.minotaur" version "2.+"
