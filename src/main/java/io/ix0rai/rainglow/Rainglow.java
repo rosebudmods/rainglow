@@ -33,9 +33,6 @@ public class Rainglow implements ModInitializer {
     private static final Map<String, Identifier> TEXTURES = new HashMap<>();
     private static TrackedData<String> colour;
 
-    // Keep last generated colour for GetColours - Main cause for spawn de-sync
-    public static String lastGeneratedColour = null;
-
     @Override
     public void onInitialize() {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener((RainglowResourceReloader) () -> id("server_mode_data"));
@@ -145,7 +142,7 @@ public class Rainglow implements ModInitializer {
         String colour = tracker.get(getTrackedColourData());
         if (colourUnloaded(colour)) {
             // Use last generated colour if not null else generate a new colour
-            tracker.set(getTrackedColourData(), Objects.requireNonNullElseGet(Rainglow.lastGeneratedColour, () -> generateRandomColourId(random)));
+            tracker.set(getTrackedColourData(), generateRandomColourId(random));
             colour = tracker.get(getTrackedColourData());
         }
 
