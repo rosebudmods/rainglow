@@ -91,9 +91,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
         @SuppressWarnings("all")
         @Inject(method = "initialize", at = @At("RETURN"), cancellable = true)
         public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
-            Rainglow.LOGGER.error("initialise");
             if ((Object) this instanceof GlowSquidEntity glowSquid) {
-                Rainglow.LOGGER.error("neither");
                 String colour = Rainglow.generateRandomColourId(this.getRandom());
                 ((GlowSquidVariantProvider) glowSquid).setVariant(SquidColour.get(colour));
                 cir.setReturnValue(new GlowSquidEntityData(SquidColour.get(colour)));
