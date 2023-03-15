@@ -19,6 +19,7 @@ public class GlowSquidEntityRendererMixin {
     @Inject(method = "getTexture*", at = @At("HEAD"), cancellable = true)
     public void getTexture(GlowSquidEntity glowSquidEntity, CallbackInfoReturnable<Identifier> cir) {
         String colour = Rainglow.getColour(glowSquidEntity.getDataTracker(), glowSquidEntity.getRandom());
+        Rainglow.LOGGER.error("texture: " + Rainglow.getTexture(colour));
 
         // if the colour is blue we don't need to override the method
         // this optimises a tiny bit

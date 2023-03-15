@@ -145,7 +145,7 @@ public class Rainglow implements ModInitializer {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(getTrackedColourData());
         if (colourUnloaded(colour)) {
-            tracker.method_12778(getTrackedColourData(), generateRandomColourId(random));
+            tracker.set(getTrackedColourData(), generateRandomColourId(random));
             colour = tracker.get(getTrackedColourData());
         }
 
