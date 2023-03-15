@@ -36,7 +36,7 @@ public class RainglowConfigScreen extends RainglowScreen {
         // it also updates the label to show which colours will be applied
         this.modeOption = new SpruceCyclingOption(Rainglow.translatableTextKey("config.mode"),
                 amount -> {
-                    if (!Rainglow.CONFIG.isEditLocked()) {
+                    if (!Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance())) {
                         mode = mode.cycle();
                         this.remove(coloursToApplyLabel);
                         this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + 20);
@@ -58,9 +58,9 @@ public class RainglowConfigScreen extends RainglowScreen {
 
         // resets the config to default values
         this.resetOption = SpruceSimpleActionOption.reset(btn -> {
-            if (!Rainglow.CONFIG.isEditLocked()) {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (!Rainglow.CONFIG.isEditLocked(client)) {
                 this.mode = RainglowMode.getDefault();
-                MinecraftClient client = MinecraftClient.getInstance();
                 this.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
             } else {
                 sendConfigLockedToast();
@@ -109,7 +109,7 @@ public class RainglowConfigScreen extends RainglowScreen {
         }
         // set colour to the mode's text colour
         Style style = Style.EMPTY.withColor(mode.getText().getStyle().getColor());
-        return new SpruceLabelWidget(Position.of(this, x, y), new LiteralText(text.toString()).setStyle(style), this.width, true);
+        return new SpruceLabelWidget(Position.of(this, x + 110, y), new LiteralText(text.toString()).setStyle(style), 200, true);
     }
 
     private static void sendConfigLockedToast() {

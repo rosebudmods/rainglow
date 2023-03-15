@@ -1,6 +1,6 @@
 plugins {
-    id "io.github.p03w.machete" version "1.2.0"
-    id "fabric-loom" version "1.0-SNAPSHOT"
+    id "io.github.p03w.machete" version "2.0.0"
+    id "fabric-loom" version "1.1.10"
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id "com.modrinth.minotaur" version "2.+"
 }
@@ -30,7 +30,8 @@ dependencies {
     modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
 
     Set<String> apiModules = [
-            "fabric-networking-api-v1"
+            "fabric-networking-api-v1",
+            "fabric-resource-loader-v0"
     ]
 
     apiModules.forEach {
@@ -60,7 +61,7 @@ loom {
 //    projectId = "rainglow"
 //    versionNumber = project.version
 //    versionName = "rainglow " + project.version.toString().split("\\+")[0] + " for mc " + project.version.toString().split("\\+mc")[1]
-//    versionType = "beta"
+//    versionType = "release"
 //    uploadFile = remapJar
 //    gameVersions = ["1.19", "1.19.1", "1.19.2"]
 //    loaders = ["quilt", "fabric"]

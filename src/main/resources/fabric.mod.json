@@ -40,6 +40,9 @@
   },
 
   "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_5776": ["io/ix0rai/rainglow/data/GlowSquidVariantProvider"]
+    },
     "modmenu": {
       "links": {
         "modmenu.discord": "https://discord.gg/TN9gaXJ6E8",
