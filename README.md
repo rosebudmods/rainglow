@@ -45,6 +45,6 @@ Colours cannot be synced between players without installing rainglow on the serv
 thank you to:
 - thonkman (listening to me ranting about squid ink)
 - my lovely discord members (for being supportive and running some tests)
-- aloki, taledd, and jadelily (reporting issues)
+- aloki, taledd, a5ho, and jadelily (reporting issues)
 - encode42, billygalbreath and the rest of the purpur team (including my mod in their software!)
 - femboy fishing (providing ambiance while I developed the mod)
