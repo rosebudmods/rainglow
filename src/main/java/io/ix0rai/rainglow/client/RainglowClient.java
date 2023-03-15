@@ -71,7 +71,7 @@ public class RainglowClient implements ClientModInitializer {
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
             client.execute(() -> {
-                if (Rainglow.CONFIG.isEditLocked()) {
+                if (Rainglow.CONFIG.isEditLocked(client)) {
                     // unlock config
                     Rainglow.CONFIG.setEditLocked(false);
 

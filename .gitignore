@@ -11,6 +11,9 @@ build/
 run/
 remappedSrc/
 
+# vscode
+/bin/
+
 # filetypes we don't want
 *.class
 *.log

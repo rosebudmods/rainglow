@@ -3,6 +3,7 @@ package io.ix0rai.rainglow.config;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowMode;
 import io.ix0rai.rainglow.data.SquidColour;
+import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,8 +86,8 @@ public class RainglowConfig {
         return this.enableServerSync;
     }
 
-    public boolean isEditLocked() {
-        return this.editLocked;
+    public boolean isEditLocked(MinecraftClient client) {
+        return !client.isInSingleplayer() && this.editLocked;
     }
 
     public boolean isUninitialised() {
