@@ -79,7 +79,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Override
     public void setVariant(SquidColour colour) {
-        this.getDataTracker().set(Rainglow.getTrackedColourData(), colour.getId());
+        this.getDataTracker().method_12778(Rainglow.getTrackedColourData(), colour.getId());
     }
 
     @Mixin(MobEntity.class)
