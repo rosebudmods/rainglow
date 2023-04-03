@@ -5,7 +5,7 @@ import net.minecraft.util.Identifier;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public enum SquidColour {
+public enum EntityGlowColour {
     BLUE(
             new RGB(0.6F, 1.0F, 0.8F),
             new RGB(0.08F, 0.4F, 0.4F),
@@ -62,18 +62,18 @@ public enum SquidColour {
             new RGB(0, 0, 0)
     );
 
-    private static final HashMap<String, SquidColour> BY_ID = new HashMap<>();
+    private static final HashMap<String, EntityGlowColour> BY_ID = new HashMap<>();
 
     static {
         Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.getId(), mode));
     }
 
-    private final Identifier texture;
+    private Identifier texture;
     private final RGB passiveParticleRgb;
     private final RGB altPassiveParticleRgb;
     private final RGB inkRgb;
 
-    SquidColour(RGB passiveParticleRgb, RGB altPassiveParticleRgb, RGB inkRgb) {
+    EntityGlowColour(RGB passiveParticleRgb, RGB altPassiveParticleRgb, RGB inkRgb) {
         // blue glow squids use the vanilla glow squid texture, so we can ship fewer textures
         String textureName = this.getId().equals("blue") ? "glow_squid" : this.getId();
         this.texture = new Identifier("textures/entity/squid/" + textureName + ".png");
@@ -86,7 +86,17 @@ public enum SquidColour {
         return this.name().toLowerCase();
     }
 
-    public Identifier getTexture() {
+    public Identifier getTexture(EntityVariantType entityType)
+    {
+        if (entityType == EntityVariantType.GlowSquid) {
+            String textureName = this.getId().equals("blue") ? "glow_squid" : this.getId();
+            this.texture = new Identifier("textures/entity/squid/" + textureName + ".png");
+        }
+        else {
+
+            String textureName = this.getId().equals("blue") ? "allay" : this.getId();
+            this.texture = new Identifier("textures/entity/allay/" + textureName + ".png");
+        }
         return this.texture;
     }
 
@@ -107,7 +117,7 @@ public enum SquidColour {
         return this.getId();
     }
 
-    public static SquidColour get(String id) {
+    public static EntityGlowColour get(String id) {
         return BY_ID.get(id);
     }
 

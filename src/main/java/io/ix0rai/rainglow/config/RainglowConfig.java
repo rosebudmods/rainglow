@@ -2,7 +2,7 @@ package io.ix0rai.rainglow.config;
 
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowMode;
-import io.ix0rai.rainglow.data.SquidColour;
+import io.ix0rai.rainglow.data.EntityGlowColour;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class RainglowConfig {
     public static final String SERVER_SYNC_KEY = "enable_server_sync";
 
     private RainglowMode mode;
-    private List<SquidColour> custom;
+    private List<EntityGlowColour> custom;
     private boolean enableServerSync;
 
     private boolean editLocked = false;
@@ -40,12 +40,12 @@ public class RainglowConfig {
 
         // parse colours for custom mode
         // note: we cannot get the default colours from the enum to start off as it's an immutable list
-        List<SquidColour> customColours = new ArrayList<>();
+        List<EntityGlowColour> customColours = new ArrayList<>();
         if (config.containsKey(CUSTOM_KEY)) {
             List<String> colours = ConfigIo.parseTomlStringList(config.get(CUSTOM_KEY));
 
             for (String colour : colours) {
-                SquidColour squidColour = SquidColour.get(colour);
+                EntityGlowColour squidColour = EntityGlowColour.get(colour);
                 if (squidColour != null) {
                     customColours.add(squidColour);
                 }
@@ -78,7 +78,7 @@ public class RainglowConfig {
         return this.mode;
     }
 
-    public List<SquidColour> getCustom() {
+    public List<EntityGlowColour> getCustom() {
         return this.custom;
     }
 
@@ -102,7 +102,7 @@ public class RainglowConfig {
         }
     }
 
-    public void setCustom(List<SquidColour> custom, boolean write) {
+    public void setCustom(List<EntityGlowColour> custom, boolean write) {
         this.custom = custom;
         Rainglow.refreshColours();
         if (write) {

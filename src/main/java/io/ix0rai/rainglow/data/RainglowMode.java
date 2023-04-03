@@ -16,7 +16,7 @@ public class RainglowMode {
     private static final SortedMap<String, RainglowMode> MODES = new TreeMap<>();
 
     private final String id;
-    private final List<SquidColour> colours = new ArrayList<>();
+    private final List<EntityGlowColour> colours = new ArrayList<>();
     private final Text text;
     private final boolean existsLocally;
 
@@ -37,12 +37,12 @@ public class RainglowMode {
         this.id = id;
 
         for (String colour : colourIds) {
-            SquidColour squidColour = SquidColour.get(colour);
+            EntityGlowColour squidColour = EntityGlowColour.get(colour);
             if (squidColour == null) {
                 Rainglow.LOGGER.warn("colour {} loaded from mode {} does not exist, skipping", colour, id);
                 continue;
             }
-            this.colours.add(SquidColour.get(colour));
+            this.colours.add(EntityGlowColour.get(colour));
         }
 
         this.text = text;
@@ -51,12 +51,12 @@ public class RainglowMode {
         MODES.put(this.id, this);
     }
 
-    public List<SquidColour> getColours() {
+    public List<EntityGlowColour> getColours() {
         // custom colours are handled by the config instead of the enum
         // all colours mode is handled through code so that I don't have to update if new colours are added
         return switch (this.getId()) {
             case "custom" -> Rainglow.CONFIG.getCustom();
-            case "all_colours" -> List.of(SquidColour.values());
+            case "all_colours" -> List.of(EntityGlowColour.values());
             default -> this.colours;
         };
     }
@@ -116,8 +116,8 @@ public class RainglowMode {
         return MODES.values();
     }
 
-    public static List<SquidColour> getDefaultCustom() {
-        return List.of(SquidColour.BLUE, SquidColour.WHITE, SquidColour.PINK);
+    public static List<EntityGlowColour> getDefaultCustom() {
+        return List.of(EntityGlowColour.BLUE, EntityGlowColour.WHITE, EntityGlowColour.PINK);
     }
 
     public static void printLoadedModes() {

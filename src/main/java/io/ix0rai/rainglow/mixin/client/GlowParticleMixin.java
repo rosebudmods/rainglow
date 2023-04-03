@@ -1,7 +1,7 @@
 package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.data.SquidColour;
+import io.ix0rai.rainglow.data.EntityGlowColour;
 import net.minecraft.client.particle.GlowParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
@@ -31,7 +31,7 @@ public class GlowParticleMixin {
             GlowParticle glowParticle = new GlowParticle(clientWorld, d, e, f, 0.5 - GlowParticle.RANDOM.nextDouble(), h, 0.5 - GlowParticle.RANDOM.nextDouble(), this.spriteProvider);
 
             // we check the g value to see what the colour is
-            SquidColour.RGB rgb = Rainglow.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
+            EntityGlowColour.RGB rgb = Rainglow.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
             glowParticle.setColor(rgb.r(), rgb.g(), rgb.b());
 
             // set velocities - I don't entirely understand why this is necessary, it's copied from vanilla code

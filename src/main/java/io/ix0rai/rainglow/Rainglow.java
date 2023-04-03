@@ -2,16 +2,14 @@ package io.ix0rai.rainglow;
 
 import com.google.gson.Gson;
 import io.ix0rai.rainglow.config.RainglowConfig;
-import io.ix0rai.rainglow.data.RainglowMode;
-import io.ix0rai.rainglow.data.RainglowNetworking;
-import io.ix0rai.rainglow.data.RainglowResourceReloader;
-import io.ix0rai.rainglow.data.SquidColour;
+import io.ix0rai.rainglow.data.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
@@ -28,9 +26,10 @@ public class Rainglow implements ModInitializer {
     public static final RainglowConfig CONFIG = new RainglowConfig();
     public static final Gson GSON = new Gson();
 
-    private static final List<SquidColour> COLOURS = new ArrayList<>();
+    private static final List<EntityGlowColour> COLOURS = new ArrayList<>();
     // we maintain a hash map of textures as well to speed up lookup as much as possible
-    private static final Map<String, Identifier> TEXTURES = new HashMap<>();
+    private static final Map<String, Identifier> GLOWSQUID_TEXTURES = new HashMap<>();
+    private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
     private static TrackedData<String> colour;
 
     @Override
@@ -53,13 +52,14 @@ public class Rainglow implements ModInitializer {
     }
 
     public static void setMode(RainglowMode mode) {
-        TEXTURES.clear();
+        GLOWSQUID_TEXTURES.clear();
+        ALLAY_TEXTURES.clear();
         COLOURS.clear();
 
-        List<SquidColour> colours = mode.getColours();
+        List<EntityGlowColour> colours = mode.getColours();
         if (colours.isEmpty()) {
             LOGGER.info("no colours were present in the internal collection, adding blue so that the game doesn't crash");
-            colours.add(SquidColour.BLUE);
+            colours.add(EntityGlowColour.BLUE);
         }
         colours.forEach(Rainglow::addColour);
     }
@@ -71,29 +71,32 @@ public class Rainglow implements ModInitializer {
         }
     }
 
-    private static void addColour(SquidColour colour) {
+    private static void addColour(EntityGlowColour colour) {
         COLOURS.add(colour);
-        TEXTURES.put(colour.getId(), colour.getTexture());
+
+        GLOWSQUID_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.GlowSquid));
+        ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.Allay));
 
         if (COLOURS.size() >= 100) {
-            throw new RuntimeException("too many glow squid colours registered! only up to 99 are allowed");
+            throw new RuntimeException("too many colours registered! only up to 99 are allowed");
         }
     }
 
-    public static Identifier getTexture(String colour) {
-        return TEXTURES.get(colour);
+    public static Identifier getTexture(EntityVariantType entityType, String colour) {
+        if (entityType == EntityVariantType.GlowSquid) return GLOWSQUID_TEXTURES.get(colour);
+        else return ALLAY_TEXTURES.get(colour);
     }
 
     public static int getColourIndex(String colour) {
-        return COLOURS.indexOf(SquidColour.get(colour));
+        return COLOURS.indexOf(EntityGlowColour.get(colour));
     }
 
-    public static SquidColour.RGB getInkRgb(int index) {
+    public static EntityGlowColour.RGB getInkRgb(int index) {
         return COLOURS.get(index).getInkRgb();
     }
 
-    public static SquidColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
-        SquidColour colour = COLOURS.get(index);
+    public static EntityGlowColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
+        EntityGlowColour colour = COLOURS.get(index);
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
@@ -101,12 +104,12 @@ public class Rainglow implements ModInitializer {
         return COLOURS.get(random.nextInt(COLOURS.size())).getId();
     }
 
-    public static Identifier getDefaultTexture() {
-        return SquidColour.BLUE.getTexture();
+    public static Identifier getDefaultTexture(EntityVariantType entityType) {
+        return EntityGlowColour.BLUE.getTexture(entityType);
     }
 
     public static boolean colourUnloaded(String colour) {
-        return !COLOURS.contains(SquidColour.get(colour));
+        return !COLOURS.contains(EntityGlowColour.get(colour));
     }
 
     public static String translatableTextKey(String key) {
@@ -125,25 +128,29 @@ public class Rainglow implements ModInitializer {
         return Text.translatable(translatableTextKey(key));
     }
 
-    public static TrackedData<String> getTrackedColourData() {
+    public static TrackedData<String> getTrackedColourData(EntityVariantType entityType)
+    {
         // we cannot statically load the tracked data because then it gets registered too early
         // it breaks the squids' other tracked data, their dark ticks after being hurt
         // this is a workaround to make sure the data is registered at the right time
         // we simply ensure it isn't loaded until it's needed, and that fixes the issue
-        if (colour == null) {
-            colour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
+        if (colour == null)
+        {
+            if (entityType == EntityVariantType.GlowSquid) colour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
+            if (entityType == EntityVariantType.Allay) colour = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);
         }
 
         return colour;
     }
 
-    public static String getColour(DataTracker tracker, RandomGenerator random) {
+    public static String getColour(EntityVariantType entityType, DataTracker tracker, RandomGenerator random)
+    {
         // generate random colour if the squid's colour isn't currently loaded
-        String colour = tracker.get(getTrackedColourData());
+        String colour = tracker.get(getTrackedColourData(entityType));
         if (colourUnloaded(colour)) {
             // Use last generated colour if not null else generate a new colour
-            tracker.method_12778(getTrackedColourData(), generateRandomColourId(random));
-            colour = tracker.get(getTrackedColourData());
+            tracker.method_12778(getTrackedColourData(entityType), generateRandomColourId(random));
+            colour = tracker.get(getTrackedColourData(entityType));
         }
 
         return colour;

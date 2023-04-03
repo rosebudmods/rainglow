@@ -7,7 +7,7 @@ import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
 import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowMode;
-import io.ix0rai.rainglow.data.SquidColour;
+import io.ix0rai.rainglow.data.EntityGlowColour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.toast.SystemToast;
@@ -104,7 +104,7 @@ public class RainglowConfigScreen extends RainglowScreen {
     private SpruceLabelWidget createColourListLabel(String translationKey, RainglowMode mode, int x, int y) {
         // creates a label and appends all the colours that will be applied in the given mode
         StringBuilder text = new StringBuilder(Language.getInstance().get(translationKey));
-        for (SquidColour colour : mode.getColours()) {
+        for (EntityGlowColour colour : mode.getColours()) {
             text.append("\n").append(Language.getInstance().get(Rainglow.translatableTextKey("colour." + colour.getId())));
         }
         // set colour to the mode's text colour
