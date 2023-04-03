@@ -6,6 +6,7 @@
   "mixins": [
     "AllayEntityMixin",
     "AllayEntityMixin$MobEntityMixin",
+    "DyeItemMixin",
     "GlowSquidEntityMixin",
     "GlowSquidEntityMixin$MobEntityMixin",
     "GlowSquidEntityMixin$SquidEntityMixin"
