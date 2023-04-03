@@ -53,6 +53,7 @@ public class DyeItemMixin {
         cir.setReturnValue(ActionResult.PASS);
     }
 
+    /// This is terrible, will re-do in future
     private static String getStackColour(Item item) {
         switch (item.getName().getString()) {
             case "Red Dye" -> {
