@@ -26,8 +26,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GlowSquidEntity.class)
 public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSquidVariantProvider {
-    private static final String COLOUR_NBT_KEY = "Colour";
-
     protected GlowSquidEntityMixin(EntityType<? extends SquidEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
@@ -41,12 +39,12 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
         String colour = Rainglow.getColour(EntityVariantType.GlowSquid, this.getDataTracker(), this.getRandom());
-        nbt.putString(COLOUR_NBT_KEY, colour);
+        nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour);
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        String colour = nbt.getString(COLOUR_NBT_KEY);
+        String colour = nbt.getString(Rainglow.CUSTOM_NBT_KEY);
 
         // if read colour does not exist in the colour map, generate the squid a new one
         if (Rainglow.colourUnloaded(colour)) {
