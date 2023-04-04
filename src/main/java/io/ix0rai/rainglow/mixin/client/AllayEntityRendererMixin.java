@@ -1,7 +1,7 @@
 package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.data.EntityGlowColour;
+import io.ix0rai.rainglow.data.EntityColour;
 import io.ix0rai.rainglow.data.EntityVariantType;
 import net.minecraft.client.render.entity.AllayRenderer;
 import net.minecraft.entity.passive.AllayEntity;
@@ -21,7 +21,7 @@ public class AllayEntityRendererMixin {
 
         // if the colour is blue we don't need to override the method
         // this optimises a tiny bit
-        if (!colour.equals(EntityGlowColour.BLUE.getId())) {
+        if (!colour.equals(EntityColour.BLUE.getId())) {
             Identifier texture = Rainglow.getTexture(EntityVariantType.Allay, colour);
             cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture(EntityVariantType.Allay));
         }

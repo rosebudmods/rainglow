@@ -1,10 +1,7 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.data.EntityVariantType;
-import io.ix0rai.rainglow.data.GlowSquidEntityData;
-import io.ix0rai.rainglow.data.GlowSquidVariantProvider;
-import io.ix0rai.rainglow.data.EntityGlowColour;
+import io.ix0rai.rainglow.data.*;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -38,7 +35,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
-        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(EntityVariantType.GlowSquid), EntityGlowColour.BLUE.getId());
+        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(EntityVariantType.GlowSquid), EntityColour.BLUE.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
@@ -56,7 +53,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
             colour = Rainglow.generateRandomColourId(this.getRandom());
         }
 
-        this.setVariant(EntityGlowColour.get(colour));
+        this.setVariant(EntityColour.get(colour));
     }
 
     /**
@@ -66,7 +63,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"), cancellable = true)
     public void tickMovement(CallbackInfo ci) {
         String colour = Rainglow.getColour(EntityVariantType.GlowSquid, this.getDataTracker(), this.getRandom());
-        if (!colour.equals(EntityGlowColour.BLUE.getId())) {
+        if (!colour.equals(EntityColour.BLUE.getId())) {
             // we add 100 to g to let the mixin know that we want to override the method
             this.getWorld().addParticle(ParticleTypes.GLOW, this.getParticleX(0.6), this.getRandomBodyY(), this.getParticleZ(0.6), Rainglow.getColourIndex(colour) + 100, 0, 0);
             ci.cancel();
@@ -74,12 +71,12 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
     }
 
     @Override
-    public EntityGlowColour getVariant() {
-        return EntityGlowColour.get(Rainglow.getColour(EntityVariantType.GlowSquid, this.getDataTracker(), this.getRandom()));
+    public EntityColour getVariant() {
+        return EntityColour.get(Rainglow.getColour(EntityVariantType.GlowSquid, this.getDataTracker(), this.getRandom()));
     }
 
     @Override
-    public void setVariant(EntityGlowColour colour) {
+    public void setVariant(EntityColour colour) {
         this.getDataTracker().method_12778(Rainglow.getTrackedColourData(EntityVariantType.GlowSquid), colour.getId());
     }
 
@@ -94,8 +91,8 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
         public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
             if ((Object) this instanceof GlowSquidEntity glowSquid) {
                 String colour = Rainglow.generateRandomColourId(this.getRandom());
-                ((GlowSquidVariantProvider) glowSquid).setVariant(EntityGlowColour.get(colour));
-                cir.setReturnValue(new GlowSquidEntityData(EntityGlowColour.get(colour)));
+                ((GlowSquidVariantProvider) glowSquid).setVariant(EntityColour.get(colour));
+                cir.setReturnValue(new GlowSquidEntityData(EntityColour.get(colour)));
             }
         }
     }

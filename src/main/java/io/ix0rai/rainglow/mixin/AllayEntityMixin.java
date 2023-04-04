@@ -20,8 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AllayEntity.class)
 public abstract class AllayEntityMixin extends Entity implements AllayVariantProvider
 {
-    private static final String COLOUR_NBT_KEY = "Colour";
-
     protected AllayEntityMixin(EntityType<? extends GlowSquidEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
@@ -29,33 +27,33 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
-        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(EntityVariantType.Allay), EntityGlowColour.BLUE.getId());
+        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(EntityVariantType.Allay), EntityColour.BLUE.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
         String colour = Rainglow.getColour(EntityVariantType.Allay, this.getDataTracker(), this.getRandom());
-        nbt.putString(COLOUR_NBT_KEY, colour);
+        nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour);
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        String colour = nbt.getString(COLOUR_NBT_KEY);
+        String colour = nbt.getString(Rainglow.CUSTOM_NBT_KEY);
 
         if (Rainglow.colourUnloaded(colour)) {
             colour = Rainglow.generateRandomColourId(this.getRandom());
         }
 
-        this.setVariant(EntityGlowColour.get(colour));
+        this.setVariant(EntityColour.get(colour));
     }
 
     @Override
-    public EntityGlowColour getVariant() {
-        return EntityGlowColour.get(Rainglow.getColour(EntityVariantType.Allay, this.getDataTracker(), this.getRandom()));
+    public EntityColour getVariant() {
+        return EntityColour.get(Rainglow.getColour(EntityVariantType.Allay, this.getDataTracker(), this.getRandom()));
     }
 
     @Override
-    public void setVariant(EntityGlowColour colour) {
+    public void setVariant(EntityColour colour) {
         this.getDataTracker().method_12778(Rainglow.getTrackedColourData(EntityVariantType.Allay), colour.getId());
     }
 
@@ -70,8 +68,8 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
         public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
             if ((Object) this instanceof AllayEntity allay) {
                 String colour = Rainglow.generateRandomColourId(this.getRandom());
-                ((AllayVariantProvider) allay).setVariant(EntityGlowColour.get(colour));
-                cir.setReturnValue(new AllayEntityData(EntityGlowColour.get(colour)));
+                ((AllayVariantProvider) allay).setVariant(EntityColour.get(colour));
+                cir.setReturnValue(new AllayEntityData(EntityColour.get(colour)));
             }
         }
     }
