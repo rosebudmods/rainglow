@@ -16,7 +16,7 @@ public class RainglowMode {
     private static final SortedMap<String, RainglowMode> MODES = new TreeMap<>();
 
     private final String id;
-    private final List<SquidColour> colours = new ArrayList<>();
+    private final List<EntityColour> colours = new ArrayList<>();
     private final Text text;
     private final boolean existsLocally;
 
@@ -37,12 +37,12 @@ public class RainglowMode {
         this.id = id;
 
         for (String colour : colourIds) {
-            SquidColour squidColour = SquidColour.get(colour);
+            EntityColour squidColour = EntityColour.get(colour);
             if (squidColour == null) {
                 Rainglow.LOGGER.warn("colour {} loaded from mode {} does not exist, skipping", colour, id);
                 continue;
             }
-            this.colours.add(SquidColour.get(colour));
+            this.colours.add(EntityColour.get(colour));
         }
 
         this.text = text;
@@ -51,12 +51,12 @@ public class RainglowMode {
         MODES.put(this.id, this);
     }
 
-    public List<SquidColour> getColours() {
+    public List<EntityColour> getColours() {
         // custom colours are handled by the config instead of the enum
         // all colours mode is handled through code so that I don't have to update if new colours are added
         return switch (this.getId()) {
             case "custom" -> Rainglow.CONFIG.getCustom();
-            case "all_colours" -> List.of(SquidColour.values());
+            case "all_colours" -> List.of(EntityColour.values());
             default -> this.colours;
         };
     }
@@ -78,78 +78,52 @@ public class RainglowMode {
         return values.iterator().next();
     }
 
+    @Override
+    public String toString() { return this.getId(); }
+
     public Text getText() {
         return this.text;
     }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public boolean existsLocally() {
-        return this.existsLocally;
-    }
-
-    public static RainglowMode byId(String id) {
-        return MODES.get(id);
-    }
-
-    public static RainglowMode getDefault() {
-        return MODES.get("rainbow");
-    }
-
-    public static void addMode(RainglowMode mode) {
-        MODES.put(mode.id, mode);
-    }
-
-    public static void clearUniversalModes() {
+    public String getId() { return this.id; }
+    public boolean existsLocally() { return this.existsLocally; }
+    public static RainglowMode byId(String id) { return MODES.get(id); }
+    public static RainglowMode getDefault() { return MODES.get("rainbow"); }
+    public static void addMode(RainglowMode mode) { MODES.put(mode.id, mode); }
+    public static Collection<RainglowMode> values() { return MODES.values(); }
+    public static List<EntityColour> getDefaultCustom() { return List.of(EntityColour.BLUE, EntityColour.WHITE, EntityColour.PINK); }
+    public static void clearUniversalModes()
+    {
         Collection<RainglowMode> modes = List.copyOf(MODES.values());
-
-        for (RainglowMode mode : modes) {
-            if (mode.existsLocally()) {
-                MODES.remove(mode.id);
-            }
-        }
+        for (RainglowMode mode : modes) if (mode.existsLocally()) MODES.remove(mode.id);
     }
-
-    public static Collection<RainglowMode> values() {
-        return MODES.values();
-    }
-
-    public static List<SquidColour> getDefaultCustom() {
-        return List.of(SquidColour.BLUE, SquidColour.WHITE, SquidColour.PINK);
-    }
-
-    public static void printLoadedModes() {
+    public static void printLoadedModes()
+    {
         StringBuilder formatted = new StringBuilder();
-        for (RainglowMode mode : MODES.values()) {
+        for (RainglowMode mode : MODES.values())
+        {
             // custom may be null since colour data is loaded pre-config
             int colourCount = mode.getColours() != null ? mode.getColours().size() : 0;
-
             formatted.append(mode.getId()).append(" (").append(colourCount).append(" colours), ");
         }
 
         // remove trailing space and comma
         formatted.append("\b\b");
-
-        Rainglow.LOGGER.info("loaded modes: [" + formatted + "]");
+        Rainglow.LOGGER.info("Loaded modes: [" + formatted + "]");
     }
 
-    @Override
-    public String toString() {
-        return this.getId();
-    }
 
     /**
      * represents modes loaded from json files
      * these are always converted to RainglowMode objects before use
      */
-    public static class JsonMode {
+    public static class JsonMode
+    {
         public String id;
         public List<String> colourIds;
         public String textColour;
 
-        public JsonMode(String id, List<String> colourIds, String textColour) {
+        public JsonMode(String id, List<String> colourIds, String textColour)
+        {
             this.id = id;
             this.colourIds = colourIds;
             this.textColour = textColour;

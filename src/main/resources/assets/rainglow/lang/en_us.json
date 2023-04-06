@@ -34,5 +34,11 @@
   "rainglow.colour.white": "White",
   "rainglow.colour.black": "Black",
   "rainglow.colour.gray": "Gray",
+  "rainglow.colour.brown": "Brown",
+  "rainglow.colour.cyan": "Cyan",
+  "rainglow.colour.light_blue": "Light Blue",
+  "rainglow.colour.light_gray": "Light Gray",
+  "rainglow.colour.lime": "Lime",
+  "rainglow.colour.magenta": "Magenta",
   "rainglow.colour.indigo": "Indigo"
 }

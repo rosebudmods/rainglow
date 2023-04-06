@@ -4,11 +4,15 @@
   "package": "io.ix0rai.rainglow.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AllayEntityMixin",
+    "AllayEntityMixin$MobEntityMixin",
+    "DyeItemMixin",
     "GlowSquidEntityMixin",
     "GlowSquidEntityMixin$MobEntityMixin",
     "GlowSquidEntityMixin$SquidEntityMixin"
   ],
   "client": [
+    "client.AllayEntityRendererMixin",
     "client.GlowParticleMixin",
     "client.GlowSquidEntityRendererMixin",
     "client.SquidInkParticleMixin"
