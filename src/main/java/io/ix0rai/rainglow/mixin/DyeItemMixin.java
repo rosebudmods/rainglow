@@ -4,6 +4,7 @@ import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.EntityVariantType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,6 +45,16 @@ public class DyeItemMixin {
 
             DataTracker tracker = allayEntity.getDataTracker();
             tracker.set(Rainglow.getTrackedColourData(EntityVariantType.ALLAY), colour);
+
+            cir.setReturnValue(ActionResult.success(user.world.isClient));
+        } else if (entity instanceof SlimeEntity slimeEntity && slimeEntity.isAlive() && !Rainglow.getColour(EntityVariantType.SLIME, slimeEntity.getDataTracker(), slimeEntity.getRandom()).equals(colour)) {
+            slimeEntity.world.playSoundFromEntity(user, slimeEntity, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            if (!user.world.isClient) {
+                stack.decrement(1);
+            }
+
+            DataTracker tracker = slimeEntity.getDataTracker();
+            tracker.set(Rainglow.getTrackedColourData(EntityVariantType.SLIME), colour);
 
             cir.setReturnValue(ActionResult.success(user.world.isClient));
         }

@@ -5,15 +5,17 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AllayEntityMixin",
-    "MobEntityMixin",
     "DyeItemMixin",
     "GlowSquidEntityMixin",
-    "GlowSquidEntityMixin$SquidEntityMixin"
+    "GlowSquidEntityMixin$SquidEntityMixin",
+    "MobEntityMixin",
+    "SlimeEntityMixin"
   ],
   "client": [
     "client.AllayEntityRendererMixin",
     "client.GlowParticleMixin",
     "client.GlowSquidEntityRendererMixin",
+    "client.SlimeEntityRendererMixin",
     "client.SquidInkParticleMixin"
   ],
   "injectors": {

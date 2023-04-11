@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.resource.ResourceType;
@@ -29,8 +30,10 @@ public class Rainglow implements ModInitializer {
     private static final List<EntityColour> COLOURS = new ArrayList<>();
     private static final Map<String, Identifier> GLOWSQUID_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
+    private static final Map<String, Identifier> SLIME_TEXTURES = new HashMap<>();
     private static TrackedData<String> glowSquidColour;
     private static TrackedData<String> allayColour;
+    private static TrackedData<String> slimeColour;
 
     public static final String CUSTOM_NBT_KEY = "Colour";
 
@@ -56,6 +59,7 @@ public class Rainglow implements ModInitializer {
     public static void setMode(RainglowMode mode) {
         GLOWSQUID_TEXTURES.clear();
         ALLAY_TEXTURES.clear();
+        SLIME_TEXTURES.clear();
         COLOURS.clear();
 
         List<EntityColour> colours = mode.getColours();
@@ -78,6 +82,7 @@ public class Rainglow implements ModInitializer {
 
         GLOWSQUID_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.GLOW_SQUID));
         ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.ALLAY));
+        SLIME_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.SLIME));
 
         if (COLOURS.size() >= 100) {
             throw new RuntimeException("Too many colours registered! Only up to 99 are allowed");
@@ -86,7 +91,8 @@ public class Rainglow implements ModInitializer {
 
     public static Identifier getTexture(EntityVariantType entityType, String colour) {
         if (entityType == EntityVariantType.GLOW_SQUID) return GLOWSQUID_TEXTURES.get(colour);
-        else return ALLAY_TEXTURES.get(colour);
+        else if (entityType == EntityVariantType.ALLAY) return ALLAY_TEXTURES.get(colour);
+        else return SLIME_TEXTURES.get(colour);
     }
 
     public static int getColourIndex(String colour) {
@@ -102,9 +108,19 @@ public class Rainglow implements ModInitializer {
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
-    public static String generateRandomColourId(RandomGenerator random) { return COLOURS.get(random.nextInt(COLOURS.size())).getId(); }
-    public static Identifier getDefaultTexture(EntityVariantType entityType) { return EntityColour.BLUE.getTexture(entityType); }
-    public static boolean colourUnloaded(String colour) { return !COLOURS.contains(EntityColour.get(colour)); }
+    public static String generateRandomColourId(RandomGenerator random)
+    {
+        return COLOURS.get(random.nextInt(COLOURS.size())).getId();
+    }
+
+    public static Identifier getDefaultTexture(EntityVariantType entityType) {
+        if (entityType == EntityVariantType.SLIME) return EntityColour.LIME.getTexture(entityType);
+        else return EntityColour.BLUE.getTexture(entityType);
+    }
+
+    public static boolean colourUnloaded(String colour) {
+        return !COLOURS.contains(EntityColour.get(colour));
+    }
 
     public static String translatableTextKey(String key) {
         if (key.split("\\.").length != 2) throw new IllegalArgumentException("key must be in format \"category.key\"");
@@ -137,6 +153,12 @@ public class Rainglow implements ModInitializer {
             }
 
             return allayColour;
+        } else if (entityType == EntityVariantType.SLIME) {
+            if (slimeColour == null) {
+                slimeColour = DataTracker.registerData(SlimeEntity.class, TrackedDataHandlerRegistry.STRING);
+            }
+
+            return slimeColour;
         }
 
         throw new RuntimeException("called getTrackedColourData on an unsupported entity type!");
