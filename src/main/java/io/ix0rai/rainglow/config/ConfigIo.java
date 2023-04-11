@@ -17,7 +17,6 @@ public class ConfigIo {
     private static final Path CONFIG_FILE_PATH = Paths.get(FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME).toUri());
 
     private ConfigIo() {
-
     }
 
     public static boolean parseTomlBoolean(String value) {

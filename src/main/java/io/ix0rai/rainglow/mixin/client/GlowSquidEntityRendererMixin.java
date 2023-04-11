@@ -19,13 +19,13 @@ public class GlowSquidEntityRendererMixin {
      */
     @Inject(method = "getTexture*", at = @At("HEAD"), cancellable = true)
     public void getTexture(GlowSquidEntity glowSquidEntity, CallbackInfoReturnable<Identifier> cir) {
-        String colour = Rainglow.getColour(EntityVariantType.GlowSquid, glowSquidEntity.getDataTracker(), glowSquidEntity.getRandom());
+        String colour = Rainglow.getColour(EntityVariantType.GLOW_SQUID, glowSquidEntity.getDataTracker(), glowSquidEntity.getRandom());
 
         // if the colour is blue we don't need to override the method
         // this optimises a tiny bit
         if (!colour.equals(EntityColour.BLUE.getId())) {
-            Identifier texture = Rainglow.getTexture(EntityVariantType.GlowSquid, colour);
-            cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture(EntityVariantType.GlowSquid));
+            Identifier texture = Rainglow.getTexture(EntityVariantType.GLOW_SQUID, colour);
+            cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture(EntityVariantType.GLOW_SQUID));
         }
     }
 }

@@ -42,7 +42,6 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
             }
         }
 
-        // log
         this.log();
 
         // load config

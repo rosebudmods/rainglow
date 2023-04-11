@@ -1,25 +1,23 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.data.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.mob.MobEntity;
+import io.ix0rai.rainglow.data.AllayVariantProvider;
+import io.ix0rai.rainglow.data.EntityColour;
+import io.ix0rai.rainglow.data.EntityVariantType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.random.RandomGenerator;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AllayEntity.class)
-public abstract class AllayEntityMixin extends Entity implements AllayVariantProvider
-{
+public abstract class AllayEntityMixin extends Entity implements AllayVariantProvider {
     protected AllayEntityMixin(EntityType<? extends GlowSquidEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
@@ -27,12 +25,12 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
-        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(EntityVariantType.Allay), EntityColour.BLUE.getId());
+        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(EntityVariantType.ALLAY), EntityColour.BLUE.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        String colour = Rainglow.getColour(EntityVariantType.Allay, this.getDataTracker(), this.getRandom());
+        String colour = Rainglow.getColour(EntityVariantType.ALLAY, this.getDataTracker(), this.getRandom());
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour);
     }
 
@@ -49,29 +47,12 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
 
     @Override
     public EntityColour getVariant() {
-        return EntityColour.get(Rainglow.getColour(EntityVariantType.Allay, this.getDataTracker(), this.getRandom()));
+        return EntityColour.get(Rainglow.getColour(EntityVariantType.ALLAY, this.getDataTracker(), this.getRandom()));
     }
 
     @Override
     public void setVariant(EntityColour colour) {
-        this.getDataTracker().method_12778(Rainglow.getTrackedColourData(EntityVariantType.Allay), colour.getId());
-    }
-
-    @Mixin(MobEntity.class)
-    public abstract static class MobEntityMixin extends LivingEntity {
-        protected MobEntityMixin(EntityType<? extends MobEntity> entityType, World world) {
-            super(entityType, world);
-        }
-
-        @SuppressWarnings("all")
-        @Inject(method = "initialize", at = @At("RETURN"), cancellable = true)
-        public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
-            if ((Object) this instanceof AllayEntity allay) {
-                String colour = Rainglow.generateRandomColourId(this.getRandom());
-                ((AllayVariantProvider) allay).setVariant(EntityColour.get(colour));
-                cir.setReturnValue(new AllayEntityData(EntityColour.get(colour)));
-            }
-        }
+        this.getDataTracker().set(Rainglow.getTrackedColourData(EntityVariantType.ALLAY), colour.getId());
     }
 
     public RandomGenerator getRandom() {

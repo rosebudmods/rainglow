@@ -15,15 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class AllayEntityRendererMixin {
 
     @Inject(method = "getTexture*", at = @At("HEAD"), cancellable = true)
-    public void getTexture(AllayEntity allayEntity, CallbackInfoReturnable<Identifier> cir)
-    {
-        String colour = Rainglow.getColour(EntityVariantType.Allay, allayEntity.getDataTracker(), allayEntity.getRandom());
+    public void getTexture(AllayEntity allayEntity, CallbackInfoReturnable<Identifier> cir) {
+        String colour = Rainglow.getColour(EntityVariantType.ALLAY, allayEntity.getDataTracker(), allayEntity.getRandom());
 
         // if the colour is blue we don't need to override the method
         // this optimises a tiny bit
         if (!colour.equals(EntityColour.BLUE.getId())) {
-            Identifier texture = Rainglow.getTexture(EntityVariantType.Allay, colour);
-            cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture(EntityVariantType.Allay));
+            Identifier texture = Rainglow.getTexture(EntityVariantType.ALLAY, colour);
+            cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture(EntityVariantType.ALLAY));
         }
     }
 }

@@ -79,25 +79,48 @@ public class RainglowMode {
     }
 
     @Override
-    public String toString() { return this.getId(); }
+    public String toString() {
+        return this.getId();
+    }
 
     public Text getText() {
         return this.text;
     }
-    public String getId() { return this.id; }
-    public boolean existsLocally() { return this.existsLocally; }
-    public static RainglowMode byId(String id) { return MODES.get(id); }
-    public static RainglowMode getDefault() { return MODES.get("rainbow"); }
-    public static void addMode(RainglowMode mode) { MODES.put(mode.id, mode); }
-    public static Collection<RainglowMode> values() { return MODES.values(); }
-    public static List<EntityColour> getDefaultCustom() { return List.of(EntityColour.BLUE, EntityColour.WHITE, EntityColour.PINK); }
-    public static void clearUniversalModes()
-    {
+
+    public String getId() {
+        return this.id;
+    }
+
+    public boolean existsLocally() {
+        return this.existsLocally;
+    }
+
+    public static RainglowMode byId(String id) {
+        return MODES.get(id);
+    }
+
+    public static RainglowMode getDefault() {
+        return MODES.get("rainbow");
+    }
+
+    public static void addMode(RainglowMode mode) {
+        MODES.put(mode.id, mode);
+    }
+
+    public static Collection<RainglowMode> values() {
+        return MODES.values();
+    }
+
+    public static List<EntityColour> getDefaultCustom() {
+        return List.of(EntityColour.BLUE, EntityColour.WHITE, EntityColour.PINK);
+    }
+
+    public static void clearUniversalModes() {
         Collection<RainglowMode> modes = List.copyOf(MODES.values());
         for (RainglowMode mode : modes) if (mode.existsLocally()) MODES.remove(mode.id);
     }
-    public static void printLoadedModes()
-    {
+
+    public static void printLoadedModes() {
         StringBuilder formatted = new StringBuilder();
         for (RainglowMode mode : MODES.values())
         {
@@ -116,14 +139,12 @@ public class RainglowMode {
      * represents modes loaded from json files
      * these are always converted to RainglowMode objects before use
      */
-    public static class JsonMode
-    {
+    public static class JsonMode {
         public String id;
         public List<String> colourIds;
         public String textColour;
 
-        public JsonMode(String id, List<String> colourIds, String textColour)
-        {
+        public JsonMode(String id, List<String> colourIds, String textColour) {
             this.id = id;
             this.colourIds = colourIds;
             this.textColour = textColour;

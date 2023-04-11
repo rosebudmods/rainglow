@@ -5,8 +5,7 @@ import net.minecraft.util.Identifier;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public enum EntityColour
-{
+public enum EntityColour {
     BLACK(new RGB(0.0F, 0.0F, 0.0F), new RGB(0.0F, 0.0F, 0.0F), new RGB(0, 0, 0)),
     BLUE(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102)),
     BROWN(new RGB(1.0F, 0.5F, 0.0F), new RGB(1.0F, 0.4F, 0.4F), new RGB(149, 59, 35)),
@@ -26,7 +25,9 @@ public enum EntityColour
     YELLOW(new RGB(1.0F, 1.0F, 0.8F), new RGB(1.0F, 1.0F, 0.4F), new RGB(200, 0, 0));
 
     private static final HashMap<String, EntityColour> BY_ID = new HashMap<>();
-    static {  Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.getId(), mode)); }
+    static {
+        Arrays.stream(values()).forEach(mode -> BY_ID.put(mode.getId(), mode));
+    }
 
     private Identifier texture;
     private final RGB passiveParticleRgb;
@@ -34,32 +35,50 @@ public enum EntityColour
     private final RGB inkRgb;
 
     EntityColour(RGB passiveParticleRgb, RGB altPassiveParticleRgb, RGB inkRgb) {
-        // blue glow squids use the vanilla glow squid texture, so we can ship fewer textures
-        String textureName = this.getId().equals("blue") ? "glow_squid" : this.getId();
-        this.texture = new Identifier("textures/entity/squid/" + textureName + ".png");
+        this.texture = new Identifier("textures/entity/squid/" + this.getId() + ".png");
         this.passiveParticleRgb = passiveParticleRgb;
         this.altPassiveParticleRgb = altPassiveParticleRgb;
         this.inkRgb = inkRgb;
     }
 
     public Identifier getTexture(EntityVariantType entityType) {
-        if (entityType == EntityVariantType.GlowSquid) {
+        // use minecraft's textures when possible, so we can ship fewer textures
+        if (entityType == EntityVariantType.GLOW_SQUID) {
             String textureName = this.getId().equals("blue") ? "glow_squid" : this.getId();
             this.texture = new Identifier("textures/entity/squid/" + textureName + ".png");
         } else {
             String textureName = this.getId().equals("blue") ? "allay" : this.getId();
             this.texture = new Identifier("textures/entity/allay/" + textureName + ".png");
         }
+
         return this.texture;
     }
 
-    public String getId() { return this.name().toLowerCase(); }
-    public RGB getPassiveParticleRgb() { return this.passiveParticleRgb; }
-    public RGB getAltPassiveParticleRgb() { return this.altPassiveParticleRgb; }
-    public RGB getInkRgb() { return this.inkRgb; }
+    public String getId() {
+        return this.name().toLowerCase();
+    }
+
+    public RGB getPassiveParticleRgb() {
+        return this.passiveParticleRgb;
+    }
+
+    public RGB getAltPassiveParticleRgb() {
+        return this.altPassiveParticleRgb;
+    }
+
+    public RGB getInkRgb() {
+        return this.inkRgb;
+    }
 
     @Override
-    public String toString() { return this.getId(); }
-    public static EntityColour get(String id) { return BY_ID.get(id); }
-    public record RGB(float r, float g, float b) { }
+    public String toString() {
+        return this.getId();
+    }
+
+    public static EntityColour get(String id) {
+        return BY_ID.get(id);
+    }
+
+    public record RGB(float r, float g, float b) {
+    }
 }

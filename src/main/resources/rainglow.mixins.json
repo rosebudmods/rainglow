@@ -5,10 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AllayEntityMixin",
-    "AllayEntityMixin$MobEntityMixin",
+    "MobEntityMixin",
     "DyeItemMixin",
     "GlowSquidEntityMixin",
-    "GlowSquidEntityMixin$MobEntityMixin",
     "GlowSquidEntityMixin$SquidEntityMixin"
   ],
   "client": [

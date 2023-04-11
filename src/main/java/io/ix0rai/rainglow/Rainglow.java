@@ -29,8 +29,8 @@ public class Rainglow implements ModInitializer {
     private static final List<EntityColour> COLOURS = new ArrayList<>();
     private static final Map<String, Identifier> GLOWSQUID_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
-    private static TrackedData<String> glowsquid_colour;
-    private static TrackedData<String> allay_colour;
+    private static TrackedData<String> glowSquidColour;
+    private static TrackedData<String> allayColour;
 
     public static final String CUSTOM_NBT_KEY = "Colour";
 
@@ -76,8 +76,8 @@ public class Rainglow implements ModInitializer {
     private static void addColour(EntityColour colour) {
         COLOURS.add(colour);
 
-        GLOWSQUID_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.GlowSquid));
-        ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.Allay));
+        GLOWSQUID_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.GLOW_SQUID));
+        ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.ALLAY));
 
         if (COLOURS.size() >= 100) {
             throw new RuntimeException("Too many colours registered! Only up to 99 are allowed");
@@ -85,7 +85,7 @@ public class Rainglow implements ModInitializer {
     }
 
     public static Identifier getTexture(EntityVariantType entityType, String colour) {
-        if (entityType == EntityVariantType.GlowSquid) return GLOWSQUID_TEXTURES.get(colour);
+        if (entityType == EntityVariantType.GLOW_SQUID) return GLOWSQUID_TEXTURES.get(colour);
         else return ALLAY_TEXTURES.get(colour);
     }
 
@@ -125,17 +125,21 @@ public class Rainglow implements ModInitializer {
         // this is a workaround to make sure the data is registered at the right time
         // we simply ensure it isn't loaded until it's needed, and that fixes the issue
 
-        if (entityType == EntityVariantType.GlowSquid) {
-            if (glowsquid_colour == null) {
-                return glowsquid_colour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
-            } else return glowsquid_colour;
-        } else if (entityType == EntityVariantType.Allay) {
-            if (allay_colour == null) {
-                return allay_colour = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);
-            } else return allay_colour;
+        if (entityType == EntityVariantType.GLOW_SQUID) {
+            if (glowSquidColour == null) {
+                glowSquidColour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
+            }
+
+            return glowSquidColour;
+        } else if (entityType == EntityVariantType.ALLAY) {
+            if (allayColour == null) {
+                allayColour = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);
+            }
+
+            return allayColour;
         }
 
-        return null;
+        throw new RuntimeException("called getTrackedColourData on an unsupported entity type!");
     }
 
     public static String getColour(EntityVariantType entityType, DataTracker tracker, RandomGenerator random) {
@@ -143,7 +147,7 @@ public class Rainglow implements ModInitializer {
         String colour = tracker.get(getTrackedColourData(entityType));
         if (colourUnloaded(colour)) {
             // Use last generated colour if not null else generate a new colour
-            tracker.method_12778(getTrackedColourData(entityType), generateRandomColourId(random));
+            tracker.set(getTrackedColourData(entityType), generateRandomColourId(random));
             colour = tracker.get(getTrackedColourData(entityType));
         }
 

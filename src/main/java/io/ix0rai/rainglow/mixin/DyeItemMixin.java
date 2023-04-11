@@ -22,28 +22,28 @@ import static net.minecraft.item.Items.*;
 
 @Mixin(DyeItem.class)
 public class DyeItemMixin {
-
     @Inject(method = "useOnEntity", at = @At("TAIL"), cancellable = true)
-    private void Inject(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        GlowSquidEntity glowSquidEntity;
-        AllayEntity allayEntity;
-
+    private void useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         String colour = getDye(stack);
 
-        if (entity instanceof GlowSquidEntity && (glowSquidEntity = (GlowSquidEntity) entity).isAlive() && !Rainglow.getColour(EntityVariantType.GlowSquid, glowSquidEntity.getDataTracker(), glowSquidEntity.getRandom()).equals(colour)) {
-            glowSquidEntity.world.playSoundFromEntity(user, glowSquidEntity, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            if (!user.world.isClient) stack.decrement(1);
+        if (entity instanceof GlowSquidEntity glowSquid && glowSquid.isAlive() && !Rainglow.getColour(EntityVariantType.GLOW_SQUID, glowSquid.getDataTracker(), glowSquid.getRandom()).equals(colour)) {
+            glowSquid.world.playSoundFromEntity(user, glowSquid, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            if (!user.world.isClient) {
+                stack.decrement(1);
+            }
 
-            DataTracker tracker = glowSquidEntity.getDataTracker();
-            tracker.method_12778(Rainglow.getTrackedColourData(EntityVariantType.GlowSquid), colour);
+            DataTracker tracker = glowSquid.getDataTracker();
+            tracker.set(Rainglow.getTrackedColourData(EntityVariantType.GLOW_SQUID), colour);
 
             cir.setReturnValue(ActionResult.success(user.world.isClient));
-        } else if (entity instanceof AllayEntity && (allayEntity = (AllayEntity) entity).isAlive() & !Rainglow.getColour(EntityVariantType.Allay, allayEntity.getDataTracker(), allayEntity.getRandom()).equals(colour)) {
+        } else if (entity instanceof AllayEntity allayEntity && allayEntity.isAlive() && !Rainglow.getColour(EntityVariantType.ALLAY, allayEntity.getDataTracker(), allayEntity.getRandom()).equals(colour)) {
             allayEntity.world.playSoundFromEntity(user, allayEntity, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            if (!user.world.isClient) stack.decrement(1);
+            if (!user.world.isClient) {
+                stack.decrement(1);
+            }
 
             DataTracker tracker = allayEntity.getDataTracker();
-            tracker.method_12778(Rainglow.getTrackedColourData(EntityVariantType.Allay), colour);
+            tracker.set(Rainglow.getTrackedColourData(EntityVariantType.ALLAY), colour);
 
             cir.setReturnValue(ActionResult.success(user.world.isClient));
         }
@@ -52,22 +52,40 @@ public class DyeItemMixin {
     }
 
     private static String getDye(ItemStack item) {
-        if (item.isOf(RED_DYE)) return "red";
-        else if (item.isOf(BLUE_DYE)) return "blue";
-        else if (item.isOf(CYAN_DYE)) return "cyan";
-        else if (item.isOf(LIGHT_BLUE_DYE)) return "light_blue";
-        else if (item.isOf(GRAY_DYE)) return "gray";
-        else if (item.isOf(LIGHT_GRAY_DYE)) return "light_gray";
-        else if (item.isOf(LIME_DYE)) return "lime";
-        else if (item.isOf(GREEN_DYE)) return "green";
-        else if (item.isOf(BLACK_DYE)) return "black";
-        else if (item.isOf(BROWN_DYE)) return "brown";
-        else if (item.isOf(ORANGE_DYE)) return "orange";
-        else if (item.isOf(PINK_DYE)) return "pink";
-        else if (item.isOf(WHITE_DYE)) return "white";
-        else if (item.isOf(MAGENTA_DYE)) return "magenta";
-        else if (item.isOf(PURPLE_DYE)) return "purple";
-        else if (item.isOf(YELLOW_DYE)) return "yellow";
+        if (item.isOf(RED_DYE)) {
+            return "red";
+        } else if (item.isOf(BLUE_DYE)) {
+            return "blue";
+        } else if (item.isOf(CYAN_DYE)) {
+            return "cyan";
+        } else if (item.isOf(LIGHT_BLUE_DYE)) {
+            return "light_blue";
+        } else if (item.isOf(GRAY_DYE)) {
+            return "gray";
+        } else if (item.isOf(LIGHT_GRAY_DYE)) {
+            return "light_gray";
+        } else if (item.isOf(LIME_DYE)) {
+            return "lime";
+        } else if (item.isOf(GREEN_DYE)) {
+            return "green";
+        } else if (item.isOf(BLACK_DYE)) {
+            return "black";
+        } else if (item.isOf(BROWN_DYE)) {
+            return "brown";
+        } else if (item.isOf(ORANGE_DYE)) {
+            return "orange";
+        } else if (item.isOf(PINK_DYE)) {
+            return "pink";
+        } else if (item.isOf(WHITE_DYE)) {
+            return "white";
+        } else if (item.isOf(MAGENTA_DYE)) {
+            return "magenta";
+        } else if (item.isOf(PURPLE_DYE)) {
+            return "purple";
+        } else if (item.isOf(YELLOW_DYE)) {
+            return "yellow";
+        }
+
         return "blue";
     }
 }
