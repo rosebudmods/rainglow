@@ -16,6 +16,7 @@
     "client.GlowParticleMixin",
     "client.GlowSquidEntityRendererMixin",
     "client.SlimeEntityRendererMixin",
+    "client.SlimeParticleMixin",
     "client.SquidInkParticleMixin"
   ],
   "injectors": {

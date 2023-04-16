@@ -1,28 +1,30 @@
 package io.ix0rai.rainglow.data;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
 public enum EntityColour {
-    BLACK(new RGB(0.0F, 0.0F, 0.0F), new RGB(0.0F, 0.0F, 0.0F), new RGB(0, 0, 0)),
-    BLUE(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102)),
-    BROWN(new RGB(1.0F, 0.5F, 0.0F), new RGB(1.0F, 0.4F, 0.4F), new RGB(149, 59, 35)), // TODO: Make Brown Particles
-    CYAN(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102)), // TODO: Make Cyan Particles
-    GRAY(new RGB(0.6F, 0.6F, 0.6F), new RGB(0.4F, 0.4F, 0.4F), new RGB(100, 100, 100)),
-    GREEN(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 1.0F, 0.4F), new RGB(0, 200, 0)),
-    INDIGO(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 1.0F), new RGB(0, 0, 200)),
-    LIGHT_BLUE(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102)), // TODO: Make Light Blue Particles?
-    LIGHT_GRAY(new RGB(0.6F, 0.6F, 0.6F), new RGB(0.4F, 0.4F, 0.4F), new RGB(100, 100, 100)), // TODO: Make Light Gray Partciles?
-    LIME(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 1.0F, 0.4F), new RGB(0, 200, 0)), // TODO: Make Lime Particles
-    MAGENTA(new RGB(0.3F, 0F, 0.25F), new RGB(0.5F, 0.05F, 0.5F), new RGB(200, 0, 100)), // TODO: Make Magenta Particles
-    ORANGE(new RGB(1.0F, 0.5F, 0.0F), new RGB(1.0F, 0.4F, 0.4F), new RGB(200, 0, 0)),
-    PINK(new RGB(0.6F, 0F, 0.5F), new RGB(1.0F, 0.1F, 1.0F), new RGB(200, 0, 0)),
-    PURPLE(new RGB(0.3F, 0F, 0.25F), new RGB(0.5F, 0.05F, 0.5F), new RGB(200, 0, 100)),
-    RED(new RGB(1.0F, 1.0F, 0.8F), new RGB(1.0F, 0.4F, 0.4F), new RGB(200, 0, 0)),
-    WHITE(new RGB(1.0F, 1.0F, 1.0F), new RGB(1.0F, 1.0F, 1.0F), new RGB(200, 200, 200)),
-    YELLOW(new RGB(1.0F, 1.0F, 0.8F), new RGB(1.0F, 1.0F, 0.4F), new RGB(200, 0, 0));
+    BLACK(new RGB(0.0F, 0.0F, 0.0F), new RGB(0.0F, 0.0F, 0.0F), new RGB(0, 0, 0), Items.BLACK_DYE),
+    BLUE(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102), Items.BLUE_DYE),
+    BROWN(new RGB(1.0F, 0.5F, 0.0F), new RGB(1.0F, 0.4F, 0.4F), new RGB(149, 59, 35), Items.BROWN_DYE), // todo particles
+    CYAN(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102), Items.CYAN_DYE), // todo particles
+    GRAY(new RGB(0.6F, 0.6F, 0.6F), new RGB(0.4F, 0.4F, 0.4F), new RGB(100, 100, 100), Items.GRAY_DYE),
+    GREEN(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 1.0F, 0.4F), new RGB(0, 200, 0), Items.GREEN_DYE),
+    INDIGO(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 1.0F), new RGB(0, 0, 200), Items.AMETHYST_SHARD),
+    LIGHT_BLUE(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102), Items.LIGHT_BLUE_DYE), // todo particles
+    LIGHT_GRAY(new RGB(0.6F, 0.6F, 0.6F), new RGB(0.4F, 0.4F, 0.4F), new RGB(100, 100, 100), Items.LIGHT_GRAY_DYE), // todo particles
+    LIME(new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 1.0F, 0.4F), new RGB(0, 200, 0), Items.LIME_DYE), // todo particles
+    MAGENTA(new RGB(0.3F, 0F, 0.25F), new RGB(0.5F, 0.05F, 0.5F), new RGB(200, 0, 100), Items.MAGENTA_DYE), // todo particles
+    ORANGE(new RGB(1.0F, 0.5F, 0.0F), new RGB(1.0F, 0.4F, 0.4F), new RGB(200, 0, 0), Items.ORANGE_DYE),
+    PINK(new RGB(0.6F, 0F, 0.5F), new RGB(1.0F, 0.1F, 1.0F), new RGB(200, 0, 0), Items.PINK_DYE),
+    PURPLE(new RGB(0.3F, 0F, 0.25F), new RGB(0.5F, 0.05F, 0.5F), new RGB(200, 0, 100), Items.PURPLE_DYE),
+    RED(new RGB(1.0F, 1.0F, 0.8F), new RGB(1.0F, 0.4F, 0.4F), new RGB(200, 0, 0), Items.RED_DYE),
+    WHITE(new RGB(1.0F, 1.0F, 1.0F), new RGB(1.0F, 1.0F, 1.0F), new RGB(200, 200, 200), Items.WHITE_DYE),
+    YELLOW(new RGB(1.0F, 1.0F, 0.8F), new RGB(1.0F, 1.0F, 0.4F), new RGB(200, 0, 0), Items.YELLOW_DYE);
 
     private static final HashMap<String, EntityColour> BY_ID = new HashMap<>();
     static {
@@ -33,12 +35,14 @@ public enum EntityColour {
     private final RGB passiveParticleRgb;
     private final RGB altPassiveParticleRgb;
     private final RGB inkRgb;
+    private final Item item;
 
-    EntityColour(RGB passiveParticleRgb, RGB altPassiveParticleRgb, RGB inkRgb) {
+    EntityColour(RGB passiveParticleRgb, RGB altPassiveParticleRgb, RGB inkRgb, Item item) {
         this.texture = new Identifier("textures/entity/squid/" + this.getId() + ".png");
         this.passiveParticleRgb = passiveParticleRgb;
         this.altPassiveParticleRgb = altPassiveParticleRgb;
         this.inkRgb = inkRgb;
+        this.item = item;
     }
 
     public Identifier getTexture(EntityVariantType entityType) {
@@ -71,6 +75,10 @@ public enum EntityColour {
 
     public RGB getInkRgb() {
         return this.inkRgb;
+    }
+
+    public Item getItem() {
+        return this.item;
     }
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
+import net.minecraft.item.Item;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -106,6 +107,10 @@ public class Rainglow implements ModInitializer {
     public static EntityColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
         EntityColour colour = COLOURS.get(index);
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
+    }
+
+    public static Item getItem(int index) {
+        return COLOURS.get(index).getItem();
     }
 
     public static String generateRandomColourId(RandomGenerator random)
