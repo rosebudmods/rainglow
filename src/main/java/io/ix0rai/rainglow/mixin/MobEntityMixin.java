@@ -6,11 +6,14 @@ import io.ix0rai.rainglow.data.AllayVariantProvider;
 import io.ix0rai.rainglow.data.EntityColour;
 import io.ix0rai.rainglow.data.GlowSquidEntityData;
 import io.ix0rai.rainglow.data.GlowSquidVariantProvider;
+import io.ix0rai.rainglow.data.SlimeEntityData;
+import io.ix0rai.rainglow.data.SlimeVariantProvider;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -39,6 +42,10 @@ public abstract class MobEntityMixin extends LivingEntity {
             String colour = Rainglow.generateRandomColourId(this.getRandom());
             ((AllayVariantProvider) allay).setVariant(EntityColour.get(colour));
             cir.setReturnValue(new AllayEntityData(EntityColour.get(colour)));
+        } else if ((Object) this instanceof SlimeEntity slime) {
+            String colour = Rainglow.generateRandomColourId(this.getRandom());
+            ((SlimeVariantProvider) slime).setVariant(EntityColour.get(colour));
+            cir.setReturnValue(new SlimeEntityData(EntityColour.get(colour)));
         }
     }
 }
