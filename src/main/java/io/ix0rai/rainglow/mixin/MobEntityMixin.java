@@ -3,7 +3,7 @@ package io.ix0rai.rainglow.mixin;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.AllayEntityData;
 import io.ix0rai.rainglow.data.AllayVariantProvider;
-import io.ix0rai.rainglow.data.EntityColour;
+import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.GlowSquidEntityData;
 import io.ix0rai.rainglow.data.GlowSquidVariantProvider;
 import io.ix0rai.rainglow.data.SlimeEntityData;
@@ -36,16 +36,16 @@ public abstract class MobEntityMixin extends LivingEntity {
     public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
         if ((Object) this instanceof GlowSquidEntity glowSquid) {
             String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((GlowSquidVariantProvider) glowSquid).setVariant(EntityColour.get(colour));
-            cir.setReturnValue(new GlowSquidEntityData(EntityColour.get(colour)));
+            ((GlowSquidVariantProvider) glowSquid).setVariant(RainglowColour.get(colour));
+            cir.setReturnValue(new GlowSquidEntityData(RainglowColour.get(colour)));
         } else if ((Object) this instanceof AllayEntity allay) {
             String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((AllayVariantProvider) allay).setVariant(EntityColour.get(colour));
-            cir.setReturnValue(new AllayEntityData(EntityColour.get(colour)));
+            ((AllayVariantProvider) allay).setVariant(RainglowColour.get(colour));
+            cir.setReturnValue(new AllayEntityData(RainglowColour.get(colour)));
         } else if ((Object) this instanceof SlimeEntity slime) {
             String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((SlimeVariantProvider) slime).setVariant(EntityColour.get(colour));
-            cir.setReturnValue(new SlimeEntityData(EntityColour.get(colour)));
+            ((SlimeVariantProvider) slime).setVariant(RainglowColour.get(colour));
+            cir.setReturnValue(new SlimeEntityData(RainglowColour.get(colour)));
         }
     }
 }

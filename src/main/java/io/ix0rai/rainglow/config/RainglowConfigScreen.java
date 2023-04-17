@@ -6,7 +6,7 @@ import dev.lambdaurora.spruceui.option.SpruceOption;
 import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
 import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.data.EntityColour;
+import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowMode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -38,9 +38,9 @@ public class RainglowConfigScreen extends RainglowScreen {
                 amount -> {
                     if (!Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance())) {
                         mode = mode.cycle();
-                        this.remove(coloursToApplyLabel);
+                        this.remove(this.coloursToApplyLabel);
                         this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + 20);
-                        this.addDrawableChild(coloursToApplyLabel);
+                        this.addDrawableChild(this.coloursToApplyLabel);
                     } else {
                         sendConfigLockedToast();
                     }
@@ -94,7 +94,7 @@ public class RainglowConfigScreen extends RainglowScreen {
         SpruceLabelWidget currentColoursLabel = createColourListLabel(Rainglow.translatableTextKey("config.current_colours"), Rainglow.CONFIG.getMode(), this.width / 2 - 318, this.height / 4 + buttonHeight);
         this.addDrawableChild(currentColoursLabel);
         this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + buttonHeight);
-        this.addDrawableChild(coloursToApplyLabel);
+        this.addDrawableChild(this.coloursToApplyLabel);
 
         // reset and save buttons
         this.addDrawableChild(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
@@ -104,7 +104,7 @@ public class RainglowConfigScreen extends RainglowScreen {
     private SpruceLabelWidget createColourListLabel(String translationKey, RainglowMode mode, int x, int y) {
         // creates a label and appends all the colours that will be applied in the given mode
         StringBuilder text = new StringBuilder(Language.getInstance().get(translationKey));
-        for (EntityColour colour : mode.getColours()) {
+        for (RainglowColour colour : mode.getColours()) {
             text.append("\n").append(Language.getInstance().get(Rainglow.translatableTextKey("colour." + colour.getId())));
         }
         // set colour to the mode's text colour

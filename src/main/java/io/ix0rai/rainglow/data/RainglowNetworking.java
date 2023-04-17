@@ -22,7 +22,7 @@ public class RainglowNetworking {
         buf.writeString(Rainglow.CONFIG.getMode().getId());
 
         // write custom mode data
-        List<String> colourIds = Rainglow.CONFIG.getCustom().stream().map(EntityColour::getId).toList();
+        List<String> colourIds = Rainglow.CONFIG.getCustom().stream().map(RainglowColour::getId).toList();
         buf.writeCollection(colourIds, PacketByteBuf::writeString);
 
         // note: client does not need to know if server sync is enabled or not
@@ -47,7 +47,7 @@ public class RainglowNetworking {
     private static void writeMode(PacketByteBuf buf, RainglowMode mode) {
         buf.writeString(mode.getId());
         buf.writeText(mode.getText());
-        List<String> colourIds = mode.getColours().stream().map(EntityColour::getId).toList();
+        List<String> colourIds = mode.getColours().stream().map(RainglowColour::getId).toList();
         buf.writeCollection(colourIds, PacketByteBuf::writeString);
     }
 

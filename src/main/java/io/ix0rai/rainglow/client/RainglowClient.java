@@ -3,7 +3,7 @@ package io.ix0rai.rainglow.client;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowMode;
 import io.ix0rai.rainglow.data.RainglowResourceReloader;
-import io.ix0rai.rainglow.data.EntityColour;
+import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -27,7 +27,7 @@ public class RainglowClient implements ClientModInitializer {
             String mode = buf.readString();
 
             List<String> colourIds = buf.readList(PacketByteBuf::readString);
-            List<EntityColour> colours = colourIds.stream().map(EntityColour::get).toList();
+            List<RainglowColour> colours = colourIds.stream().map(RainglowColour::get).toList();
 
             client.execute(() -> {
                 // custom must be set before mode so that if the server sends a custom mode it is set correctly

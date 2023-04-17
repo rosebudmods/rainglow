@@ -16,7 +16,7 @@ public class RainglowMode {
     private static final SortedMap<String, RainglowMode> MODES = new TreeMap<>();
 
     private final String id;
-    private final List<EntityColour> colours = new ArrayList<>();
+    private final List<RainglowColour> colours = new ArrayList<>();
     private final Text text;
     private final boolean existsLocally;
 
@@ -37,12 +37,12 @@ public class RainglowMode {
         this.id = id;
 
         for (String colour : colourIds) {
-            EntityColour squidColour = EntityColour.get(colour);
+            RainglowColour squidColour = RainglowColour.get(colour);
             if (squidColour == null) {
                 Rainglow.LOGGER.warn("colour {} loaded from mode {} does not exist, skipping", colour, id);
                 continue;
             }
-            this.colours.add(EntityColour.get(colour));
+            this.colours.add(RainglowColour.get(colour));
         }
 
         this.text = text;
@@ -51,12 +51,12 @@ public class RainglowMode {
         MODES.put(this.id, this);
     }
 
-    public List<EntityColour> getColours() {
+    public List<RainglowColour> getColours() {
         // custom colours are handled by the config instead of the enum
         // all colours mode is handled through code so that I don't have to update if new colours are added
         return switch (this.getId()) {
             case "custom" -> Rainglow.CONFIG.getCustom();
-            case "all_colours" -> List.of(EntityColour.values());
+            case "all_colours" -> List.of(RainglowColour.values());
             default -> this.colours;
         };
     }
@@ -111,8 +111,8 @@ public class RainglowMode {
         return MODES.values();
     }
 
-    public static List<EntityColour> getDefaultCustom() {
-        return List.of(EntityColour.BLUE, EntityColour.WHITE, EntityColour.PINK);
+    public static List<RainglowColour> getDefaultCustom() {
+        return List.of(RainglowColour.BLUE, RainglowColour.WHITE, RainglowColour.PINK);
     }
 
     public static void clearUniversalModes() {

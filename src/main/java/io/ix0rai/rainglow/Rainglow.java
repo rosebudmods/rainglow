@@ -28,7 +28,7 @@ public class Rainglow implements ModInitializer {
     public static final RainglowConfig CONFIG = new RainglowConfig();
     public static final Gson GSON = new Gson();
 
-    private static final List<EntityColour> COLOURS = new ArrayList<>();
+    private static final List<RainglowColour> COLOURS = new ArrayList<>();
     private static final Map<String, Identifier> GLOWSQUID_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> SLIME_TEXTURES = new HashMap<>();
@@ -63,10 +63,10 @@ public class Rainglow implements ModInitializer {
         SLIME_TEXTURES.clear();
         COLOURS.clear();
 
-        List<EntityColour> colours = mode.getColours();
+        List<RainglowColour> colours = mode.getColours();
         if (colours.isEmpty()) {
             LOGGER.info("No colours were present in the internal collection, adding blue so that the game doesn't crash");
-            colours.add(EntityColour.BLUE);
+            colours.add(RainglowColour.BLUE);
         }
         colours.forEach(Rainglow::addColour);
     }
@@ -78,34 +78,34 @@ public class Rainglow implements ModInitializer {
         }
     }
 
-    private static void addColour(EntityColour colour) {
+    private static void addColour(RainglowColour colour) {
         COLOURS.add(colour);
 
-        GLOWSQUID_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.GLOW_SQUID));
-        ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.ALLAY));
-        SLIME_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.SLIME));
+        GLOWSQUID_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.GLOW_SQUID));
+        ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.ALLAY));
+        SLIME_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.SLIME));
 
         if (COLOURS.size() >= 100) {
             throw new RuntimeException("Too many colours registered! Only up to 99 are allowed");
         }
     }
 
-    public static Identifier getTexture(EntityVariantType entityType, String colour) {
-        if (entityType == EntityVariantType.GLOW_SQUID) return GLOWSQUID_TEXTURES.get(colour);
-        else if (entityType == EntityVariantType.ALLAY) return ALLAY_TEXTURES.get(colour);
+    public static Identifier getTexture(RainglowEntity entityType, String colour) {
+        if (entityType == RainglowEntity.GLOW_SQUID) return GLOWSQUID_TEXTURES.get(colour);
+        else if (entityType == RainglowEntity.ALLAY) return ALLAY_TEXTURES.get(colour);
         else return SLIME_TEXTURES.get(colour);
     }
 
     public static int getColourIndex(String colour) {
-        return COLOURS.indexOf(EntityColour.get(colour));
+        return COLOURS.indexOf(RainglowColour.get(colour));
     }
 
-    public static EntityColour.RGB getInkRgb(int index) {
+    public static RainglowColour.RGB getInkRgb(int index) {
         return COLOURS.get(index).getInkRgb();
     }
 
-    public static EntityColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
-        EntityColour colour = COLOURS.get(index);
+    public static RainglowColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
+        RainglowColour colour = COLOURS.get(index);
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
@@ -118,13 +118,13 @@ public class Rainglow implements ModInitializer {
         return COLOURS.get(random.nextInt(COLOURS.size())).getId();
     }
 
-    public static Identifier getDefaultTexture(EntityVariantType entityType) {
-        if (entityType == EntityVariantType.SLIME) return EntityColour.LIME.getTexture(entityType);
-        else return EntityColour.BLUE.getTexture(entityType);
+    public static Identifier getDefaultTexture(RainglowEntity entityType) {
+        if (entityType == RainglowEntity.SLIME) return RainglowColour.LIME.getTexture(entityType);
+        else return RainglowColour.BLUE.getTexture(entityType);
     }
 
     public static boolean colourUnloaded(String colour) {
-        return !COLOURS.contains(EntityColour.get(colour));
+        return !COLOURS.contains(RainglowColour.get(colour));
     }
 
     public static String translatableTextKey(String key) {
@@ -140,25 +140,25 @@ public class Rainglow implements ModInitializer {
         return Text.translatable(translatableTextKey(key));
     }
 
-    public static TrackedData<String> getTrackedColourData(EntityVariantType entityType) {
+    public static TrackedData<String> getTrackedColourData(RainglowEntity entityType) {
         // we cannot statically load the tracked data because then it gets registered too early
         // it breaks the squids' other tracked data, their dark ticks after being hurt
         // this is a workaround to make sure the data is registered at the right time
         // we simply ensure it isn't loaded until it's needed, and that fixes the issue
 
-        if (entityType == EntityVariantType.GLOW_SQUID) {
+        if (entityType == RainglowEntity.GLOW_SQUID) {
             if (glowSquidColour == null) {
                 glowSquidColour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
             }
 
             return glowSquidColour;
-        } else if (entityType == EntityVariantType.ALLAY) {
+        } else if (entityType == RainglowEntity.ALLAY) {
             if (allayColour == null) {
                 allayColour = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);
             }
 
             return allayColour;
-        } else if (entityType == EntityVariantType.SLIME) {
+        } else if (entityType == RainglowEntity.SLIME) {
             if (slimeColour == null) {
                 slimeColour = DataTracker.registerData(SlimeEntity.class, TrackedDataHandlerRegistry.STRING);
             }
@@ -169,7 +169,7 @@ public class Rainglow implements ModInitializer {
         throw new RuntimeException("called getTrackedColourData on an unsupported entity type!");
     }
 
-    public static String getColour(EntityVariantType entityType, DataTracker tracker, RandomGenerator random) {
+    public static String getColour(RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(getTrackedColourData(entityType));
         if (colourUnloaded(colour)) {

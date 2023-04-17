@@ -1,7 +1,7 @@
 package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.data.EntityColour;
+import io.ix0rai.rainglow.data.RainglowColour;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.particle.SquidInkParticle;
@@ -39,11 +39,11 @@ public class SquidInkParticleMixin {
         // if we get an exception (index out of bounds), we know that the sender of the particle does not have rainglow installed or has a different config
         // this will get a few rare false positives, but that's unavoidable since we have so little context
         // when we catch an exception we use white as it looks the most normal
-        EntityColour.RGB rgb;
+        RainglowColour.RGB rgb;
         try {
             rgb = Rainglow.getInkRgb(colourIndex);
         } catch (IndexOutOfBoundsException ignored) {
-            rgb = EntityColour.WHITE.getInkRgb();
+            rgb = RainglowColour.WHITE.getInkRgb();
         }
 
         return new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorUtil.ARGB32.getArgb(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider);
