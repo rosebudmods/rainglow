@@ -11,7 +11,7 @@
 
   "contact": {
     "website": "https://modrinth.com/rainglow",
-    "repo": "https://github.com/ix0rai"
+    "repo": "https://github.com/ix0rai/rainglow"
   },
 
   "license": "MIT",
@@ -36,7 +36,7 @@
 
   "depends": {
     "fabricloader": ">=0.14.9",
-    "minecraft": ">=1.19.3"
+    "minecraft": ">=1.19.4"
   },
 
   "custom": {
@@ -46,7 +46,7 @@
     "modmenu": {
       "links": {
         "modmenu.discord": "https://discord.gg/TN9gaXJ6E8",
-        "modmenu.issues": "https://github.com/ix0rai/bodacious_berries/issues",
+        "modmenu.issues": "https://github.com/ix0rai/rainglow/issues",
         "modmenu.website": "https://modrinth.com/rainglow"
       }
     }
