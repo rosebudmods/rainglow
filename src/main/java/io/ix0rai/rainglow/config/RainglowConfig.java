@@ -2,24 +2,28 @@ package io.ix0rai.rainglow.config;
 
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
+import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.RainglowMode;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class RainglowConfig {
     public static final String MODE_KEY = "mode";
     public static final String CUSTOM_KEY = "custom";
     public static final String SERVER_SYNC_KEY = "enable_server_sync";
+    public static final Function<RainglowEntity, String> TO_CONFIG_KEY = entity -> "enable_" + entity.getId();
 
     private RainglowMode mode;
     private List<RainglowColour> custom;
     private boolean enableServerSync;
-
     private boolean editLocked = false;
     private boolean isInitialised = false;
+    private final Map<RainglowEntity, Boolean> entityToggles = new EnumMap<>(RainglowEntity.class);
 
     public RainglowConfig() {
         // we cannot load the config here because it would be loaded before modes, since it's statically initialised
@@ -58,6 +62,17 @@ public class RainglowConfig {
             serverSync = ConfigIo.parseTomlBoolean(config.get(SERVER_SYNC_KEY));
         }
 
+        // parse entity toggles
+        for (RainglowEntity entity : RainglowEntity.values()) {
+            String configKey = TO_CONFIG_KEY.apply(entity);
+
+            if (config.containsKey(configKey)) {
+                entityToggles.put(entity, ConfigIo.parseTomlBoolean(config.get(configKey)));
+            } else {
+                entityToggles.put(entity, true);
+            }
+        }
+
         // reset colours if parsing failed
         if (customColours.isEmpty()) {
             customColours = RainglowMode.getDefaultCustom();
@@ -67,9 +82,7 @@ public class RainglowConfig {
         this.mode = rainglowMode;
         this.custom = customColours;
         this.enableServerSync = serverSync;
-        ConfigIo.writeString(MODE_KEY, rainglowMode.getId(), false);
-        ConfigIo.writeStringList(CUSTOM_KEY, customColours, false);
-        ConfigIo.writeBoolean(SERVER_SYNC_KEY, serverSync, false);
+        this.save();
 
         this.isInitialised = true;
     }
@@ -94,23 +107,43 @@ public class RainglowConfig {
         return !this.isInitialised;
     }
 
-    public void setMode(RainglowMode mode, boolean write) {
+    public void setMode(RainglowMode mode) {
         this.mode = mode;
         Rainglow.setMode(mode);
-        if (write) {
-            ConfigIo.writeString(MODE_KEY, mode.getId(), true);
-        }
     }
 
-    public void setCustom(List<RainglowColour> custom, boolean write) {
+    public void setCustom(List<RainglowColour> custom) {
         this.custom = custom;
         Rainglow.refreshColours();
-        if (write) {
-            ConfigIo.writeStringList(CUSTOM_KEY, custom, true);
-        }
     }
 
     public void setEditLocked(boolean editLocked) {
         this.editLocked = editLocked;
+    }
+
+    public boolean isEntityEnabled(RainglowEntity entity) {
+        return this.entityToggles.get(entity);
+    }
+
+    public void setEntityEnabled(RainglowEntity entity, boolean enabled) {
+        this.entityToggles.put(entity, enabled);
+    }
+
+    public void save() {
+        ConfigIo.writeString(MODE_KEY, this.mode.getId());
+        this.saveCustom();
+        ConfigIo.writeBoolean(SERVER_SYNC_KEY, this.enableServerSync);
+        this.writeEntityToggles();
+        Rainglow.LOGGER.info("saved config!");
+    }
+
+    public void saveCustom() {
+        ConfigIo.writeStringList(CUSTOM_KEY, this.custom);
+    }
+
+    private void writeEntityToggles() {
+        for (Map.Entry<RainglowEntity, Boolean> entry : entityToggles.entrySet()) {
+            ConfigIo.writeBoolean(TO_CONFIG_KEY.apply(entry.getKey()), entry.getValue());
+        }
     }
 }

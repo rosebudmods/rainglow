@@ -1,12 +1,15 @@
 package io.ix0rai.rainglow.config;
 
 import dev.lambdaurora.spruceui.Position;
+import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
 import dev.lambdaurora.spruceui.option.SpruceCyclingOption;
 import dev.lambdaurora.spruceui.option.SpruceOption;
 import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
 import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
+import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
+import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.RainglowMode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,10 +21,13 @@ import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class RainglowConfigScreen extends RainglowScreen {
     private final SpruceOption modeOption;
     private final SpruceOption customOption;
+    private final SpruceOption[] entityToggles = new SpruceOption[RainglowEntity.values().length];
     private final SpruceOption resetOption;
     private final SpruceOption saveOption;
     private RainglowMode mode;
@@ -56,6 +62,17 @@ public class RainglowConfigScreen extends RainglowScreen {
                 btn -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
         );
 
+        // toggles whether entities are rainbow
+        for (int i = 0; i < RainglowEntity.values().length; i ++) {
+            RainglowEntity entity = RainglowEntity.values()[i];
+
+            this.entityToggles[i] = createEntityToggle(
+                    entity,
+                    () -> Rainglow.CONFIG.isEntityEnabled(entity),
+                    enabled -> Rainglow.CONFIG.setEntityEnabled(entity, enabled)
+            );
+        }
+
         // resets the config to default values
         this.resetOption = SpruceSimpleActionOption.reset(btn -> {
             MinecraftClient client = MinecraftClient.getInstance();
@@ -71,8 +88,16 @@ public class RainglowConfigScreen extends RainglowScreen {
         this.saveOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.save"),
                 buttonWidget -> {
                     this.closeScreen();
-                    Rainglow.CONFIG.setMode(this.mode, true);
+                    Rainglow.CONFIG.save();
                 }
+        );
+    }
+
+    private SpruceBooleanOption createEntityToggle(RainglowEntity entity, Supplier<Boolean> getter, Consumer<Boolean> setter) {
+        return new SpruceBooleanOption(Rainglow.translatableTextKey("config." + "enable_" + entity.getId()),
+                getter,
+                setter,
+                null
         );
     }
 
@@ -80,20 +105,23 @@ public class RainglowConfigScreen extends RainglowScreen {
     protected void init() {
         super.init();
 
-        // config title
-        this.addDrawableChild(new SpruceLabelWidget(Position.of(this, 0, this.height / 9), Rainglow.translatableText("config.title"), this.width, true));
+        SpruceOptionListWidget optionList = new SpruceOptionListWidget(Position.of(0, 22), this.width, this.height - (35 + 22));
+        for (int i = 0; i < RainglowEntity.values().length; i += 2) {
+            SpruceOption secondToggle = null;
+            if (i + 1 < RainglowEntity.values().length) {
+                secondToggle = this.entityToggles[i + 1];
+            }
 
-        int buttonHeight = 20;
-        int buttonOffset = 30;
+            optionList.addOptionEntry(this.entityToggles[i], secondToggle);
+        }
 
-        // mode cycling option and custom mode screen button
-        this.addDrawableChild(this.modeOption.createWidget(Position.of(this.width / 2 - 205, this.height / 6 - buttonHeight + buttonOffset), 200));
-        this.addDrawableChild(this.customOption.createWidget(Position.of(this.width / 2 + 5, this.height / 6 - buttonHeight + buttonOffset), 200));
+        optionList.addOptionEntry(this.modeOption, this.customOption);
+        this.addDrawableChild(optionList);
 
         // current colours label and colours to apply label
-        SpruceLabelWidget currentColoursLabel = createColourListLabel(Rainglow.translatableTextKey("config.current_colours"), Rainglow.CONFIG.getMode(), this.width / 2 - 318, this.height / 4 + buttonHeight);
+        SpruceLabelWidget currentColoursLabel = createColourListLabel(Rainglow.translatableTextKey("config.current_colours"), Rainglow.CONFIG.getMode(), this.width / 2 - 290, this.height / 4 + 40);
         this.addDrawableChild(currentColoursLabel);
-        this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + buttonHeight);
+        this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 125, this.height / 4 + 40);
         this.addDrawableChild(this.coloursToApplyLabel);
 
         // reset and save buttons
@@ -104,9 +132,26 @@ public class RainglowConfigScreen extends RainglowScreen {
     private SpruceLabelWidget createColourListLabel(String translationKey, RainglowMode mode, int x, int y) {
         // creates a label and appends all the colours that will be applied in the given mode
         StringBuilder text = new StringBuilder(Language.getInstance().get(translationKey));
-        for (RainglowColour colour : mode.getColours()) {
-            text.append("\n").append(Language.getInstance().get(Rainglow.translatableTextKey("colour." + colour.getId())));
+        int maxDisplayedColourCount = 16;
+
+        for (int i = 0; i < mode.getColours().size(); i += 2) {
+            RainglowColour colour = mode.getColours().get(i);
+
+            if (i < maxDisplayedColourCount) {
+                String colour1 = Language.getInstance().get(Rainglow.translatableTextKey("colour." + colour.getId()));
+                String colour2 = "";
+                if (i + 1 <= mode.getColours().size() - 1) {
+                    colour2 = Language.getInstance().get(Rainglow.translatableTextKey("colour." + mode.getColours().get(i + 1).getId()));
+                }
+
+                boolean appendComma = i + 2 < mode.getColours().size();
+
+                text.append("\n").append(colour1).append(colour2.equals("") ? "" : ", ").append(colour2).append(appendComma ? "," : "");
+            } else  {
+                text.append("\n... ").append(mode.getColours().size() - maxDisplayedColourCount).append(" ").append(Language.getInstance().get(Rainglow.translatableTextKey("config.more")));
+            }
         }
+
         // set colour to the mode's text colour
         Style style = Style.EMPTY.withColor(mode.getText().getStyle().getColor());
         return new SpruceLabelWidget(Position.of(this, x + 110, y), Text.literal(text.toString()).setStyle(style), 200, true);

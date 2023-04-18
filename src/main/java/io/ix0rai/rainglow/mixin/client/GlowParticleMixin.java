@@ -2,6 +2,7 @@ package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
+import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.client.particle.GlowParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
@@ -26,7 +27,7 @@ public class GlowParticleMixin {
     @Inject(method = "createParticle*", at = @At("HEAD"), cancellable = true)
     public void createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, CallbackInfoReturnable<GlowParticle> cir) {
         // we use whether g is over 100 to determine if we should override the method
-        if (g > 99) {
+        if (Rainglow.CONFIG.isEntityEnabled(RainglowEntity.GLOW_SQUID) && g > 99) {
             g -= 100;
             GlowParticle glowParticle = new GlowParticle(clientWorld, d, e, f, 0.5 - GlowParticle.RANDOM.nextDouble(), h, 0.5 - GlowParticle.RANDOM.nextDouble(), this.spriteProvider);
 

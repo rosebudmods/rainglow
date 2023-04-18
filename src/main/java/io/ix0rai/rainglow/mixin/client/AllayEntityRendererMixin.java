@@ -20,7 +20,7 @@ public class AllayEntityRendererMixin {
 
         // if the colour is blue we don't need to override the method
         // this optimises a tiny bit
-        if (!colour.equals(RainglowColour.BLUE.getId())) {
+        if (Rainglow.CONFIG.isEntityEnabled(RainglowEntity.ALLAY) && !colour.equals(RainglowColour.BLUE.getId())) {
             Identifier texture = Rainglow.getTexture(RainglowEntity.ALLAY, colour);
             cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture(RainglowEntity.ALLAY));
         }

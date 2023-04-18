@@ -101,15 +101,15 @@ public class ConfigIo {
         }
     }
 
-    public static void writeString(String key, String string, boolean log) {
-        write(key, "\"" + string + "\"", "string", log);
+    public static void writeString(String key, String string) {
+        write(key, "\"" + string + "\"", "string");
     }
 
-    public static void writeBoolean(String key, boolean bool, boolean log) {
-        write(key, bool ? "true" : "false", "boolean", log);
+    public static void writeBoolean(String key, boolean bool) {
+        write(key, bool ? "true" : "false", "boolean");
     }
 
-    public static void writeStringList(String key, List<?> list, boolean log) {
+    public static void writeStringList(String key, List<?> list) {
         // convert to toml-friendly format
         StringBuilder tomlCompatibleList = new StringBuilder("[");
         for (int i = 0; i < list.size(); i ++) {
@@ -117,10 +117,10 @@ public class ConfigIo {
         }
         tomlCompatibleList.append("]");
 
-        write(key, tomlCompatibleList.toString(), "string list", log);
+        write(key, tomlCompatibleList.toString(), "string list");
     }
 
-    private static void write(String key, String value, String type, boolean log) {
+    private static void write(String key, String value, String type) {
         try {
             String content = Files.readString(CONFIG_FILE_PATH);
             String[] lines = content.split("\n");
@@ -137,10 +137,6 @@ public class ConfigIo {
             }
 
             Files.writeString(CONFIG_FILE_PATH, String.join("\n", lines));
-
-            if (log) {
-                Rainglow.LOGGER.info("wrote " + value + " of type \"" + type + "\" to config file under key " + key);
-            }
         } catch (IOException e) {
             Rainglow.LOGGER.warn("could not write object " + value + " of type " + type + " to config file under key \"" + key + "\"!");
         }

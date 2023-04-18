@@ -23,7 +23,7 @@ public class GlowSquidEntityRendererMixin {
 
         // if the colour is blue we don't need to override the method
         // this optimises a tiny bit
-        if (!colour.equals(RainglowColour.BLUE.getId())) {
+        if (Rainglow.CONFIG.isEntityEnabled(RainglowEntity.GLOW_SQUID) && !colour.equals(RainglowColour.BLUE.getId())) {
             Identifier texture = Rainglow.getTexture(RainglowEntity.GLOW_SQUID, colour);
             cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture(RainglowEntity.GLOW_SQUID));
         }

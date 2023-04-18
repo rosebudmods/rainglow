@@ -32,8 +32,8 @@ public class RainglowClient implements ClientModInitializer {
             client.execute(() -> {
                 // custom must be set before mode so that if the server sends a custom mode it is set correctly
                 // otherwise the client's custom would be used
-                Rainglow.CONFIG.setCustom(colours, false);
-                Rainglow.CONFIG.setMode(RainglowMode.byId(mode), false);
+                Rainglow.CONFIG.setCustom(colours);
+                Rainglow.CONFIG.setMode(RainglowMode.byId(mode));
 
                 // lock the config from reloading on resource reload
                 Rainglow.CONFIG.setEditLocked(true);

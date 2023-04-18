@@ -60,7 +60,8 @@ public class CustomModeScreen extends RainglowScreen {
                         }
                     }
 
-                    Rainglow.CONFIG.setCustom(newCustom, true);
+                    Rainglow.CONFIG.setCustom(newCustom);
+                    Rainglow.CONFIG.saveCustom();
                     this.closeScreen();
                 }
         );
