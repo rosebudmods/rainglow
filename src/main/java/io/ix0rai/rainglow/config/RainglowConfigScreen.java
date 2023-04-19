@@ -45,7 +45,7 @@ public class RainglowConfigScreen extends RainglowScreen {
                     if (!Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance())) {
                         mode = mode.cycle();
                         this.remove(this.coloursToApplyLabel);
-                        this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 108, this.height / 4 + 20);
+                        this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 125, this.height / 4 + 40);
                         this.addDrawableChild(this.coloursToApplyLabel);
                     } else {
                         sendConfigLockedToast();
