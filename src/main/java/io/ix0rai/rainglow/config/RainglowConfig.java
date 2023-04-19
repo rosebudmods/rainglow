@@ -4,6 +4,8 @@ import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.RainglowMode;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
@@ -130,9 +132,13 @@ public class RainglowConfig {
     }
 
     public void save() {
-        ConfigIo.writeString(MODE_KEY, this.mode.getId());
-        this.saveCustom();
-        ConfigIo.writeBoolean(SERVER_SYNC_KEY, this.enableServerSync);
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER || !this.isEditLocked(MinecraftClient.getInstance())) {
+            ConfigIo.writeString(MODE_KEY, this.mode.getId());
+            this.saveCustom();
+            ConfigIo.writeBoolean(SERVER_SYNC_KEY, this.enableServerSync);
+        }
+
+        // entity toggles cannot be locked by the server
         this.writeEntityToggles();
         Rainglow.LOGGER.info("saved config!");
     }
