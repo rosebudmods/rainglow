@@ -88,6 +88,7 @@ public class RainglowConfigScreen extends RainglowScreen {
         this.saveOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.save"),
                 buttonWidget -> {
                     this.closeScreen();
+                    Rainglow.CONFIG.setMode(this.mode);
                     Rainglow.CONFIG.save();
                 }
         );
