@@ -89,7 +89,7 @@ public class RainglowConfigScreen extends RainglowScreen {
                 buttonWidget -> {
                     this.closeScreen();
                     Rainglow.CONFIG.setMode(this.mode);
-                    Rainglow.CONFIG.save();
+                    Rainglow.CONFIG.save(true);
                 }
         );
     }

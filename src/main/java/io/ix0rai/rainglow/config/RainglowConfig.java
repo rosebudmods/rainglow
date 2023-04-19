@@ -84,7 +84,7 @@ public class RainglowConfig {
         this.mode = rainglowMode;
         this.custom = customColours;
         this.enableServerSync = serverSync;
-        this.save();
+        this.save(false);
 
         this.isInitialised = true;
     }
@@ -131,7 +131,7 @@ public class RainglowConfig {
         this.entityToggles.put(entity, enabled);
     }
 
-    public void save() {
+    public void save(boolean log) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER || !this.isEditLocked(MinecraftClient.getInstance())) {
             ConfigIo.writeString(MODE_KEY, this.mode.getId());
             this.saveCustom();
@@ -140,7 +140,9 @@ public class RainglowConfig {
 
         // entity toggles cannot be locked by the server
         this.writeEntityToggles();
-        Rainglow.LOGGER.info("saved config!");
+        if (log) {
+            Rainglow.LOGGER.info("saved config!");
+        }
     }
 
     public void saveCustom() {
