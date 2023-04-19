@@ -3,16 +3,22 @@
 ## [discord](https://discord.gg/TN9gaXJ6E8) | [github](https://github.com/ix0rai/rainglow) | [modrinth](https://modrinth.com/mod/rainglow) | [curseforge](https://www.curseforge.com/minecraft/mc-mods/rainglow)
 
 ## overview
-Rainglow changes the colours of your glow squids, letting them be all the colours of the rainbow!
-It also includes configurability through different modes, including pride modes! Make your glow squids gorgeous.
+Rainglow changes the colours of your glow squids, slimes, and allays, giving them all the colours of the rainbow!
+It also includes configurability through different modes, including pride modes! Make your world gorgeous.
 
+![2023-04-18_19 43 09](https://user-images.githubusercontent.com/66223394/232941419-173cea2a-84a6-4b71-a145-c1d8a402eccc.png)
 ## features
-- 10+ different glow squid colours!
-- a configuration file with many modes, including pride modes, rainbow, monochrome, and more! documentation on this can be found [here](https://github.com/ix0rai/rainglow/wiki/config)
-- no dependencies - works as soon as you put it in your mods folder
+- 15+ different available colours!
 - lightweight and removable - after removing the mod, your glow squids will simply revert to blue with no damage to your save file
 - server sync - the configuration file can be synced from the server to the client, meaning that all players on your server will use the same options. documentation on this can be found [here](https://github.com/ix0rai/rainglow/wiki/server-sync)
 - custom modes - modes are data-driven, meaning that you can create your own modes and add them to the game! documentation on this can be found [here](https://github.com/ix0rai/rainglow/wiki/creating-custom-modes)
+
+![2023-04-18_20 00 37](https://user-images.githubusercontent.com/66223394/232941535-a2083d12-c2e1-4d63-acfc-ecd9a00e0e11.png)
+## fully configurable!
+- you can set different modes, such as rainbow, monochrome, pride modes, and many more!
+- each entity can be toggled off through the config
+- create your very own custom mode through a gui
+- documentation on this can be found [here](https://github.com/ix0rai/rainglow/wiki/config)
 
 #### server-side optional!
 This mod does not need to be installed on the server to function!
