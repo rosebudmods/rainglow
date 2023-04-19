@@ -3,10 +3,11 @@
   "id": "rainglow",
   "version": "${version}",
   "name": "Rainglow",
-  "description": "make your glow squids gorgeous!",
+  "description": "rainbow glow squids, slimes and allays - make your world gorgeous!",
 
   "authors": [
-    "ix0rai"
+    "ix0rai",
+    "a5ho"
   ],
 
   "contact": {
