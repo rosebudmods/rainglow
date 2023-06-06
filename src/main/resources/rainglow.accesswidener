@@ -12,6 +12,3 @@ accessible  method   net/minecraft/client/particle/SquidInkParticle <init>  (Lne
 accessible field net/minecraft/client/particle/Particle velocityX D
 accessible field net/minecraft/client/particle/Particle velocityY D
 accessible field net/minecraft/client/particle/Particle velocityZ D
-
-accessible field net/minecraft/entity/passive/AllayEntity field_39471 J
-

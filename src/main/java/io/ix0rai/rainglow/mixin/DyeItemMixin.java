@@ -28,35 +28,35 @@ public class DyeItemMixin {
         String colour = getDye(stack);
 
         if (entity instanceof GlowSquidEntity glowSquid && glowSquid.isAlive() && !Rainglow.getColour(RainglowEntity.GLOW_SQUID, glowSquid.getDataTracker(), glowSquid.getRandom()).equals(colour)) {
-            glowSquid.world.playSoundFromEntity(user, glowSquid, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            if (!user.world.isClient) {
+            glowSquid.getWorld().playSoundFromEntity(user, glowSquid, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            if (!user.getWorld().isClient()) {
                 stack.decrement(1);
             }
 
             DataTracker tracker = glowSquid.getDataTracker();
             tracker.set(Rainglow.getTrackedColourData(RainglowEntity.GLOW_SQUID), colour);
 
-            cir.setReturnValue(ActionResult.success(user.world.isClient));
+            cir.setReturnValue(ActionResult.success(user.getWorld().isClient()));
         } else if (entity instanceof AllayEntity allayEntity && allayEntity.isAlive() && !Rainglow.getColour(RainglowEntity.ALLAY, allayEntity.getDataTracker(), allayEntity.getRandom()).equals(colour)) {
-            allayEntity.world.playSoundFromEntity(user, allayEntity, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            if (!user.world.isClient) {
+            allayEntity.getWorld().playSoundFromEntity(user, allayEntity, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            if (!user.getWorld().isClient()) {
                 stack.decrement(1);
             }
 
             DataTracker tracker = allayEntity.getDataTracker();
             tracker.set(Rainglow.getTrackedColourData(RainglowEntity.ALLAY), colour);
 
-            cir.setReturnValue(ActionResult.success(user.world.isClient));
+            cir.setReturnValue(ActionResult.success(user.getWorld().isClient()));
         } else if (entity instanceof SlimeEntity slimeEntity && slimeEntity.isAlive() && !Rainglow.getColour(RainglowEntity.SLIME, slimeEntity.getDataTracker(), slimeEntity.getRandom()).equals(colour)) {
-            slimeEntity.world.playSoundFromEntity(user, slimeEntity, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            if (!user.world.isClient) {
+            slimeEntity.getWorld().playSoundFromEntity(user, slimeEntity, SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            if (!user.getWorld().isClient()) {
                 stack.decrement(1);
             }
 
             DataTracker tracker = slimeEntity.getDataTracker();
             tracker.set(Rainglow.getTrackedColourData(RainglowEntity.SLIME), colour);
 
-            cir.setReturnValue(ActionResult.success(user.world.isClient));
+            cir.setReturnValue(ActionResult.success(user.getWorld().isClient()));
         }
 
         cir.setReturnValue(ActionResult.PASS);

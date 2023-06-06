@@ -61,7 +61,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     public boolean spawnWithParentColour(World instance, Entity entity) {
         RainglowColour colour = RainglowColour.get(Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random));
         entity.getDataTracker().set(Rainglow.getTrackedColourData(RainglowEntity.SLIME), colour.getId());
-        return this.world.spawnEntity(entity);
+        return this.getWorld().spawnEntity(entity);
     }
 
     /**
@@ -84,7 +84,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
             float g = this.random.nextFloat() * 0.5F + 0.5F;
             float h = MathHelper.sin(f) * (float)size * 0.5F * g;
             float k = MathHelper.cos(f) * (float)size * 0.5F * g;
-            this.world.addParticle(this.getParticles(), this.getX() + (double)h, this.getY(), this.getZ() + (double)k, index, 100.0, 0.0);
+            this.getWorld().addParticle(this.getParticles(), this.getX() + (double)h, this.getY(), this.getZ() + (double)k, index, 100.0, 0.0);
         }
     }
 

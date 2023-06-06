@@ -46,11 +46,11 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
     }
 
     // triggered when an allay duplicates, to apply the same colour as parent
-    @Redirect(method = "method_44363", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
+    @Redirect(method = "duplicate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     public boolean spawnWithColour(World instance, Entity entity) {
         RainglowColour colour = RainglowColour.get(Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.getRandom()));
         entity.getDataTracker().set(Rainglow.getTrackedColourData(RainglowEntity.ALLAY), colour.getId());
-        return this.world.spawnEntity(entity);
+        return this.getWorld().spawnEntity(entity);
     }
 
     @Override
