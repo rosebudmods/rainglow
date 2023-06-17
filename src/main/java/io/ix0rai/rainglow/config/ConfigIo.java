@@ -132,7 +132,7 @@ public class ConfigIo {
                     break;
                 } else if (i == lines.length - 1) {
                     // if key is not found append it to the end
-                    lines[i] += "\n" + key + " = " + value;
+                    lines[i] += (!lines[i].isBlank() ? "\n" : "") + key + " = " + value;
                 }
             }
 
