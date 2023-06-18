@@ -11,7 +11,7 @@
   ],
 
   "contact": {
-    "website": "https://modrinth.com/rainglow",
+    "website": "https://modrinth.com/mod/rainglow",
     "repo": "https://github.com/ix0rai/rainglow"
   },
 
@@ -54,7 +54,7 @@
       "links": {
         "modmenu.discord": "https://discord.gg/TN9gaXJ6E8",
         "modmenu.issues": "https://github.com/ix0rai/rainglow/issues",
-        "modmenu.website": "https://modrinth.com/rainglow"
+        "modmenu.website": "https://modrinth.com/mod/rainglow"
       }
     }
   }
