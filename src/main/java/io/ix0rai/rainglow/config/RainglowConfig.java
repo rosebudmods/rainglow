@@ -102,7 +102,8 @@ public class RainglowConfig {
     }
 
     public boolean isEditLocked(MinecraftClient client) {
-        return !client.isInSingleplayer() && this.editLocked;
+        // client can only be locked inside a multiplayer server
+        return !client.isInSingleplayer() && (client.getCurrentServerEntry() != null && this.editLocked);
     }
 
     public boolean isUninitialised() {
