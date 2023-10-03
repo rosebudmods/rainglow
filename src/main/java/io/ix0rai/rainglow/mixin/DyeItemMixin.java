@@ -15,6 +15,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -62,6 +63,7 @@ public class DyeItemMixin {
         cir.setReturnValue(ActionResult.PASS);
     }
 
+    @Unique
     private static String getDye(ItemStack item) {
         if (item.isOf(RED_DYE)) {
             return "red";

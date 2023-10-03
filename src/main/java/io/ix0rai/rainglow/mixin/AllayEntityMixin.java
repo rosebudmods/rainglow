@@ -11,6 +11,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -63,6 +64,7 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
         this.getDataTracker().set(Rainglow.getTrackedColourData(RainglowEntity.ALLAY), colour.getId());
     }
 
+    @Unique
     public RandomGenerator getRandom() {
         return this.random;
     }
