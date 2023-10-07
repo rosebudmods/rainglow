@@ -3,6 +3,7 @@ package io.ix0rai.rainglow.config;
 import dev.lambdaurora.spruceui.Position;
 import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
 import dev.lambdaurora.spruceui.option.SpruceCyclingOption;
+import dev.lambdaurora.spruceui.option.SpruceIntegerInputOption;
 import dev.lambdaurora.spruceui.option.SpruceOption;
 import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
 import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
@@ -30,6 +31,8 @@ public class RainglowConfigScreen extends RainglowScreen {
     private final SpruceOption[] entityToggles = new SpruceOption[RainglowEntity.values().length];
     private final SpruceOption resetOption;
     private final SpruceOption saveOption;
+
+    private final SpruceOption colourRarityOption;
     private RainglowMode mode;
     // colours to apply is saved in a variable so that it can be removed from the screen when cycling modes
     private SpruceLabelWidget coloursToApplyLabel;
@@ -72,6 +75,12 @@ public class RainglowConfigScreen extends RainglowScreen {
                     enabled -> Rainglow.CONFIG.setEntityEnabled(entity, enabled)
             );
         }
+
+        this.colourRarityOption = new SpruceIntegerInputOption(Rainglow.translatableTextKey("config.rarity"),
+                Rainglow.CONFIG::getRarity,
+                Rainglow.CONFIG::setRarity,
+                Rainglow.translatableText("tooltip.rarity")
+        );
 
         // resets the config to default values
         this.resetOption = SpruceSimpleActionOption.reset(btn -> {
@@ -117,6 +126,7 @@ public class RainglowConfigScreen extends RainglowScreen {
         }
 
         optionList.addOptionEntry(this.modeOption, this.customOption);
+        optionList.addSingleOptionEntry(this.colourRarityOption);
         this.addDrawableChild(optionList);
 
         // current colours label and colours to apply label

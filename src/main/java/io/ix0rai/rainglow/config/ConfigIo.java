@@ -23,6 +23,10 @@ public class ConfigIo {
         return value.equals("true");
     }
 
+    public static int parseTomlInt(String value) {
+        return Integer.parseInt(value);
+    }
+
     public static String parseTomlString(String string) {
         try {
             return string.split("\"")[1].split("\"")[0];
@@ -107,6 +111,10 @@ public class ConfigIo {
 
     public static void writeBoolean(String key, boolean bool) {
         write(key, bool ? "true" : "false", "boolean");
+    }
+
+    public static void writeInt(String key, int value) {
+        write(key, Integer.toString(value), "int");
     }
 
     public static void writeStringList(String key, List<?> list) {
