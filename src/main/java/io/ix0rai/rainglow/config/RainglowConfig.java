@@ -18,10 +18,13 @@ public class RainglowConfig {
     public static final String MODE_KEY = "mode";
     public static final String CUSTOM_KEY = "custom";
     public static final String SERVER_SYNC_KEY = "enable_server_sync";
+
+    public static final String RARITY_KEY = "rarity";
     public static final Function<RainglowEntity, String> TO_CONFIG_KEY = entity -> "enable_" + entity.getId();
 
     private RainglowMode mode;
     private List<RainglowColour> custom;
+    private int rarity;
     private boolean enableServerSync;
     private boolean editLocked = false;
     private boolean isInitialised = false;
@@ -75,6 +78,12 @@ public class RainglowConfig {
             }
         }
 
+        // parse rarity
+        int rarity = 100;
+        if (config.containsKey(RARITY_KEY)) {
+            rarity = ConfigIo.parseTomlInt(config.get(RARITY_KEY));
+        }
+
         // reset colours if parsing failed
         if (customColours.isEmpty()) {
             customColours = RainglowMode.getDefaultCustom();
@@ -84,6 +93,7 @@ public class RainglowConfig {
         this.mode = rainglowMode;
         this.custom = customColours;
         this.enableServerSync = serverSync;
+        this.rarity = rarity;
         this.save(false);
 
         this.isInitialised = true;
@@ -95,6 +105,10 @@ public class RainglowConfig {
 
     public List<RainglowColour> getCustom() {
         return this.custom;
+    }
+
+    public int getRarity() {
+        return this.rarity;
     }
 
     public boolean isServerSyncEnabled() {
@@ -120,6 +134,10 @@ public class RainglowConfig {
         Rainglow.refreshColours();
     }
 
+    public void setRarity(int rarity) {
+        this.rarity = rarity;
+    }
+
     public void setEditLocked(boolean editLocked) {
         this.editLocked = editLocked;
     }
@@ -137,6 +155,7 @@ public class RainglowConfig {
             ConfigIo.writeString(MODE_KEY, this.mode.getId());
             this.saveCustom();
             ConfigIo.writeBoolean(SERVER_SYNC_KEY, this.enableServerSync);
+            ConfigIo.writeInt(RARITY_KEY, this.rarity);
         }
 
         // entity toggles cannot be locked by the server

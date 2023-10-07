@@ -36,16 +36,16 @@ public abstract class MobEntityMixin extends LivingEntity {
     public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
         if ((Object) this instanceof GlowSquidEntity glowSquid) {
             String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((GlowSquidVariantProvider) glowSquid).setVariant(RainglowColour.get(colour));
-            cir.setReturnValue(new GlowSquidEntityData(RainglowColour.get(colour)));
+            ((GlowSquidVariantProvider) glowSquid).setVariant(this.random.nextInt(100) >= Rainglow.CONFIG.getRarity() ? RainglowColour.BLUE : RainglowColour.get(colour));
+            cir.setReturnValue(new GlowSquidEntityData(this.random.nextInt(100) >= Rainglow.CONFIG.getRarity() ? RainglowColour.BLUE : RainglowColour.get(colour)));
         } else if ((Object) this instanceof AllayEntity allay) {
             String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((AllayVariantProvider) allay).setVariant(RainglowColour.get(colour));
-            cir.setReturnValue(new AllayEntityData(RainglowColour.get(colour)));
+            ((AllayVariantProvider) allay).setVariant(this.random.nextInt(100) >= Rainglow.CONFIG.getRarity() ? RainglowColour.BLUE : RainglowColour.get(colour));
+            cir.setReturnValue(new AllayEntityData(this.random.nextInt(100) >= Rainglow.CONFIG.getRarity() ? RainglowColour.BLUE : RainglowColour.get(colour)));
         } else if ((Object) this instanceof SlimeEntity slime) {
             String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((SlimeVariantProvider) slime).setVariant(RainglowColour.get(colour));
-            cir.setReturnValue(new SlimeEntityData(RainglowColour.get(colour)));
+            ((SlimeVariantProvider) slime).setVariant(this.random.nextInt(100) >= Rainglow.CONFIG.getRarity() ? RainglowColour.LIME : RainglowColour.get(colour));
+            cir.setReturnValue(new SlimeEntityData(this.random.nextInt(100) >= Rainglow.CONFIG.getRarity() ? RainglowColour.LIME : RainglowColour.get(colour)));
         }
     }
 }
