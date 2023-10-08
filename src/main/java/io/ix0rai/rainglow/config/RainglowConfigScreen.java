@@ -49,7 +49,7 @@ public class RainglowConfigScreen extends RainglowScreen {
                         mode = mode.cycle();
                         this.remove(this.coloursToApplyLabel);
                         this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 125, this.height / 4 + 40);
-                        this.addDrawableChild(this.coloursToApplyLabel);
+                        this.addDrawable(this.coloursToApplyLabel);
                     } else {
                         sendConfigLockedToast();
                     }
@@ -127,17 +127,17 @@ public class RainglowConfigScreen extends RainglowScreen {
 
         optionList.addOptionEntry(this.modeOption, this.customOption);
         optionList.addSingleOptionEntry(this.colourRarityOption);
-        this.addDrawableChild(optionList);
+        this.addDrawable(optionList);
 
         // current colours label and colours to apply label
         SpruceLabelWidget currentColoursLabel = createColourListLabel(Rainglow.translatableTextKey("config.current_colours"), Rainglow.CONFIG.getMode(), this.width / 2 - 290, this.height / 4 + 40);
-        this.addDrawableChild(currentColoursLabel);
+        this.addDrawable(currentColoursLabel);
         this.coloursToApplyLabel = createColourListLabel(Rainglow.translatableTextKey("config.colours_to_apply"), this.mode, this.width / 2 - 125, this.height / 4 + 40);
-        this.addDrawableChild(this.coloursToApplyLabel);
+        this.addDrawable(this.coloursToApplyLabel);
 
         // reset and save buttons
-        this.addDrawableChild(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
-        this.addDrawableChild(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
+        this.addDrawable(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
+        this.addDrawable(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
     }
 
     private SpruceLabelWidget createColourListLabel(String translationKey, RainglowMode mode, int x, int y) {
