@@ -80,10 +80,10 @@ public class CustomModeScreen extends RainglowScreen {
             }
             options.addOptionEntry(colourToggles[i], secondToggle);
         }
-        this.addDrawable(options);
+        this.addDrawableSelectableElement(options);
 
         // save and clear buttons
-        this.addDrawable(this.clearOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
-        this.addDrawable(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
+        this.addDrawableSelectableElement(this.clearOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
+        this.addDrawableSelectableElement(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
     }
 }

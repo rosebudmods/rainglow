@@ -118,7 +118,9 @@ public class RainglowConfigScreen extends RainglowScreen {
         SpruceOptionListWidget optionList = new SpruceOptionListWidget(Position.of(0, 22), this.width, this.height - (35 + 22));
         for (int i = 0; i < RainglowEntity.values().length; i += 2) {
             SpruceOption secondToggle = null;
-            if (i + 1 < RainglowEntity.values().length) {
+            int l = RainglowEntity.values().length;
+
+            if (i + 1 < l) {
                 secondToggle = this.entityToggles[i + 1];
             }
 
@@ -127,7 +129,7 @@ public class RainglowConfigScreen extends RainglowScreen {
 
         optionList.addOptionEntry(this.modeOption, this.customOption);
         optionList.addSingleOptionEntry(this.colourRarityOption);
-        this.addDrawable(optionList);
+        this.addDrawableSelectableElement(optionList);
 
         // current colours label and colours to apply label
         SpruceLabelWidget currentColoursLabel = createColourListLabel(Rainglow.translatableTextKey("config.current_colours"), Rainglow.CONFIG.getMode(), this.width / 2 - 290, this.height / 4 + 40);
@@ -136,8 +138,8 @@ public class RainglowConfigScreen extends RainglowScreen {
         this.addDrawable(this.coloursToApplyLabel);
 
         // reset and save buttons
-        this.addDrawable(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
-        this.addDrawable(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
+        this.addDrawableSelectableElement(this.resetOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
+        this.addDrawableSelectableElement(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
     }
 
     private SpruceLabelWidget createColourListLabel(String translationKey, RainglowMode mode, int x, int y) {
