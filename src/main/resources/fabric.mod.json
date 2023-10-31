@@ -39,7 +39,7 @@
     "fabricloader": ">=0.14.19",
     "fabric-resource-loader-v0": "*",
     "fabric-networking-api-v1": "*",
-    "minecraft": ">=1.20"
+    "minecraft": ">=1.20.2"
   },
 
   "suggests": {
