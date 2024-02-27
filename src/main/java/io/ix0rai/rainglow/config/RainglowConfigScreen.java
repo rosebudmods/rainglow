@@ -159,7 +159,7 @@ public class RainglowConfigScreen extends RainglowScreen {
 
                 boolean appendComma = i + 2 < mode.getColours().size();
 
-                text.append("\n").append(colour1).append(colour2.equals("") ? "" : ", ").append(colour2).append(appendComma ? "," : "");
+                text.append("\n").append(colour1).append(colour2.isEmpty() ? "" : ", ").append(colour2).append(appendComma ? "," : "");
             } else  {
                 text.append("\n... ").append(mode.getColours().size() - maxDisplayedColourCount).append(" ").append(Language.getInstance().get(Rainglow.translatableTextKey("config.more")));
             }
@@ -171,7 +171,7 @@ public class RainglowConfigScreen extends RainglowScreen {
     }
 
     private static void sendConfigLockedToast() {
-        Toast toast = new SystemToast(SystemToast.Type.PACK_LOAD_FAILURE, Rainglow.translatableText("config.server_locked_title"), Rainglow.translatableText("config.server_locked_description"));
+        Toast toast = new SystemToast(SystemToast.C_ozahoshp.field_47585, Rainglow.translatableText("config.server_locked_title"), Rainglow.translatableText("config.server_locked_description"));
         MinecraftClient.getInstance().getToastManager().add(toast);
     }
 }

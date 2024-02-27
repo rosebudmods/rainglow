@@ -113,8 +113,7 @@ public class Rainglow implements ModInitializer {
         return COLOURS.get(index).getItem();
     }
 
-    public static String generateRandomColourId(RandomGenerator random)
-    {
+    public static String generateRandomColourId(RandomGenerator random) {
         return COLOURS.get(random.nextInt(COLOURS.size())).getId();
     }
 
