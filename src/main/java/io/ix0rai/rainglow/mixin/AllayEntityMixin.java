@@ -26,7 +26,7 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(CallbackInfo ci) {
-        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(RainglowEntity.ALLAY), RainglowColour.BLUE.getId());
+        this.getDataTracker().set(Rainglow.getTrackedColourData(RainglowEntity.ALLAY), RainglowColour.BLUE.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))

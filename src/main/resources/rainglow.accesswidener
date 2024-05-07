@@ -1,6 +1,7 @@
 accessWidener	v1	named
 
 accessible   class   net/minecraft/client/particle/GlowParticle$GlowFactory
+extendable   class   net/minecraft/client/option/Option
 
 accessible  method   net/minecraft/client/particle/GlowParticle <init>  (Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/client/particle/SpriteProvider;)V
 accessible field net/minecraft/client/particle/GlowParticle RANDOM Lnet/minecraft/util/random/RandomGenerator;

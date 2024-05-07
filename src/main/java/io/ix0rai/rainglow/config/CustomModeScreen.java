@@ -1,27 +1,28 @@
 package io.ix0rai.rainglow.config;
 
-import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
-import dev.lambdaurora.spruceui.option.SpruceOption;
-import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
-import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomModeScreen extends RainglowScreen {
+public class CustomModeScreen extends SimpleOptionsScreen {
     private final SpruceOption clearOption;
     private final SpruceOption saveOption;
     private final SpruceBooleanOption[] colourToggles = new SpruceBooleanOption[RainglowColour.values().length];
     private final boolean[] toggleStates = new boolean[RainglowColour.values().length];
 
     public CustomModeScreen(@Nullable Screen parent) {
-        super(parent, Rainglow.translatableText("config.title"));
+        super(parent, MinecraftClient.getInstance().options, Rainglow.translatableText("config.title"),
+
+        );
+
+        // todo subclass option to allow saving via a save button
+        // ephemeral value, not saved until a specific method is called (will happen on save pressed)
 
         // create toggles for each colour
         for (int i = 0; i < RainglowColour.values().length; i ++) {

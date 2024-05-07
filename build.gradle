@@ -1,6 +1,6 @@
 plugins {
-    id "fabric-loom" version "1.5.+"
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "fabric-loom" version "1.6.+"
+    id "com.github.johnrengelman.shadow" version "7.1.+"
     id "com.modrinth.minotaur" version "2.+"
 }
 
@@ -25,7 +25,6 @@ dependencies {
     mappings("org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.quilt_mappings}:intermediary-v2")
     modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
 
-    include(modImplementation("dev.lambdaurora:spruceui:${project.spruceui_version}"))
     modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
 
     Set<String> apiModules = [

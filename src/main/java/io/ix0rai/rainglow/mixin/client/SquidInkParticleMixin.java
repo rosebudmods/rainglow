@@ -50,7 +50,7 @@ public class SquidInkParticleMixin {
                 rgb = RainglowColour.WHITE.getInkRgb();
             }
 
-            cir.setReturnValue(new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorUtil.ARGB32.getArgb(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider));
+            cir.setReturnValue(new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorUtil.Argb32.of(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider));
         }
     }
 }

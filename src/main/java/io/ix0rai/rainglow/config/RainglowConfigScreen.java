@@ -1,19 +1,12 @@
 package io.ix0rai.rainglow.config;
 
-import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
-import dev.lambdaurora.spruceui.option.SpruceCyclingOption;
-import dev.lambdaurora.spruceui.option.SpruceIntegerInputOption;
-import dev.lambdaurora.spruceui.option.SpruceOption;
-import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
-import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
-import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.RainglowMode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.option.Option;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.text.Style;
@@ -39,6 +32,7 @@ public class RainglowConfigScreen extends RainglowScreen {
 
     public RainglowConfigScreen(@Nullable Screen parent) {
         super(parent, Rainglow.translatableText("config.title"));
+        Option.ofBoolean()
         this.mode = Rainglow.CONFIG.getMode();
 
         // mode option cycles through available modes
@@ -171,7 +165,7 @@ public class RainglowConfigScreen extends RainglowScreen {
     }
 
     private static void sendConfigLockedToast() {
-        Toast toast = new SystemToast(SystemToast.C_ozahoshp.field_47585, Rainglow.translatableText("config.server_locked_title"), Rainglow.translatableText("config.server_locked_description"));
+        Toast toast = new SystemToast(SystemToast.Id.PACK_LOAD_FAILURE, Rainglow.translatableText("config.server_locked_title"), Rainglow.translatableText("config.server_locked_description"));
         MinecraftClient.getInstance().getToastManager().add(toast);
     }
 }
