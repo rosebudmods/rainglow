@@ -8,7 +8,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -20,16 +19,16 @@ public class RainglowConfig {
     public static final String CUSTOM_KEY = "custom";
     public static final String SERVER_SYNC_KEY = "enable_server_sync";
 
-    public static final String RARITY_KEY = "rarity";
     public static final Function<RainglowEntity, String> TO_CONFIG_KEY = entity -> "enable_" + entity.getId();
+    public static final Function<RainglowEntity, String> RARITY_CONFIG_KEY = entity -> entity.getId() + "_rarity";
 
     private RainglowMode mode;
     private List<RainglowColour> custom;
-    private int rarity;
     private boolean enableServerSync;
     private boolean editLocked = false;
     private boolean isInitialised = false;
     private final Map<RainglowEntity, Boolean> entityToggles = new EnumMap<>(RainglowEntity.class);
+    private final Map<RainglowEntity, Integer> entityRarities = new EnumMap<>(RainglowEntity.class);
 
     public RainglowConfig() {
         // we cannot load the config here because it would be loaded before modes, since it's statically initialised
@@ -80,9 +79,14 @@ public class RainglowConfig {
         }
 
         // parse rarity
-        int rarity = 100;
-        if (config.containsKey(RARITY_KEY)) {
-            rarity = ConfigIo.parseTomlInt(config.get(RARITY_KEY));
+        for (RainglowEntity entity : RainglowEntity.values()) {
+            String configKey = RARITY_CONFIG_KEY.apply(entity);
+
+            if (config.containsKey(configKey)) {
+                entityRarities.put(entity, ConfigIo.parseTomlInt(config.get(configKey)));
+            } else {
+                entityRarities.put(entity, 100);
+            }
         }
 
         // reset colours if parsing failed
@@ -94,7 +98,6 @@ public class RainglowConfig {
         this.mode = rainglowMode;
         this.custom = customColours;
         this.enableServerSync = serverSync;
-        this.rarity = rarity;
         this.save(false);
 
         this.isInitialised = true;
@@ -108,8 +111,8 @@ public class RainglowConfig {
         return this.custom;
     }
 
-    public int getRarity() {
-        return this.rarity;
+    public int getRarity(RainglowEntity entity) {
+        return this.entityRarities.get(entity);
     }
 
     public boolean isServerSyncEnabled() {
@@ -135,8 +138,8 @@ public class RainglowConfig {
         Rainglow.refreshColours();
     }
 
-    public void setRarity(int rarity) {
-        this.rarity = rarity;
+    public void setRarity(RainglowEntity entity, int rarity) {
+        this.entityRarities.put(entity, rarity);
     }
 
     public void setEditLocked(boolean editLocked) {
@@ -160,7 +163,7 @@ public class RainglowConfig {
             ConfigIo.writeString(MODE_KEY, this.mode.getId());
             this.saveCustom();
             ConfigIo.writeBoolean(SERVER_SYNC_KEY, this.enableServerSync);
-            ConfigIo.writeInt(RARITY_KEY, this.rarity);
+            writeEntityRarities();
         }
 
         // entity toggles cannot be locked by the server
@@ -177,6 +180,12 @@ public class RainglowConfig {
     private void writeEntityToggles() {
         for (Map.Entry<RainglowEntity, Boolean> entry : entityToggles.entrySet()) {
             ConfigIo.writeBoolean(TO_CONFIG_KEY.apply(entry.getKey()), entry.getValue());
+        }
+    }
+
+    private void writeEntityRarities() {
+        for (Map.Entry<RainglowEntity, Integer> entry : entityRarities.entrySet()) {
+            ConfigIo.writeInt(RARITY_CONFIG_KEY.apply(entry.getKey()), entry.getValue());
         }
     }
 }

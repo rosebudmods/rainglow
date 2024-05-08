@@ -7,39 +7,45 @@ import io.ix0rai.rainglow.data.RainglowMode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
+import net.minecraft.client.gui.widget.button.ButtonWidget;
+import net.minecraft.client.gui.widget.layout.LinearLayoutWidget;
 import net.minecraft.client.gui.widget.text.TextWidget;
 import net.minecraft.client.option.Option;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.Toast;
+import net.minecraft.text.CommonTexts;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class RainglowConfigScreen extends SimpleOptionsScreen {
 //    private final SpruceOption modeOption;
 //    private final SpruceOption customOption;
-//    private final SpruceOption[] entityToggles = new SpruceOption[RainglowEntity.values().length];
 //    private final SpruceOption resetOption;
 //    private final SpruceOption saveOption;
 
     //private final SpruceOption colourRarityOption;
-    private RainglowMode mode;
+    //private RainglowMode mode;
     // colours to apply is saved in a variable so that it can be removed from the screen when cycling modes
    // private SpruceLabelWidget coloursToApplyLabel;
 
     public RainglowConfigScreen(@Nullable Screen parent) {
         super(parent, MinecraftClient.getInstance().options, Rainglow.translatableText("config.title"),
                 new Option[]{
-                    DeferredSaveOption.ofBoolean("gaming", false)
+                    createEntityToggles().get(0),
+                    createColourRaritySliders().get(0),
+                    createEntityToggles().get(1),
+                    createColourRaritySliders().get(1),
+                    createEntityToggles().get(2),
+                    createColourRaritySliders().get(2),
                 }
         );
 
-        this.mode = Rainglow.CONFIG.getMode();
+
 
 //        // mode option cycles through available modes
 //        // it also updates the label to show which colours will be applied
@@ -101,6 +107,56 @@ public class RainglowConfigScreen extends SimpleOptionsScreen {
 //                    Rainglow.CONFIG.save(true);
 //                }
 //        );
+    }
+
+    private static List<Option<Boolean>> createEntityToggles() {
+        List<Option<Boolean>> toggles = new ArrayList<>();
+
+        for (RainglowEntity entity : RainglowEntity.values()) {
+            toggles.add(DeferredSaveOption.createDeferredBoolean(
+                "enable_" + entity.getId(),
+                Rainglow.CONFIG.isEntityEnabled(entity),
+                enabled -> Rainglow.CONFIG.setEntityEnabled(entity, enabled)
+            ));
+        }
+
+        return toggles;
+    }
+
+    private static List<Option<Integer>> createColourRaritySliders() {
+        List<Option<Integer>> sliders = new ArrayList<>();
+
+        for (RainglowEntity entity : RainglowEntity.values()) {
+            sliders.add(DeferredSaveOption.createDeferredRangedInt(
+                entity.getId() + "_rarity",
+                Rainglow.CONFIG.getRarity(entity),
+                0,
+                100,
+                rarity -> Rainglow.CONFIG.setRarity(entity, rarity)
+            ));
+        }
+
+        return sliders;
+    }
+
+    private void save() {
+        for (Option<?> option : this.options) {
+            if (option instanceof DeferredSaveOption) {
+                ((DeferredSaveOption<?>) option).save();
+            }
+        }
+    }
+
+    @Override
+    protected void method_31387() {
+        LinearLayoutWidget linearLayout = this.field_49503.addToFooter(LinearLayoutWidget.createHorizontal().setSpacing(8));
+        linearLayout.add(ButtonWidget.builder(CommonTexts.DONE, button -> this.closeScreen()).build());
+        linearLayout.add(ButtonWidget.builder(CommonTexts.YES, button -> {
+            this.save();
+            this.closeScreen();
+        }).build());
+        this.field_49503.visitWidgets(this::addDrawableSelectableElement);
+        this.repositionElements();
     }
 
     private TextWidget createColourListLabel(String translationKey, RainglowMode mode, int x, int y) {

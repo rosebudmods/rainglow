@@ -6,6 +6,7 @@ import io.ix0rai.rainglow.data.AllayVariantProvider;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.GlowSquidEntityData;
 import io.ix0rai.rainglow.data.GlowSquidVariantProvider;
+import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.SlimeEntityData;
 import io.ix0rai.rainglow.data.SlimeVariantProvider;
 import net.minecraft.entity.EntityData;
@@ -16,7 +17,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -53,7 +53,21 @@ public abstract class MobEntityMixin extends LivingEntity {
     }
 
     @Unique
-    private static RainglowColour getColourOrDefault(RandomGenerator random, RainglowColour defaultColour, String randomColour) {
-        return random.nextInt(100) >= Rainglow.CONFIG.getRarity() ? defaultColour : RainglowColour.get(randomColour);
+    private RainglowColour getColourOrDefault(RandomGenerator random, RainglowColour defaultColour, String randomColour) {
+        return random.nextInt(100) >= Rainglow.CONFIG.getRarity(this.getCurrentEntity()) ? defaultColour : RainglowColour.get(randomColour);
+    }
+
+    @Unique
+    @SuppressWarnings("all")
+    private RainglowEntity getCurrentEntity() {
+        if ((Object) this instanceof GlowSquidEntity) {
+            return RainglowEntity.GLOW_SQUID;
+        } else if ((Object) this instanceof AllayEntity) {
+            return RainglowEntity.ALLAY;
+        } else if ((Object) this instanceof SlimeEntity) {
+            return RainglowEntity.SLIME;
+        } else {
+            throw new RuntimeException("unsupported entity");
+        }
     }
 }

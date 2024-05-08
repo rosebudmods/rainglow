@@ -131,7 +131,7 @@ public class Rainglow implements ModInitializer {
     }
 
     public static String translatableTextKey(String key) {
-        if (key.split("\\.").length != 2) throw new IllegalArgumentException("key must be in format \"category.key\"");
+        if (key.split("\\.").length < 2) throw new IllegalArgumentException("key must be in format \"category.key\": " + key);
         return MOD_ID + "." + key;
     }
 
