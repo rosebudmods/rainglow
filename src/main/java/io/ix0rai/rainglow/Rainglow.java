@@ -33,7 +33,7 @@ public class Rainglow implements ModInitializer {
     private static final Map<String, Identifier> GLOWSQUID_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> SLIME_TEXTURES = new HashMap<>();
-    private static TrackedData<String> glowSquidColour;
+    public static final TrackedData<String> glowSquidColour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
     private static TrackedData<String> allayColour;
     private static TrackedData<String> slimeColour;
 
@@ -150,11 +150,11 @@ public class Rainglow implements ModInitializer {
         // we simply ensure it isn't loaded until it's needed, and that fixes the issue
 
         if (entityType == RainglowEntity.GLOW_SQUID) {
-            if (glowSquidColour == null) {
-                glowSquidColour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
-            }
-
-            return glowSquidColour;
+//            if (glowSquidColour == null) {
+//                glowSquidColour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
+//            }
+//
+//            return glowSquidColour;
         } else if (entityType == RainglowEntity.ALLAY) {
             if (allayColour == null) {
                 allayColour = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);

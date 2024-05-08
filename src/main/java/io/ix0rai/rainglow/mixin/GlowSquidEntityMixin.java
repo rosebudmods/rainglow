@@ -29,7 +29,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(Builder builder, CallbackInfo ci) {
-        builder.add(Rainglow.getTrackedColourData(RainglowEntity.GLOW_SQUID), RainglowColour.BLUE.getId());
+        builder.add(Rainglow.glowSquidColour, RainglowColour.BLUE.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
