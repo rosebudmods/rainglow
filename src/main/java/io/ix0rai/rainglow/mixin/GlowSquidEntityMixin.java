@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.entity.passive.SquidEntity;
+import net.minecraft.entity.data.DataTracker.Builder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
@@ -18,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.entity.data.DataTracker.Builder;
 
 @Mixin(GlowSquidEntity.class)
 public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSquidVariantProvider {
@@ -29,7 +29,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(Builder builder, CallbackInfo ci) {
-        builder.add(Rainglow.glowSquidColour, RainglowColour.BLUE.getId());
+        builder.add(Rainglow.GLOW_SQUID_COLOUR, RainglowColour.BLUE.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))

@@ -6,6 +6,7 @@ import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.data.DataTracker.Builder;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.random.RandomGenerator;
@@ -25,8 +26,8 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
     }
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
-    protected void initDataTracker(CallbackInfo ci) {
-        this.getDataTracker().set(Rainglow.getTrackedColourData(RainglowEntity.ALLAY), RainglowColour.BLUE.getId());
+    protected void initDataTracker(Builder builder, CallbackInfo ci) {
+        builder.add(Rainglow.getTrackedColourData(RainglowEntity.ALLAY), RainglowColour.BLUE.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))

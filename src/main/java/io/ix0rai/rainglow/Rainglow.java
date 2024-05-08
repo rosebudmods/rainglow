@@ -33,9 +33,9 @@ public class Rainglow implements ModInitializer {
     private static final Map<String, Identifier> GLOWSQUID_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> SLIME_TEXTURES = new HashMap<>();
-    public static final TrackedData<String> glowSquidColour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
-    private static TrackedData<String> allayColour;
-    private static TrackedData<String> slimeColour;
+    public static final TrackedData<String> GLOW_SQUID_COLOUR = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
+    public static final TrackedData<String> ALLAY_COLOUR = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);
+    public static final TrackedData<String> SLIME_COLOUR = DataTracker.registerData(SlimeEntity.class, TrackedDataHandlerRegistry.STRING);
 
     public static final String CUSTOM_NBT_KEY = "Colour";
 
@@ -144,32 +144,11 @@ public class Rainglow implements ModInitializer {
     }
 
     public static TrackedData<String> getTrackedColourData(RainglowEntity entityType) {
-        // we cannot statically load the tracked data because then it gets registered too early
-        // it breaks the squids' other tracked data, their dark ticks after being hurt
-        // this is a workaround to make sure the data is registered at the right time
-        // we simply ensure it isn't loaded until it's needed, and that fixes the issue
-
-        if (entityType == RainglowEntity.GLOW_SQUID) {
-//            if (glowSquidColour == null) {
-//                glowSquidColour = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
-//            }
-//
-//            return glowSquidColour;
-        } else if (entityType == RainglowEntity.ALLAY) {
-            if (allayColour == null) {
-                allayColour = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);
-            }
-
-            return allayColour;
-        } else if (entityType == RainglowEntity.SLIME) {
-            if (slimeColour == null) {
-                slimeColour = DataTracker.registerData(SlimeEntity.class, TrackedDataHandlerRegistry.STRING);
-            }
-
-            return slimeColour;
-        }
-
-        throw new RuntimeException("called getTrackedColourData on an unsupported entity type!");
+		return switch (entityType) {
+			case GLOW_SQUID -> GLOW_SQUID_COLOUR;
+			case ALLAY -> ALLAY_COLOUR;
+			case SLIME -> SLIME_COLOUR;
+		};
     }
 
     public static String getColour(RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
