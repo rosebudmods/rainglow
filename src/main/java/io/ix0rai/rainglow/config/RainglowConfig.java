@@ -8,6 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -148,6 +149,10 @@ public class RainglowConfig {
 
     public void setEntityEnabled(RainglowEntity entity, boolean enabled) {
         this.entityToggles.put(entity, enabled);
+    }
+
+    public Map<RainglowEntity, Boolean> getEntityToggles() {
+        return this.entityToggles;
     }
 
     public void save(boolean log) {

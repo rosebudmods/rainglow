@@ -21,6 +21,7 @@ import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,7 +36,7 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @SuppressWarnings("all")
     @Inject(method = "initialize", at = @At("RETURN"), cancellable = true)
-    public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
+    public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, CallbackInfoReturnable<EntityData> cir) {
         if ((Object) this instanceof GlowSquidEntity glowSquid) {
             String colour = Rainglow.generateRandomColourId(this.getRandom());
             ((GlowSquidVariantProvider) glowSquid).setVariant(getColourOrDefault(this.random, RainglowColour.BLUE, colour));

@@ -6,6 +6,7 @@ import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.SlimeVariantProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
@@ -33,8 +34,8 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     }
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
-    protected void initDataTracker(CallbackInfo ci) {
-        this.getDataTracker().startTracking(Rainglow.getTrackedColourData(RainglowEntity.SLIME), RainglowColour.LIME.getId());
+    protected void initDataTracker(DataTracker.Builder builder, CallbackInfo ci) {
+        builder.add(Rainglow.getTrackedColourData(RainglowEntity.SLIME), RainglowColour.LIME.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))

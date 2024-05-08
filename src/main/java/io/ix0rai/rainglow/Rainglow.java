@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.ix0rai.rainglow.config.RainglowConfig;
 import io.ix0rai.rainglow.data.*;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.entity.data.DataTracker;
@@ -42,10 +43,13 @@ public class Rainglow implements ModInitializer {
     public void onInitialize() {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener((RainglowResourceReloader) () -> id("server_mode_data"));
 
+        PayloadTypeRegistry.playS2C().register(RainglowNetworking.ConfigSyncPayload.PACKET_ID, RainglowNetworking.ConfigSyncPayload.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(RainglowNetworking.ModeSyncPayload.PACKET_ID, RainglowNetworking.ModeSyncPayload.PACKET_CODEC);
+
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             if (CONFIG.isServerSyncEnabled()) {
                 // send modes to client
-                RainglowNetworking.sendModeData(handler.player);
+                RainglowNetworking.syncModes(handler.player);
 
                 // send config to client
                 RainglowNetworking.syncConfig(handler.player);
