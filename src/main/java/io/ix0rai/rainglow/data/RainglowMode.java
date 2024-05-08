@@ -139,7 +139,6 @@ public class RainglowMode {
     public static void write(PacketByteBuf buf, RainglowMode mode) {
         buf.writeString(mode.getId());
         TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.encode(buf, mode.getText());
-        buf.writeString(mode.getText().toString());
         List<String> colourIds = mode.getColours().stream().map(RainglowColour::getId).toList();
         buf.writeCollection(colourIds, PacketByteBuf::writeString);
     }
