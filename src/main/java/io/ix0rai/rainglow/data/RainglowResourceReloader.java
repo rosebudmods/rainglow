@@ -47,8 +47,7 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
         this.log();
 
         // load config
-        if (Rainglow.CONFIG.isUninitialised() || (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) && !Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance()))) {
-            Rainglow.CONFIG.reloadFromFile();
+        if (!Rainglow.CONFIG.isInitialized() || (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) && !Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance()))) {
             Rainglow.setMode(Rainglow.CONFIG.getMode());
         }
     }

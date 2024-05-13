@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+// todo: now that config uses overrides, edit lock doesn't matter
+
 public class RainglowConfigScreen extends SimpleOptionsScreen {
 //    private final SpruceOption modeOption;
 //    private final SpruceOption customOption;
@@ -140,9 +142,13 @@ public class RainglowConfigScreen extends SimpleOptionsScreen {
     }
 
     private void save() {
-        for (Option<?> option : this.options) {
-            if (option instanceof DeferredSaveOption) {
-                ((DeferredSaveOption<?>) option).save();
+        if (Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance())) {
+            sendConfigLockedToast();
+        } else {
+            for (Option<?> option : this.options) {
+                if (option instanceof DeferredSaveOption) {
+                    ((DeferredSaveOption<?>) option).save();
+                }
             }
         }
     }

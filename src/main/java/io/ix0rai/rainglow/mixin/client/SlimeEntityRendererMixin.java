@@ -19,7 +19,7 @@ public class SlimeEntityRendererMixin {
         String colour = Rainglow.getColour(RainglowEntity.SLIME, entity.getDataTracker(), entity.getRandom());
 
         // don't override if the colour is lime, use the default texture
-        if (Rainglow.CONFIG.isEntityEnabled(RainglowEntity.SLIME) && !colour.equals(RainglowColour.LIME.getId()) || Rainglow.CONFIG.getMode().equals(RainglowMode.byId("vanilla"))) {
+        if (Rainglow.CONFIG.isEntityEnabled(RainglowEntity.SLIME) && !colour.equals(RainglowColour.LIME.getId()) || Rainglow.CONFIG.getMode().equals(RainglowMode.get("vanilla"))) {
             Identifier texture = Rainglow.getTexture(RainglowEntity.SLIME, colour);
             cir.setReturnValue(texture != null ? texture : Rainglow.getDefaultTexture(RainglowEntity.SLIME));
         }

@@ -1,14 +1,12 @@
 package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.payload.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +16,7 @@ public class RainglowNetworking {
     public static void syncConfig(ServerPlayerEntity player) {
         // note: client does not need to know if server sync is enabled or not
         // they already know that it is enabled because they are receiving this packet
-        ServerPlayNetworking.send(player, new ConfigSyncPayload(Rainglow.CONFIG.getMode().getId(), Rainglow.CONFIG.getCustom(), Rainglow.CONFIG.getEntityToggles()));
+        ServerPlayNetworking.send(player, new ConfigSyncPayload(Rainglow.CONFIG.mode.value(), Rainglow.CONFIG.getCustom(), Rainglow.CONFIG.getToggles()));
     }
 
     public record ConfigSyncPayload(String currentMode, List<RainglowColour> customMode, Map<RainglowEntity, Boolean> enabledMobs) implements CustomPayload {

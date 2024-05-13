@@ -1,12 +1,15 @@
 package io.ix0rai.rainglow;
 
 import com.google.gson.Gson;
+import folk.sisby.kaleido.lib.quiltconfig.api.serializers.TomlSerializer;
+import folk.sisby.kaleido.lib.quiltconfig.implementor_api.ConfigEnvironment;
 import io.ix0rai.rainglow.config.RainglowConfig;
 import io.ix0rai.rainglow.data.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -26,7 +29,9 @@ import java.util.*;
 public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static final RainglowConfig CONFIG = new RainglowConfig();
+    private static final String FORMAT = "toml";
+    private static final ConfigEnvironment ENVIRONMENT = new ConfigEnvironment(FabricLoader.getInstance().getConfigDir(), FORMAT, TomlSerializer.INSTANCE);
+    public static final RainglowConfig CONFIG = RainglowConfig.create(ENVIRONMENT, MOD_ID, MOD_ID, RainglowConfig.class);
     public static final Gson GSON = new Gson();
 
     private static final List<RainglowColour> COLOURS = new ArrayList<>();
@@ -47,7 +52,7 @@ public class Rainglow implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(RainglowNetworking.ModeSyncPayload.PACKET_ID, RainglowNetworking.ModeSyncPayload.PACKET_CODEC);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            if (CONFIG.isServerSyncEnabled()) {
+            if (CONFIG.serverSync.value()) {
                 // send modes to client
                 RainglowNetworking.syncModes(handler.player);
 
@@ -72,13 +77,15 @@ public class Rainglow implements ModInitializer {
             LOGGER.info("No colours were present in the internal collection, adding blue so that the game doesn't crash");
             colours.add(RainglowColour.BLUE);
         }
+
         colours.forEach(Rainglow::addColour);
+        CONFIG.setInitialized();
     }
 
     public static void refreshColours() {
         // we only ever need to refresh the colours of custom mode, all other sets of colours are immutable
         if (CONFIG.getMode().getId().equals("custom")) {
-            setMode(RainglowMode.byId("custom"));
+            setMode(RainglowMode.get("custom"));
         }
     }
 

@@ -97,12 +97,8 @@ public class RainglowMode {
         return this.existsLocally;
     }
 
-    public static RainglowMode byId(String id) {
+    public static RainglowMode get(String id) {
         return MODES.get(id);
-    }
-
-    public static RainglowMode getDefault() {
-        return MODES.get("rainbow");
     }
 
     public static void addMode(RainglowMode mode) {
@@ -148,7 +144,7 @@ public class RainglowMode {
         Text text = TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.decode(buf);
         List<String> colourIds = buf.readList(PacketByteBuf::readString);
 
-        return new RainglowMode(id, colourIds, text, RainglowMode.byId(id) != null);
+        return new RainglowMode(id, colourIds, text, RainglowMode.get(id) != null);
     }
 
 

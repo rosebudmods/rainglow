@@ -1,6 +1,9 @@
 package io.ix0rai.rainglow.client;
 
+import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueList;
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowMode;
 import io.ix0rai.rainglow.data.RainglowResourceReloader;
 import io.ix0rai.rainglow.data.RainglowNetworking;
@@ -26,8 +29,11 @@ public class RainglowClient implements ClientModInitializer {
             client.execute(() -> {
                 // custom must be set before mode so that if the server sends a custom mode it is set correctly
                 // otherwise the client's custom would be used
-                Rainglow.CONFIG.setCustom(payload.customMode());
-                Rainglow.CONFIG.setMode(RainglowMode.byId(payload.currentMode()));
+                ValueList<String> list = ValueList.create("", payload.customMode().stream().map(RainglowColour::getId).toArray(String[]::new));
+                Rainglow.CONFIG.customColours.setOverride(list);
+                Rainglow.CONFIG.mode.setOverride(payload.currentMode());
+
+                // todo override toggles
 
                 for (var entry : payload.enabledMobs().entrySet()) {
                     Rainglow.CONFIG.setEntityEnabled(entry.getKey(), entry.getValue());
@@ -55,8 +61,8 @@ public class RainglowClient implements ClientModInitializer {
                 }
 
                 // now that we have modes, we can load the config
-                if (Rainglow.CONFIG.isUninitialised()) {
-                    Rainglow.CONFIG.reloadFromFile();
+                if (!Rainglow.CONFIG.isInitialized()) {
+                    Rainglow.setMode(Rainglow.CONFIG.getMode());
                 }
 
                 // log
@@ -73,7 +79,7 @@ public class RainglowClient implements ClientModInitializer {
                     Rainglow.CONFIG.setEditLocked(false);
 
                     // reset values to those configured in file
-                    Rainglow.CONFIG.reloadFromFile();
+                    Rainglow.CONFIG.values().forEach(TrackedValue::removeOverride);
                 }
             })
         );

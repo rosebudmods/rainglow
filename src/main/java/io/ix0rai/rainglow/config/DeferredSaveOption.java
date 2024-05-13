@@ -25,10 +25,11 @@ public class DeferredSaveOption<T> extends Option<T> {
 
 	@Override
 	public void set(T value) {
-		T object = (T) this.getValues().validate(value).orElseGet(() -> {
+		T object = this.getValues().validate(value).orElseGet(() -> {
 			System.out.println("Illegal option value " + value + " for " + this.text);
 			return this.defaultValue;
 		});
+
 		if (!MinecraftClient.getInstance().isRunning()) {
 			this.deferredValue = object;
 		} else {
