@@ -17,7 +17,9 @@
     "client.GlowSquidEntityRendererMixin",
     "client.SlimeEntityRendererMixin",
     "client.SlimeParticleMixin",
-    "client.SquidInkParticleMixin"
+    "client.SquidInkParticleMixin",
+    "client.screen.CyclingValueSetMixin",
+    "client.screen.SliderValueImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1

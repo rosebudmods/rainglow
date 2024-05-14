@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public class DeferredSaveOption<T> extends Option<T> {
-	private T deferredValue;
+	public T deferredValue;
 
 	public DeferredSaveOption(String key, TooltipSupplier<T> tooltipSupplier, OptionTextGetter<T> textGetter, Option.ValueSet<T> values, T defaultValue, Consumer<T> updateCallback) {
 		this(key, tooltipSupplier, textGetter, values, values.codec(), defaultValue, updateCallback);
@@ -40,21 +40,21 @@ public class DeferredSaveOption<T> extends Option<T> {
 		}
 	}
 
-	public static Option<Boolean> createDeferredBoolean(String key, boolean defaultValue, Consumer<Boolean> updateCallback) {
+	public static DeferredSaveOption<Boolean> createDeferredBoolean(String key, String tooltip, boolean defaultValue, Consumer<Boolean> updateCallback) {
 		return new DeferredSaveOption<>(
-				"rainglow.config." + key,
-				Option.constantTooltip(Text.translatable("rainglow.config.tooltip." + key)),
+				Rainglow.translatableTextKey("config." + key),
+				Option.constantTooltip(tooltip == null ? Rainglow.translatableText("tooltip." + key) : Rainglow.translatableText(tooltip)),
 				(text, value) -> value ? CommonTexts.YES : CommonTexts.NO,
-				Option.BOOLEAN_VALUES,
+				BOOLEAN_VALUES,
 				defaultValue,
 				updateCallback
 		);
 	}
 
-	public static Option<Integer> createDeferredRangedInt(String key, int defaultValue, int min, int max, Consumer<Integer> updateCallback) {
+	public static DeferredSaveOption<Integer> createDeferredRangedInt(String key, String tooltip, int defaultValue, int min, int max, Consumer<Integer> updateCallback) {
 		return new DeferredSaveOption<>(
 				Rainglow.translatableTextKey("config." + key),
-				Option.constantTooltip(Rainglow.translatableText("tooltip." + key)),
+				Option.constantTooltip(tooltip == null ? Rainglow.translatableText("tooltip." + key) : Rainglow.translatableText(tooltip)),
 				(text, value) -> Rainglow.translatableText("value." + key, value),
 				new Option.IntRangeValueSet(min, max),
 				Codec.intRange(min, max),
