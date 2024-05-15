@@ -1,21 +1,11 @@
 package io.ix0rai.rainglow.config;
 
-import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.data.RainglowColour;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.option.Option;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CustomModeScreen extends SimpleOptionsScreen {
-	public CustomModeScreen(Screen parent, GameOptions gameOptions, Text title, Option<?>[] options) {
-		super(parent, gameOptions, title, options);
+public class CustomModeScreen extends Screen {
+	public CustomModeScreen(Screen parent) {
+		super(Text.of("fa"));
 	}
 //    private final SpruceOption clearOption;
 //    private final SpruceOption saveOption;

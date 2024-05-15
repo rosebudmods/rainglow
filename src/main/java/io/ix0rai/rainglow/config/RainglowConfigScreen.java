@@ -26,10 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-// todo: now that config uses overrides, edit lock doesn't matter
 
 public class RainglowConfigScreen extends Screen {
     private static final Text TITLE = Rainglow.translatableText("config.title");
@@ -50,26 +47,35 @@ public class RainglowConfigScreen extends Screen {
     @Override
     public void init() {
         HeaderFooterLayoutWidget headerFooterWidget = new HeaderFooterLayoutWidget(this, 61, 33);
+        LinearLayoutWidget headerLayout = headerFooterWidget.addToHeader(LinearLayoutWidget.createVertical().setSpacing(8));
 
         if (!this.isConfirming) {
             // header
-            LinearLayoutWidget linearLayoutWidget = headerFooterWidget.addToHeader(LinearLayoutWidget.createVertical().setSpacing(20));
-            linearLayoutWidget.add(new TextWidget(TITLE, this.textRenderer), LayoutSettings::alignHorizontallyCenter);
-            linearLayoutWidget.add(createModeButton());
-
-            // contents
-            GridWidget gridWidget = new GridWidget();
-            gridWidget.getDefaultSettings().setHorizontalPadding(4).setBottomPadding(4).alignHorizontallyCenter();
-            GridWidget.AdditionHelper miscAdditionHelper = gridWidget.createAdditionHelper(2);
-            for (RainglowEntity entity : RainglowEntity.values()) {
-                DeferredSaveOption<Boolean> entityToggle = createEntityToggle(entity);
-                miscAdditionHelper.add(entityToggle.createButton(MinecraftClient.getInstance().options));
-                entityToggle.set(entityToggle.deferredValue);
-
-                miscAdditionHelper.add(createColourRaritySlider(entity).createButton(MinecraftClient.getInstance().options));
+            headerLayout.add(new TextWidget(TITLE, this.textRenderer), settings -> settings.alignHorizontallyCenter().alignVerticallyTop().setPadding(12));
+            headerLayout.add(createModeButton(), LayoutSettings::alignVerticallyBottom);
+            if (MinecraftClient.getInstance().world == null) {
+                headerLayout.add(new TextWidget(Rainglow.translatableText("config.no_world"), this.textRenderer).setTextColor(0xc21919), LayoutSettings::alignHorizontallyCenter);
             }
 
-            headerFooterWidget.addToContents(gridWidget);
+            // contents
+            LinearLayoutWidget contentLayout = LinearLayoutWidget.createVertical();
+
+            GridWidget gridWidget = new GridWidget();
+            gridWidget.getDefaultSettings().setHorizontalPadding(4).setBottomPadding(4).alignHorizontallyCenter();
+
+            GridWidget.AdditionHelper mainAdditionHelper = gridWidget.createAdditionHelper(2);
+            for (RainglowEntity entity : RainglowEntity.values()) {
+                DeferredSaveOption<Boolean> entityToggle = createEntityToggle(entity);
+                mainAdditionHelper.add(entityToggle.createButton(MinecraftClient.getInstance().options));
+                entityToggle.set(entityToggle.deferredValue);
+
+                mainAdditionHelper.add(createColourRaritySlider(entity).createButton(MinecraftClient.getInstance().options));
+            }
+
+            contentLayout.add(gridWidget);
+            contentLayout.add(ButtonWidget.builder(Rainglow.translatableText("config.custom_mode"), button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))).width(308).position(4, 0).build(), LayoutSettings.create().setPadding(4, 0));
+
+            headerFooterWidget.addToContents(contentLayout);
 
             // footer
             LinearLayoutWidget linearLayout = headerFooterWidget.addToFooter(LinearLayoutWidget.createHorizontal().setSpacing(8));
@@ -79,9 +85,6 @@ public class RainglowConfigScreen extends Screen {
                 this.closeScreen(true);
             }).build());
         } else {
-            LinearLayoutWidget titleWidget = headerFooterWidget.addToHeader(LinearLayoutWidget.createVertical().setSpacing(20));
-            titleWidget.add(new TextWidget(this.title, this.textRenderer), LayoutSettings::alignHorizontallyCenter);
-
             LinearLayoutWidget contentWidget = headerFooterWidget.addToContents(new LinearLayoutWidget(250, 100, LinearLayoutWidget.Orientation.VERTICAL).setSpacing(8));
             contentWidget.add(new TextWidget(Rainglow.translatableText("config.unsaved_warning"), this.textRenderer), LayoutSettings::alignHorizontallyCenter);
 
@@ -127,30 +130,24 @@ public class RainglowConfigScreen extends Screen {
                 .build(
                         0,
                         0,
-                        300,
+                        308,
                         20,
                         Rainglow.translatableText("config.mode"),
-                        (cyclingButtonWidget, mode) -> {
-                            RainglowConfigScreen.this.mode = mode;
-                        }
+                        (cyclingButtonWidget, mode) -> RainglowConfigScreen.this.mode = mode
                 );
     }
 
     private void save() {
-        if (Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance())) {
-            sendConfigLockedToast();
-        } else {
-            Collection<Option<?>> options = new ArrayList<>(this.sliders.values());
-            options.addAll(this.toggles.values());
+        Collection<Option<?>> options = new ArrayList<>(this.sliders.values());
+        options.addAll(this.toggles.values());
 
-            for (Option<?> option : options) {
-                if (option instanceof DeferredSaveOption) {
-                    ((DeferredSaveOption<?>) option).save();
-                }
+        for (Option<?> option : options) {
+            if (option instanceof DeferredSaveOption) {
+                ((DeferredSaveOption<?>) option).save();
             }
-
-            Rainglow.CONFIG.mode.setValue(this.mode.getId());
         }
+
+        Rainglow.CONFIG.mode.setValue(this.mode.getId());
     }
 
     private Tooltip createColourListLabel(RainglowMode mode) {
@@ -193,6 +190,10 @@ public class RainglowConfigScreen extends Screen {
             this.isConfirming = true;
             this.clearAndInit();
         } else {
+            if (Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance())) {
+                sendConfigLockedToast();
+            }
+
             MinecraftClient.getInstance().setScreen(this.parent);
         }
     }

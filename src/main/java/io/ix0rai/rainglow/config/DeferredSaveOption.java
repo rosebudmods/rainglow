@@ -3,10 +3,8 @@ package io.ix0rai.rainglow.config;
 import com.mojang.serialization.Codec;
 import io.ix0rai.rainglow.Rainglow;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.CommonTexts;
-import net.minecraft.text.Text;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -58,18 +56,6 @@ public class DeferredSaveOption<T> extends Option<T> {
 				(text, value) -> Rainglow.translatableText("value." + key, value),
 				new Option.IntRangeValueSet(min, max),
 				Codec.intRange(min, max),
-				defaultValue,
-				updateCallback
-		);
-	}
-
-	public static Option<Double> createDeferredRangedDouble(String key, double defaultValue, double min, double max, Consumer<Double> updateCallback) {
-		return new DeferredSaveOption<>(
-				"rainglow.config." + key,
-				Option.constantTooltip(Text.translatable("rainglow.tooltip." + key)),
-				(text, value) -> GameOptions.getGenericValueText(text, Text.translatable("rainglow.value." + key, value)),
-				new Option.IntRangeValueSet((int) (min * 10), (int) (max * 10)).withModifier(i -> (double) i / 10.0, double_ -> (int) (double_ * 10.0)),
-				Codec.doubleRange(min, max),
 				defaultValue,
 				updateCallback
 		);
