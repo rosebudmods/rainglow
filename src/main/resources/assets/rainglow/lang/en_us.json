@@ -12,6 +12,8 @@
   "rainglow.config.enable_allay": "Rainbow allays",
   "rainglow.config.server_locked_title": "Config is locked by server",
   "rainglow.config.server_locked_description": "Changes applied will only be visible once you join a world without a locked config.",
+  "rainglow.config.no_custom_colours": "Cannot save with no colours selected!",
+  "rainglow.config.no_custom_colours_description": "Please select at least one colour to save the settings.",
   "rainglow.config.no_world": "No world loaded: only default modes are available.",
   "rainglow.config.unsaved_warning": "Config is not saved and changes will be lost! Leave without saving?",
   "rainglow.config.continue_editing": "Continue editing",

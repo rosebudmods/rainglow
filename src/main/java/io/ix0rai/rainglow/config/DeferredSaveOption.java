@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 public class DeferredSaveOption<T> extends Option<T> {
 	public T deferredValue;
-	private Consumer<T> clickCallback;
+	private final Consumer<T> clickCallback;
 
 	public DeferredSaveOption(String key, TooltipSupplier<T> tooltipSupplier, OptionTextGetter<T> textGetter, Option.ValueSet<T> values, T defaultValue, Consumer<T> updateCallback, Consumer<T> clickCallback) {
 		this(key, tooltipSupplier, textGetter, values, values.codec(), defaultValue, updateCallback, clickCallback);
@@ -44,7 +44,7 @@ public class DeferredSaveOption<T> extends Option<T> {
 	public static DeferredSaveOption<Boolean> createDeferredBoolean(String key, String tooltip, boolean defaultValue, Consumer<Boolean> updateCallback, Consumer<Boolean> clickCallback) {
 		return new DeferredSaveOption<>(
 				Rainglow.translatableTextKey(key),
-				tooltip != null ? Option.constantTooltip(Rainglow.translatableText("tooltip." + key)) : Option.emptyTooltip(),
+				tooltip != null ? Option.constantTooltip(Rainglow.translatableText(tooltip)) : Option.emptyTooltip(),
 				(text, value) -> value ? CommonTexts.YES : CommonTexts.NO,
 				BOOLEAN_VALUES,
 				defaultValue,
@@ -56,7 +56,7 @@ public class DeferredSaveOption<T> extends Option<T> {
 	public static DeferredSaveOption<Integer> createDeferredRangedInt(String key, String tooltip, int defaultValue, int min, int max, Consumer<Integer> updateCallback, Consumer<Integer> clickCallback) {
 		return new DeferredSaveOption<>(
 				Rainglow.translatableTextKey(key),
-				tooltip != null ? Option.constantTooltip(Rainglow.translatableText("tooltip." + key)) : Option.emptyTooltip(),
+				tooltip != null ? Option.constantTooltip(Rainglow.translatableText(tooltip)) : Option.emptyTooltip(),
 				(text, value) -> Rainglow.translatableText(key + ".value", value),
 				new Option.IntRangeValueSet(min, max),
 				Codec.intRange(min, max),

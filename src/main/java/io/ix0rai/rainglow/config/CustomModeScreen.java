@@ -6,13 +6,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.button.ButtonWidget;
-import net.minecraft.client.gui.widget.layout.GridWidget;
 import net.minecraft.client.gui.widget.layout.HeaderFooterLayoutWidget;
-import net.minecraft.client.gui.widget.layout.LayoutSettings;
 import net.minecraft.client.gui.widget.layout.LinearLayoutWidget;
 import net.minecraft.client.gui.widget.list.ButtonListWidget;
 import net.minecraft.client.gui.widget.text.TextWidget;
 import net.minecraft.client.option.Option;
+import net.minecraft.client.toast.SystemToast;
+import net.minecraft.client.toast.Toast;
 import net.minecraft.text.CommonTexts;
 import net.minecraft.text.Text;
 
@@ -28,8 +28,20 @@ public class CustomModeScreen extends GameOptionsScreen {
 	public CustomModeScreen(Screen parent) {
 		super(parent, MinecraftClient.getInstance().options, TITLE);
 		this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> {
-			this.save();
-			this.closeScreen();
+			boolean hasColourSelected = false;
+			for (DeferredSaveOption<Boolean> option : this.options) {
+				if (option.deferredValue) {
+					hasColourSelected = true;
+					break;
+				}
+			}
+
+			if (!hasColourSelected) {
+				sendNoColoursToast();
+			} else {
+				this.save();
+				this.closeScreen();
+			}
 		}).build();
 		this.saveButton.active = false;
 	}
@@ -44,9 +56,7 @@ public class CustomModeScreen extends GameOptionsScreen {
 				Rainglow.CONFIG.getCustom().contains(colour),
 				enabled -> {
 					if (enabled) {
-						Rainglow.CONFIG.getCustom().add(colour);
-					} else {
-						Rainglow.CONFIG.getCustom().remove(colour);
+						Rainglow.CONFIG.customColours.value().add(colour.getId());
 					}
 				},
 				enabled -> this.saveButton.active = true
@@ -55,9 +65,13 @@ public class CustomModeScreen extends GameOptionsScreen {
 	}
 
 	private void save() {
+		Rainglow.CONFIG.customColours.value().clear();
+
 		for (DeferredSaveOption<?> option : this.options) {
 			option.save();
 		}
+
+		Rainglow.CONFIG.save();
 	}
 
 	@Override
@@ -75,5 +89,10 @@ public class CustomModeScreen extends GameOptionsScreen {
 
 		headerFooterWidget.visitWidgets(this::addDrawableSelectableElement);
 		headerFooterWidget.arrangeElements();
+	}
+
+	private static void sendNoColoursToast() {
+		Toast toast = new SystemToast(SystemToast.Id.PACK_LOAD_FAILURE, Rainglow.translatableText("config.no_custom_colours"), Rainglow.translatableText("config.no_custom_colours_description"));
+		MinecraftClient.getInstance().getToastManager().add(toast);
 	}
 }
