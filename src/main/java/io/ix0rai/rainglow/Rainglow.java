@@ -67,6 +67,11 @@ public class Rainglow implements ModInitializer {
     }
 
     public static void setMode(RainglowMode mode) {
+        if (mode == null) {
+            mode = RainglowMode.get("rainbow");
+            LOGGER.warn("attempted to load missing mode, resetting to rainbow");
+        }
+
         GLOWSQUID_TEXTURES.clear();
         ALLAY_TEXTURES.clear();
         SLIME_TEXTURES.clear();

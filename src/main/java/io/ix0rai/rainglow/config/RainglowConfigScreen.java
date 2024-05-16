@@ -34,6 +34,7 @@ public class RainglowConfigScreen extends Screen {
     private final Screen parent;
     private final Map<RainglowEntity, DeferredSaveOption<Boolean>> toggles = new HashMap<>();
     private final Map<RainglowEntity, DeferredSaveOption<Integer>> sliders = new HashMap<>();
+    private final ButtonWidget saveButton;
 
     private RainglowMode mode;
     private boolean isConfirming;
@@ -42,6 +43,11 @@ public class RainglowConfigScreen extends Screen {
         super(TITLE);
         this.parent = parent;
         this.mode = RainglowMode.get(Rainglow.CONFIG.mode.value());
+        this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> {
+            this.save();
+            this.closeScreen(true);
+        }).build();
+        this.saveButton.active = false;
     }
 
     @Override
@@ -73,22 +79,19 @@ public class RainglowConfigScreen extends Screen {
             }
 
             contentLayout.add(gridWidget);
-            contentLayout.add(ButtonWidget.builder(Rainglow.translatableText("config.custom_mode"), button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))).width(308).position(4, 0).build(), LayoutSettings.create().setPadding(4, 0));
+            contentLayout.add(ButtonWidget.builder(Rainglow.translatableText("config.custom"), button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))).width(308).position(4, 0).build(), LayoutSettings.create().setPadding(4, 0));
 
             headerFooterWidget.addToContents(contentLayout);
 
             // footer
             LinearLayoutWidget linearLayout = headerFooterWidget.addToFooter(LinearLayoutWidget.createHorizontal().setSpacing(8));
             linearLayout.add(ButtonWidget.builder(CommonTexts.DONE, button -> this.closeScreen()).build());
-            linearLayout.add(ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> {
-                this.save();
-                this.closeScreen(true);
-            }).build());
+            linearLayout.add(this.saveButton);
         } else {
             LinearLayoutWidget contentWidget = headerFooterWidget.addToContents(new LinearLayoutWidget(250, 100, LinearLayoutWidget.Orientation.VERTICAL).setSpacing(8));
             contentWidget.add(new TextWidget(Rainglow.translatableText("config.unsaved_warning"), this.textRenderer), LayoutSettings::alignHorizontallyCenter);
 
-            LinearLayoutWidget buttons = new LinearLayoutWidget(250, 20, LinearLayoutWidget.Orientation.HORIZONTAL);
+            LinearLayoutWidget buttons = new LinearLayoutWidget(250, 20, LinearLayoutWidget.Orientation.HORIZONTAL).setSpacing(8);
             buttons.add(ButtonWidget.builder(Rainglow.translatableText("config.continue_editing"), (buttonWidget) -> {
                 this.isConfirming = false;
                 this.clearAndInit();
@@ -104,21 +107,23 @@ public class RainglowConfigScreen extends Screen {
 
     private DeferredSaveOption<Boolean> createEntityToggle(RainglowEntity entity) {
         return toggles.computeIfAbsent(entity, e -> DeferredSaveOption.createDeferredBoolean(
-            "enable_" + e.getId(),
-            "tooltip.entity_toggle",
-            Rainglow.CONFIG.isEntityEnabled(e),
-            enabled -> Rainglow.CONFIG.setEntityEnabled(e, enabled)
+                "config.enable_" + e.getId(),
+                "tooltip.entity_toggle",
+                Rainglow.CONFIG.isEntityEnabled(e),
+                enabled -> Rainglow.CONFIG.setEntityEnabled(e, enabled),
+                enabled -> this.saveButton.active = true
         ));
     }
 
     private DeferredSaveOption<Integer> createColourRaritySlider(RainglowEntity entity) {
         return sliders.computeIfAbsent(entity, e -> DeferredSaveOption.createDeferredRangedInt(
-				e.getId() + "_rarity",
+				"config." + e.getId() + "_rarity",
 				"tooltip.rarity",
 				Rainglow.CONFIG.getRarity(e),
 				0,
 				100,
-				rarity -> Rainglow.CONFIG.setRarity(e, rarity)
+				rarity -> Rainglow.CONFIG.setRarity(e, rarity),
+                rarity -> this.saveButton.active = true
 		));
     }
 
@@ -133,7 +138,10 @@ public class RainglowConfigScreen extends Screen {
                         308,
                         20,
                         Rainglow.translatableText("config.mode"),
-                        (cyclingButtonWidget, mode) -> RainglowConfigScreen.this.mode = mode
+                        (cyclingButtonWidget, mode) -> {
+                            this.saveButton.active = true;
+                            RainglowConfigScreen.this.mode = mode;
+                        }
                 );
     }
 
@@ -186,7 +194,7 @@ public class RainglowConfigScreen extends Screen {
     }
 
     public void closeScreen(boolean saved) {
-        if (!saved) {
+        if (!saved && this.saveButton.active) {
             this.isConfirming = true;
             this.clearAndInit();
         } else {

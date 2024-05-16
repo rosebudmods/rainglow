@@ -11,14 +11,16 @@ import java.util.function.Consumer;
 
 public class DeferredSaveOption<T> extends Option<T> {
 	public T deferredValue;
+	private Consumer<T> clickCallback;
 
-	public DeferredSaveOption(String key, TooltipSupplier<T> tooltipSupplier, OptionTextGetter<T> textGetter, Option.ValueSet<T> values, T defaultValue, Consumer<T> updateCallback) {
-		this(key, tooltipSupplier, textGetter, values, values.codec(), defaultValue, updateCallback);
+	public DeferredSaveOption(String key, TooltipSupplier<T> tooltipSupplier, OptionTextGetter<T> textGetter, Option.ValueSet<T> values, T defaultValue, Consumer<T> updateCallback, Consumer<T> clickCallback) {
+		this(key, tooltipSupplier, textGetter, values, values.codec(), defaultValue, updateCallback, clickCallback);
 	}
 
-	public DeferredSaveOption(String key, TooltipSupplier<T> tooltipSupplier, OptionTextGetter<T> textGetter, Option.ValueSet<T> values, Codec<T> codec, T defaultValue, Consumer<T> updateCallback) {
+	public DeferredSaveOption(String key, TooltipSupplier<T> tooltipSupplier, OptionTextGetter<T> textGetter, Option.ValueSet<T> values, Codec<T> codec, T defaultValue, Consumer<T> updateCallback, Consumer<T> clickCallback) {
 		super(key, tooltipSupplier, textGetter, values, codec, defaultValue, updateCallback);
 		this.deferredValue = this.value;
+		this.clickCallback = clickCallback;
 	}
 
 	@Override
@@ -33,31 +35,34 @@ public class DeferredSaveOption<T> extends Option<T> {
 		} else {
 			if (!Objects.equals(this.value, object)) {
 				this.deferredValue = object;
-				// note: callback is called on save
+				this.clickCallback.accept(object);
+				// note: update callback is called on save
 			}
 		}
 	}
 
-	public static DeferredSaveOption<Boolean> createDeferredBoolean(String key, String tooltip, boolean defaultValue, Consumer<Boolean> updateCallback) {
+	public static DeferredSaveOption<Boolean> createDeferredBoolean(String key, String tooltip, boolean defaultValue, Consumer<Boolean> updateCallback, Consumer<Boolean> clickCallback) {
 		return new DeferredSaveOption<>(
-				Rainglow.translatableTextKey("config." + key),
-				Option.constantTooltip(tooltip == null ? Rainglow.translatableText("tooltip." + key) : Rainglow.translatableText(tooltip)),
+				Rainglow.translatableTextKey(key),
+				tooltip != null ? Option.constantTooltip(Rainglow.translatableText("tooltip." + key)) : Option.emptyTooltip(),
 				(text, value) -> value ? CommonTexts.YES : CommonTexts.NO,
 				BOOLEAN_VALUES,
 				defaultValue,
-				updateCallback
+				updateCallback,
+				clickCallback
 		);
 	}
 
-	public static DeferredSaveOption<Integer> createDeferredRangedInt(String key, String tooltip, int defaultValue, int min, int max, Consumer<Integer> updateCallback) {
+	public static DeferredSaveOption<Integer> createDeferredRangedInt(String key, String tooltip, int defaultValue, int min, int max, Consumer<Integer> updateCallback, Consumer<Integer> clickCallback) {
 		return new DeferredSaveOption<>(
-				Rainglow.translatableTextKey("config." + key),
-				Option.constantTooltip(tooltip == null ? Rainglow.translatableText("tooltip." + key) : Rainglow.translatableText(tooltip)),
-				(text, value) -> Rainglow.translatableText("value." + key, value),
+				Rainglow.translatableTextKey(key),
+				tooltip != null ? Option.constantTooltip(Rainglow.translatableText("tooltip." + key)) : Option.emptyTooltip(),
+				(text, value) -> Rainglow.translatableText(key + ".value", value),
 				new Option.IntRangeValueSet(min, max),
 				Codec.intRange(min, max),
 				defaultValue,
-				updateCallback
+				updateCallback,
+				clickCallback
 		);
 	}
 
