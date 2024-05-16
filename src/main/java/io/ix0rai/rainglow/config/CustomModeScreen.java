@@ -72,6 +72,7 @@ public class CustomModeScreen extends GameOptionsScreen {
 		}
 
 		Rainglow.CONFIG.save();
+		Rainglow.refreshColours();
 	}
 
 	@Override

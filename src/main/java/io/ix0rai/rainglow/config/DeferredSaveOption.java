@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.CommonTexts;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class DeferredSaveOption<T> extends Option<T> {
@@ -33,11 +32,9 @@ public class DeferredSaveOption<T> extends Option<T> {
 		if (!MinecraftClient.getInstance().isRunning()) {
 			this.deferredValue = object;
 		} else {
-			if (!Objects.equals(this.value, object)) {
-				this.deferredValue = object;
-				this.clickCallback.accept(object);
-				// note: update callback is called on save
-			}
+			this.deferredValue = object;
+			this.clickCallback.accept(object);
+			// note: update callback is called on save
 		}
 	}
 

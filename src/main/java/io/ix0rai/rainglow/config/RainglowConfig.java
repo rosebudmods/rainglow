@@ -22,9 +22,6 @@ public class RainglowConfig extends ReflectiveConfig {
     @Comment("The currently active rainglow mode, which determines the possible colours for entities to spawn with.")
     @Comment("If custom, will be reset to the default mode if you join a server that does not have the mode.")
     public final TrackedValue<String> mode = this.value("rainbow");
-    @Comment("For server owners only: whether to sync the rainglow mode and config to clients when they join to give everyone a unified experience.")
-    @Comment("When this is turned off, players will not be able to see the same colours as each other, and players will see different colours each time they rejoin.")
-    public final TrackedValue<Boolean> serverSync = this.value(true);
     @Comment("The rarity of coloured entities, with 0 making all entities vanilla and 100 making all entities coloured.")
     public final TrackedValue<ValueMap<Integer>> rarities = this.createMap(100);
     @Comment("Toggles for disabling colours for each entity.")

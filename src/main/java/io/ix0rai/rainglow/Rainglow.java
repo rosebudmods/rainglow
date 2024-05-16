@@ -52,13 +52,11 @@ public class Rainglow implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(RainglowNetworking.ModeSyncPayload.PACKET_ID, RainglowNetworking.ModeSyncPayload.PACKET_CODEC);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            if (CONFIG.serverSync.value()) {
-                // send modes to client
-                RainglowNetworking.syncModes(handler.player);
+            // send modes to client
+            RainglowNetworking.syncModes(handler.player);
 
-                // send config to client
-                RainglowNetworking.syncConfig(handler.player);
-            }
+            // send config to client
+            RainglowNetworking.syncConfig(handler.player);
         });
     }
 
