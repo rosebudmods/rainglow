@@ -11,8 +11,6 @@
   "rainglow.config.enable_slime": "Regenbogenfarbener Schleim",
   "rainglow.config.enable_allay": "Regenbogenfarbene Hilfsgeister",
   "rainglow.config.server_locked_title": "Konfiguration vom Server gesperrt",
-  "rainglow.tooltip.mode": "Der Modus bestimmt, welche Farben gerade aktiviert sind",
-  "rainglow.config.cannot_be_loaded_outside_world": "Die Rainglow Konfiguration kann nicht außerhalb einer Welt geladen werden!",
   "rainglow.mode.rainbow": "Regenbogen",
   "rainglow.mode.all_colours": "Alle Farben",
   "rainglow.mode.monochrome": "Monochrom",
@@ -43,8 +41,5 @@
   "rainglow.colour.lime": "Hellgrün",
   "rainglow.colour.magenta": "Magenta",
   "rainglow.colour.indigo": "Indigo",
-  "rainglow.value.slime_rarity": "Slime rarity: %s",
-  "rainglow.tooltip.rarity": "Rarity determines what percent chance mobs have to spawn with a colour.",
-  "rainglow.value.allay_rarity": "Allay rarity: %s",
-  "rainglow.value.glow_squid_rarity": "Glow squid rarity: %s"
+  "rainglow.tooltip.rarity": "Rarity determines what percent chance mobs have to spawn with a colour."
 }
