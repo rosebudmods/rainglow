@@ -33,7 +33,9 @@ public class DeferredSaveOption<T> extends Option<T> {
 			this.deferredValue = object;
 		} else {
 			this.deferredValue = object;
-			this.clickCallback.accept(object);
+			if (!object.equals(this.value)) {
+				this.clickCallback.accept(object);
+			}
 			// note: update callback is called on save
 		}
 	}
