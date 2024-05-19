@@ -31,7 +31,7 @@ public class Rainglow implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     private static final String FORMAT = "toml";
     private static final ConfigEnvironment ENVIRONMENT = new ConfigEnvironment(FabricLoader.getInstance().getConfigDir(), FORMAT, TomlSerializer.INSTANCE);
-    public static final RainglowConfig CONFIG = RainglowConfig.create(ENVIRONMENT, MOD_ID, MOD_ID, RainglowConfig.class);
+    public static final RainglowConfig CONFIG = RainglowConfig.create(ENVIRONMENT, "", MOD_ID, RainglowConfig.class);
     public static final Gson GSON = new Gson();
 
     private static final List<RainglowColour> COLOURS = new ArrayList<>();
