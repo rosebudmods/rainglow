@@ -12,15 +12,15 @@ import java.util.HashMap;
 public enum RainglowColour {
     BLACK("black", new RGB(0.0F, 0.0F, 0.0F), new RGB(0.0F, 0.0F, 0.0F), new RGB(0, 0, 0), Items.BLACK_DYE),
     BLUE("blue", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102), Items.BLUE_DYE),
-    BROWN("brown", new RGB(1.0F, 0.5F, 0.0F), new RGB(1.0F, 0.4F, 0.4F), new RGB(149, 59, 35), Items.BROWN_DYE), // todo particles
-    CYAN("cyan", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102), Items.CYAN_DYE), // todo particles
+    BROWN("brown", new RGB(1.0F, 0.5F, 0.0F), new RGB(1.0F, 0.4F, 0.4F), new RGB(149, 59, 35), Items.BROWN_DYE),
+    CYAN("cyan", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102), Items.CYAN_DYE),
     GRAY("gray", new RGB(0.6F, 0.6F, 0.6F), new RGB(0.4F, 0.4F, 0.4F), new RGB(100, 100, 100), Items.GRAY_DYE),
     GREEN("green", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 1.0F, 0.4F), new RGB(0, 200, 0), Items.GREEN_DYE),
     INDIGO("indigo", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 1.0F), new RGB(0, 0, 200), Items.AMETHYST_SHARD),
-    LIGHT_BLUE("light_blue", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102), Items.LIGHT_BLUE_DYE), // todo particles
-    LIGHT_GRAY("light_gray", new RGB(0.6F, 0.6F, 0.6F), new RGB(0.4F, 0.4F, 0.4F), new RGB(100, 100, 100), Items.LIGHT_GRAY_DYE), // todo particles
-    LIME("lime", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 1.0F, 0.4F), new RGB(0, 200, 0), Items.LIME_DYE), // todo particles
-    MAGENTA("magenta", new RGB(0.3F, 0F, 0.25F), new RGB(0.5F, 0.05F, 0.5F), new RGB(200, 0, 100), Items.MAGENTA_DYE), // todo particles
+    LIGHT_BLUE("light_blue", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 0.4F, 0.4F), new RGB(204, 31, 102), Items.LIGHT_BLUE_DYE),
+    LIGHT_GRAY("light_gray", new RGB(0.6F, 0.6F, 0.6F), new RGB(0.4F, 0.4F, 0.4F), new RGB(100, 100, 100), Items.LIGHT_GRAY_DYE),
+    LIME("lime", new RGB(0.6F, 1.0F, 0.8F), new RGB(0.08F, 1.0F, 0.4F), new RGB(0, 200, 0), Items.LIME_DYE),
+    MAGENTA("magenta", new RGB(0.3F, 0F, 0.25F), new RGB(0.5F, 0.05F, 0.5F), new RGB(200, 0, 100), Items.MAGENTA_DYE),
     ORANGE("orange", new RGB(1.0F, 0.5F, 0.0F), new RGB(1.0F, 0.4F, 0.4F), new RGB(200, 0, 0), Items.ORANGE_DYE),
     PINK("pink", new RGB(0.6F, 0F, 0.5F), new RGB(1.0F, 0.1F, 1.0F), new RGB(200, 0, 0), Items.PINK_DYE),
     PURPLE("purple", new RGB(0.3F, 0F, 0.25F), new RGB(0.5F, 0.05F, 0.5F), new RGB(200, 0, 100), Items.PURPLE_DYE),
