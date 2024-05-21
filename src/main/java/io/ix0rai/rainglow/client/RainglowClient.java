@@ -2,6 +2,7 @@ package io.ix0rai.rainglow.client;
 
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueList;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueMap;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowMode;
@@ -26,25 +27,33 @@ public class RainglowClient implements ClientModInitializer {
     public void onInitializeClient() {
         ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.ConfigSyncPayload.PACKET_ID, (payload, context) -> {
             MinecraftClient client = context.client();
-            client.execute(() -> {
-                // custom must be set before mode so that if the server sends a custom mode it is set correctly
-                // otherwise the client's custom would be used
-                ValueList<String> list = ValueList.create("", payload.customMode().stream().map(RainglowColour::getId).toArray(String[]::new));
-                Rainglow.CONFIG.customColours.setOverride(list);
-                Rainglow.CONFIG.mode.setOverride(payload.currentMode());
+            if (!client.isIntegratedServerRunning()) {
+                client.execute(() -> {
+                    // custom must be set before mode so that if the server sends a custom mode it is set correctly
+                    // otherwise the client's custom would be used
+                    ValueList<String> customColours = ValueList.create("", payload.customMode().stream().map(RainglowColour::getId).toArray(String[]::new));
+                    Rainglow.CONFIG.customColours.setOverride(customColours);
+                    Rainglow.CONFIG.mode.setOverride(payload.currentMode());
 
-                // todo override toggles
+                    var rarities = ValueMap.builder(0);
+                    for (var entry : payload.rarities().entrySet()) {
+                        rarities.put(entry.getKey().getId(), entry.getValue());
+                    }
+                    Rainglow.CONFIG.rarities.setOverride(rarities.build());
 
-                for (var entry : payload.enabledMobs().entrySet()) {
-                    Rainglow.CONFIG.setEntityEnabled(entry.getKey(), entry.getValue());
-                }
+                    var toggles = ValueMap.builder(true);
+                    for (var entry : payload.enabledMobs().entrySet()) {
+                        toggles.put(entry.getKey().getId(), entry.getValue());
+                    }
+                    Rainglow.CONFIG.toggles.setOverride(toggles.build());
 
-                // lock the config from reloading on resource reload
-                Rainglow.CONFIG.setEditLocked(true);
+                    // lock the config from reloading on resource reload
+                    Rainglow.CONFIG.setEditLocked(true);
 
-                // log
-                Rainglow.LOGGER.info("received config from server: set mode to " + payload.currentMode() + " and custom colours to " + payload.customMode());
-            });
+                    // log
+                    Rainglow.LOGGER.info("received config from server: set mode to " + payload.currentMode() + " and custom colours to " + payload.customMode());
+                });
+            }
         });
 
         ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.ModeSyncPayload.PACKET_ID, (payload, context) -> {

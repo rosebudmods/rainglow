@@ -49,6 +49,15 @@ public class RainglowConfig extends ReflectiveConfig {
         return map;
     }
 
+    public Map<RainglowEntity, Integer> getRarities() {
+        Map<RainglowEntity, Integer> map = new HashMap<>();
+        for (RainglowEntity entity : RainglowEntity.values()) {
+            map.put(entity, this.getRarity(entity));
+        }
+
+        return map;
+    }
+
     public boolean isEntityEnabled(RainglowEntity entity) {
         return this.toggles.value().get(entity.getId());
     }

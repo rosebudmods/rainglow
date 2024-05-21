@@ -110,7 +110,7 @@ public class RainglowConfigScreen extends Screen {
                 "config.enable_" + e.getId(),
                 "tooltip.entity_toggle",
                 Rainglow.CONFIG.toggles.getRealValue().get(e.getId()),
-                enabled -> Rainglow.CONFIG.setEntityEnabled(e, enabled),
+                enabled -> Rainglow.CONFIG.toggles.getRealValue().put(e.getId(), enabled),
                 enabled -> this.saveButton.active = true
         ));
     }
@@ -122,7 +122,7 @@ public class RainglowConfigScreen extends Screen {
 				Rainglow.CONFIG.rarities.getRealValue().get(e.getId()),
 				0,
 				100,
-				rarity -> Rainglow.CONFIG.setRarity(e, rarity),
+				rarity -> Rainglow.CONFIG.rarities.getRealValue().put(e.getId(), rarity),
                 rarity -> this.saveButton.active = true
 		));
     }

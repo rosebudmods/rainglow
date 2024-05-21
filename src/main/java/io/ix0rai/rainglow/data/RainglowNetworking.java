@@ -16,10 +16,10 @@ public class RainglowNetworking {
     public static void syncConfig(ServerPlayerEntity player) {
         // note: client does not need to know if server sync is enabled or not
         // they already know that it is enabled because they are receiving this packet
-        ServerPlayNetworking.send(player, new ConfigSyncPayload(Rainglow.CONFIG.mode.value(), Rainglow.CONFIG.getCustom(), Rainglow.CONFIG.getToggles()));
+        ServerPlayNetworking.send(player, new ConfigSyncPayload(Rainglow.CONFIG.mode.value(), Rainglow.CONFIG.getCustom(), Rainglow.CONFIG.getToggles(), Rainglow.CONFIG.getRarities()));
     }
 
-    public record ConfigSyncPayload(String currentMode, List<RainglowColour> customMode, Map<RainglowEntity, Boolean> enabledMobs) implements CustomPayload {
+    public record ConfigSyncPayload(String currentMode, List<RainglowColour> customMode, Map<RainglowEntity, Boolean> enabledMobs, Map<RainglowEntity, Integer> rarities) implements CustomPayload {
         public static final CustomPayload.Id<ConfigSyncPayload> PACKET_ID = new CustomPayload.Id<>(Rainglow.id("config_sync"));
         public static final PacketCodec<RegistryByteBuf, ConfigSyncPayload> PACKET_CODEC = PacketCodec.create(ConfigSyncPayload::write, ConfigSyncPayload::read);
 
@@ -27,13 +27,15 @@ public class RainglowNetworking {
             buf.writeString(this.currentMode);
             buf.writeCollection(this.customMode, RainglowColour::write);
             buf.writeMap(this.enabledMobs, RainglowEntity::write, PacketByteBuf::writeBoolean);
+            buf.writeMap(this.rarities, RainglowEntity::write, PacketByteBuf::writeVarInt);
         }
 
         public static ConfigSyncPayload read(RegistryByteBuf buf) {
             return new ConfigSyncPayload(
                     buf.readString(),
                     buf.readList(RainglowColour::read),
-                    buf.readMap(RainglowEntity::read, PacketByteBuf::readBoolean)
+                    buf.readMap(RainglowEntity::read, PacketByteBuf::readBoolean),
+                    buf.readMap(RainglowEntity::read, PacketByteBuf::readVarInt)
             );
         }
 
