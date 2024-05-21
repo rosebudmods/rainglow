@@ -42,7 +42,7 @@ public class RainglowConfigScreen extends Screen {
     public RainglowConfigScreen(@Nullable Screen parent) {
         super(TITLE);
         this.parent = parent;
-        this.mode = RainglowMode.get(Rainglow.CONFIG.mode.value());
+        this.mode = RainglowMode.get(Rainglow.CONFIG.mode.getRealValue());
         this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> {
             this.save();
             this.closeScreen(true);
@@ -109,7 +109,7 @@ public class RainglowConfigScreen extends Screen {
         return toggles.computeIfAbsent(entity, e -> DeferredSaveOption.createDeferredBoolean(
                 "config.enable_" + e.getId(),
                 "tooltip.entity_toggle",
-                Rainglow.CONFIG.isEntityEnabled(e),
+                Rainglow.CONFIG.toggles.getRealValue().get(e.getId()),
                 enabled -> Rainglow.CONFIG.setEntityEnabled(e, enabled),
                 enabled -> this.saveButton.active = true
         ));
@@ -119,7 +119,7 @@ public class RainglowConfigScreen extends Screen {
         return sliders.computeIfAbsent(entity, e -> DeferredSaveOption.createDeferredRangedInt(
 				"config." + e.getId() + "_rarity",
 				"tooltip.rarity",
-				Rainglow.CONFIG.getRarity(e),
+				Rainglow.CONFIG.rarities.getRealValue().get(e.getId()),
 				0,
 				100,
 				rarity -> Rainglow.CONFIG.setRarity(e, rarity),
@@ -156,6 +156,7 @@ public class RainglowConfigScreen extends Screen {
         }
 
         Rainglow.CONFIG.mode.setValue(this.mode.getId());
+        Rainglow.setMode(RainglowMode.get(this.mode.getId()));
     }
 
     private Tooltip createColourListLabel(RainglowMode mode) {

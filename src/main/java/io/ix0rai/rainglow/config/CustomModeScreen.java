@@ -53,10 +53,10 @@ public class CustomModeScreen extends GameOptionsScreen {
 			this.options.add(DeferredSaveOption.createDeferredBoolean(
 				"colour." + colour.getId(),
 				null,
-				Rainglow.CONFIG.getCustom().contains(colour),
+				Rainglow.CONFIG.customColours.getRealValue().contains(colour.getId()),
 				enabled -> {
 					if (enabled) {
-						Rainglow.CONFIG.customColours.value().add(colour.getId());
+						Rainglow.CONFIG.customColours.getRealValue().add(colour.getId());
 					}
 				},
 				enabled -> this.saveButton.active = true
@@ -65,7 +65,7 @@ public class CustomModeScreen extends GameOptionsScreen {
 	}
 
 	private void save() {
-		Rainglow.CONFIG.customColours.value().clear();
+		Rainglow.CONFIG.customColours.getRealValue().clear();
 
 		for (DeferredSaveOption<?> option : this.options) {
 			option.save();
