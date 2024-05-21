@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AllayEntityRenderer.class)
 public class AllayEntityRendererMixin {
-
     @Inject(method = "getTexture*", at = @At("HEAD"), cancellable = true)
     public void getTexture(AllayEntity allayEntity, CallbackInfoReturnable<Identifier> cir) {
         String colour = Rainglow.getColour(RainglowEntity.ALLAY, allayEntity.getDataTracker(), allayEntity.getRandom());

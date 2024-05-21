@@ -123,7 +123,11 @@ public class Rainglow implements ModInitializer {
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
-    public static Item getItem(int index) {
+    public static Item getItem(RainglowEntity entity, int index) {
+        if (index == -1) {
+            return entity.getDefaultColour().getItem();
+        }
+
         return COLOURS.get(index).getItem();
     }
 
@@ -164,7 +168,7 @@ public class Rainglow implements ModInitializer {
     public static String getColour(RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(getTrackedColourData(entityType));
-        if (colourUnloaded(colour)) {
+        if (colourUnloaded(colour) && !colour.equals(entityType.getDefaultColour().getId())) {
             // Use last generated colour if not null else generate a new colour
             tracker.set(getTrackedColourData(entityType), generateRandomColourId(random));
             colour = tracker.get(getTrackedColourData(entityType));

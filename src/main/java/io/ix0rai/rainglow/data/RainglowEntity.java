@@ -7,9 +7,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public enum RainglowEntity {
-    GLOW_SQUID("glow_squid"),
-    ALLAY("allay"),
-    SLIME("slime");
+    GLOW_SQUID("glow_squid", RainglowColour.BLUE),
+    ALLAY("allay", RainglowColour.BLUE),
+    SLIME("slime", RainglowColour.LIME);
 
     private static final HashMap<String, RainglowEntity> BY_ID = new HashMap<>();
     static {
@@ -17,13 +17,19 @@ public enum RainglowEntity {
     }
 
     private final String id;
+    private final RainglowColour defaultColour;
 
-    RainglowEntity(String id) {
+    RainglowEntity(String id, RainglowColour defaultColour) {
         this.id = id;
+        this.defaultColour = defaultColour;
     }
 
     public String getId() {
         return this.id;
+    }
+
+    public RainglowColour getDefaultColour() {
+        return this.defaultColour;
     }
 
     public static RainglowEntity read(PacketByteBuf buf) {

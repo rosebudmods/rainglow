@@ -17,7 +17,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
-import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -38,23 +37,27 @@ public abstract class MobEntityMixin extends LivingEntity {
     @Inject(method = "initialize", at = @At("RETURN"), cancellable = true)
     public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, CallbackInfoReturnable<EntityData> cir) {
         if ((Object) this instanceof GlowSquidEntity glowSquid) {
-            String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((GlowSquidVariantProvider) glowSquid).setVariant(getColourOrDefault(this.random, RainglowColour.BLUE, colour));
-            cir.setReturnValue(new GlowSquidEntityData(getColourOrDefault(this.random, RainglowColour.BLUE, colour)));
+            RainglowColour colour = generateColour();
+            ((GlowSquidVariantProvider) glowSquid).setVariant(colour);
+            cir.setReturnValue(new GlowSquidEntityData(colour));
         } else if ((Object) this instanceof AllayEntity allay) {
-            String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((AllayVariantProvider) allay).setVariant(getColourOrDefault(this.random, RainglowColour.BLUE, colour));
-            cir.setReturnValue(new AllayEntityData(getColourOrDefault(this.random, RainglowColour.BLUE, colour)));
+            RainglowColour colour = generateColour();
+            ((AllayVariantProvider) allay).setVariant(colour);
+            cir.setReturnValue(new AllayEntityData(colour));
         } else if ((Object) this instanceof SlimeEntity slime) {
-            String colour = Rainglow.generateRandomColourId(this.getRandom());
-            ((SlimeVariantProvider) slime).setVariant(getColourOrDefault(this.random, RainglowColour.LIME, colour));
-            cir.setReturnValue(new SlimeEntityData(getColourOrDefault(this.random, RainglowColour.LIME, colour)));
+            RainglowColour colour = generateColour();
+            ((SlimeVariantProvider) slime).setVariant(colour);
+            cir.setReturnValue(new SlimeEntityData(colour));
         }
     }
 
     @Unique
-    private RainglowColour getColourOrDefault(RandomGenerator random, RainglowColour defaultColour, String randomColour) {
-        return random.nextInt(100) >= Rainglow.CONFIG.getRarity(this.getCurrentEntity()) ? defaultColour : RainglowColour.get(randomColour);
+    private RainglowColour generateColour() {
+        RainglowEntity entity = getCurrentEntity();
+        int i = random.nextInt(100);
+        int rarity = Rainglow.CONFIG.getRarity(entity);
+
+        return i >= rarity ? entity.getDefaultColour() : RainglowColour.get(Rainglow.generateRandomColourId(this.random));
     }
 
     @Unique
