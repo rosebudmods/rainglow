@@ -80,13 +80,13 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
         String colour = RainglowColour.get(Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random)).getId();
         int index = Rainglow.getColourIndex(colour);
 
-        for(int j = 0; j < size / 4; j ++) {
+        for (int j = 0; j < size / 2; j ++) {
             float f = this.random.nextFloat() * 6.2831855F;
             float g = this.random.nextFloat() * 0.5F + 0.5F;
             float h = MathHelper.sin(f) * size * g;
             float k = MathHelper.cos(f) * size * g;
             // note: y velocity of 100 is a magic value
-            this.getWorld().addParticle(this.getParticles(), this.getX() + (double)h, this.getY(), this.getZ() + (double)k, index, 100.0, 0.0);
+            this.getWorld().addParticle(this.getParticles(), this.getX() + (double) h, this.getY(), this.getZ() + (double) k, index, 100.0, 0.0);
         }
     }
 
