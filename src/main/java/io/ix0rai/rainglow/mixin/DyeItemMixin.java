@@ -35,7 +35,7 @@ public class DyeItemMixin {
             }
 
             DataTracker tracker = glowSquid.getDataTracker();
-            tracker.set(Rainglow.getTrackedColourData(RainglowEntity.GLOW_SQUID), colour);
+            tracker.set(RainglowEntity.GLOW_SQUID.getTrackedData(), colour);
 
             cir.setReturnValue(ActionResult.success(user.getWorld().isClient()));
         } else if (entity instanceof AllayEntity allayEntity && allayEntity.isAlive() && !Rainglow.getColour(RainglowEntity.ALLAY, allayEntity.getDataTracker(), allayEntity.getRandom()).equals(colour)) {
@@ -45,7 +45,7 @@ public class DyeItemMixin {
             }
 
             DataTracker tracker = allayEntity.getDataTracker();
-            tracker.set(Rainglow.getTrackedColourData(RainglowEntity.ALLAY), colour);
+            tracker.set(RainglowEntity.ALLAY.getTrackedData(), colour);
 
             cir.setReturnValue(ActionResult.success(user.getWorld().isClient()));
         } else if (entity instanceof SlimeEntity slimeEntity && slimeEntity.isAlive() && !Rainglow.getColour(RainglowEntity.SLIME, slimeEntity.getDataTracker(), slimeEntity.getRandom()).equals(colour)) {
@@ -55,7 +55,7 @@ public class DyeItemMixin {
             }
 
             DataTracker tracker = slimeEntity.getDataTracker();
-            tracker.set(Rainglow.getTrackedColourData(RainglowEntity.SLIME), colour);
+            tracker.set(RainglowEntity.SLIME.getTrackedData(), colour);
 
             cir.setReturnValue(ActionResult.success(user.getWorld().isClient()));
         }

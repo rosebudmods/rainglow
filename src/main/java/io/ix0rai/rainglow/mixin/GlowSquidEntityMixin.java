@@ -29,7 +29,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(Builder builder, CallbackInfo ci) {
-        builder.add(Rainglow.GLOW_SQUID_COLOUR, RainglowColour.BLUE.getId());
+        builder.add(RainglowEntity.GLOW_SQUID.getTrackedData(), RainglowColour.BLUE.getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
@@ -43,7 +43,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
         String colour = nbt.getString(Rainglow.CUSTOM_NBT_KEY);
 
         // if read colour does not exist in the colour map, generate the squid a new one
-        if (Rainglow.colourUnloaded(colour)) {
+        if (Rainglow.colourUnloaded(RainglowEntity.GLOW_SQUID, colour)) {
             colour = Rainglow.generateRandomColourId(this.getRandom());
         }
 
@@ -71,7 +71,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Override
     public void setVariant(RainglowColour colour) {
-        this.getDataTracker().set(Rainglow.getTrackedColourData(RainglowEntity.GLOW_SQUID), colour.getId());
+        this.getDataTracker().set(RainglowEntity.GLOW_SQUID.getTrackedData(), colour.getId());
     }
 
     @Mixin(SquidEntity.class)

@@ -35,12 +35,9 @@ public class Rainglow implements ModInitializer {
     public static final Gson GSON = new Gson();
 
     private static final List<RainglowColour> COLOURS = new ArrayList<>();
-    private static final Map<String, Identifier> GLOWSQUID_TEXTURES = new HashMap<>();
+    private static final Map<String, Identifier> GLOW_SQUID_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> SLIME_TEXTURES = new HashMap<>();
-    public static final TrackedData<String> GLOW_SQUID_COLOUR = DataTracker.registerData(GlowSquidEntity.class, TrackedDataHandlerRegistry.STRING);
-    public static final TrackedData<String> ALLAY_COLOUR = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);
-    public static final TrackedData<String> SLIME_COLOUR = DataTracker.registerData(SlimeEntity.class, TrackedDataHandlerRegistry.STRING);
 
     public static final String CUSTOM_NBT_KEY = "Colour";
 
@@ -70,7 +67,7 @@ public class Rainglow implements ModInitializer {
             LOGGER.warn("attempted to load missing mode, resetting to rainbow");
         }
 
-        GLOWSQUID_TEXTURES.clear();
+        GLOW_SQUID_TEXTURES.clear();
         ALLAY_TEXTURES.clear();
         SLIME_TEXTURES.clear();
         COLOURS.clear();
@@ -85,17 +82,10 @@ public class Rainglow implements ModInitializer {
         CONFIG.setInitialized();
     }
 
-    public static void refreshColours() {
-        // we only ever need to refresh the colours of custom mode, all other sets of colours are immutable
-        if (CONFIG.getMode().getId().equals("custom")) {
-            setMode(RainglowMode.get("custom"));
-        }
-    }
-
     private static void addColour(RainglowColour colour) {
         COLOURS.add(colour);
 
-        GLOWSQUID_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.GLOW_SQUID));
+        GLOW_SQUID_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.GLOW_SQUID));
         ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.ALLAY));
         SLIME_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.SLIME));
 
@@ -105,7 +95,7 @@ public class Rainglow implements ModInitializer {
     }
 
     public static Identifier getTexture(RainglowEntity entityType, String colour) {
-        if (entityType == RainglowEntity.GLOW_SQUID) return GLOWSQUID_TEXTURES.get(colour);
+        if (entityType == RainglowEntity.GLOW_SQUID) return GLOW_SQUID_TEXTURES.get(colour);
         else if (entityType == RainglowEntity.ALLAY) return ALLAY_TEXTURES.get(colour);
         else return SLIME_TEXTURES.get(colour);
     }
@@ -140,8 +130,8 @@ public class Rainglow implements ModInitializer {
         else return RainglowColour.BLUE.getTexture(entityType);
     }
 
-    public static boolean colourUnloaded(String colour) {
-        return !COLOURS.contains(RainglowColour.get(colour));
+    public static boolean colourUnloaded(RainglowEntity entityType, String colour) {
+        return !COLOURS.contains(RainglowColour.get(colour)) && !colour.equals(entityType.getDefaultColour().getId());
     }
 
     public static String translatableTextKey(String key) {
@@ -157,21 +147,13 @@ public class Rainglow implements ModInitializer {
         return Text.translatable(translatableTextKey(key));
     }
 
-    public static TrackedData<String> getTrackedColourData(RainglowEntity entityType) {
-		return switch (entityType) {
-			case GLOW_SQUID -> GLOW_SQUID_COLOUR;
-			case ALLAY -> ALLAY_COLOUR;
-			case SLIME -> SLIME_COLOUR;
-		};
-    }
-
     public static String getColour(RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
         // generate random colour if the squid's colour isn't currently loaded
-        String colour = tracker.get(getTrackedColourData(entityType));
-        if (colourUnloaded(colour) && !colour.equals(entityType.getDefaultColour().getId())) {
+        String colour = tracker.get(entityType.getTrackedData());
+        if (colourUnloaded(entityType, colour)) {
             // Use last generated colour if not null else generate a new colour
-            tracker.set(getTrackedColourData(entityType), generateRandomColourId(random));
-            colour = tracker.get(getTrackedColourData(entityType));
+            tracker.set(entityType.getTrackedData(), generateRandomColourId(random));
+            colour = tracker.get(entityType.getTrackedData());
         }
 
         return colour;
