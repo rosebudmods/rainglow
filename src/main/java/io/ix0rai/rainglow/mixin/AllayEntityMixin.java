@@ -20,6 +20,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AllayEntity.class)
 public abstract class AllayEntityMixin extends Entity implements AllayVariantProvider {
+    @Unique
+    private static final RainglowEntity THIS = RainglowEntity.ALLAY;
+
     protected AllayEntityMixin(EntityType<? extends AllayEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
@@ -27,37 +30,31 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(Builder builder, CallbackInfo ci) {
-        builder.add(RainglowEntity.ALLAY.getTrackedData(), RainglowEntity.ALLAY.getDefaultColour().getId());
+        builder.add(THIS.getTrackedData(), THIS.getDefaultColour().getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        String colour = Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.getRandom());
-        nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour);
+        RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.getRandom());
+        nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        String colour = nbt.getString(Rainglow.CUSTOM_NBT_KEY);
-
-        if (Rainglow.colourUnloaded(RainglowEntity.ALLAY, colour)) {
-            colour = Rainglow.generateRandomColourId(this.getRandom());
-        }
-
-        this.setVariant(RainglowColour.get(colour));
+        this.setVariant(THIS.readNbt(nbt, this.getRandom()));
     }
 
     // triggered when an allay duplicates, to apply the same colour as parent
     @Redirect(method = "duplicate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     public boolean spawnWithColour(World instance, Entity entity) {
-        RainglowColour colour = RainglowColour.get(Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.getRandom()));
+        RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.getRandom());
         entity.getDataTracker().set(RainglowEntity.ALLAY.getTrackedData(), colour.getId());
         return this.getWorld().spawnEntity(entity);
     }
 
     @Override
     public RainglowColour getVariant() {
-        return RainglowColour.get(Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.getRandom()));
+        return Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.getRandom());
     }
 
     @Override

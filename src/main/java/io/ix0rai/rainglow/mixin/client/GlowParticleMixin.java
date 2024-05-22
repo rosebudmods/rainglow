@@ -32,7 +32,7 @@ public class GlowParticleMixin {
             GlowParticle glowParticle = new GlowParticle(clientWorld, d, e, f, 0.5 - GlowParticle.RANDOM.nextDouble(), h, 0.5 - GlowParticle.RANDOM.nextDouble(), this.spriteProvider);
 
             // we check the g value to see what the colour is
-            RainglowColour.RGB rgb = Rainglow.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
+            RainglowColour.RGB rgb = RainglowColour.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
             glowParticle.setColor(rgb.r(), rgb.g(), rgb.b());
 
             // set velocities - I don't entirely understand why this is necessary, it's copied from vanilla code

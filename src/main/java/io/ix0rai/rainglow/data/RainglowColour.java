@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.random.RandomGenerator;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -93,6 +94,15 @@ public enum RainglowColour {
     @Nullable
     public static RainglowColour get(String id) {
         return BY_ID.get(id);
+    }
+
+    public static RainglowColour.RGB getInkRgb(int index) {
+        return RainglowColour.values()[index].getInkRgb();
+    }
+
+    public static RainglowColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
+        RainglowColour colour = RainglowColour.values()[index];
+        return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }
 
     public record RGB(float r, float g, float b) {

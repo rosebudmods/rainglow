@@ -11,12 +11,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.SlimeEntity;
-import net.minecraft.entity.passive.AllayEntity;
-import net.minecraft.entity.passive.GlowSquidEntity;
-import net.minecraft.item.Item;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -95,39 +89,15 @@ public class Rainglow implements ModInitializer {
     }
 
     public static Identifier getTexture(RainglowEntity entityType, String colour) {
-        if (entityType == RainglowEntity.GLOW_SQUID) return GLOW_SQUID_TEXTURES.get(colour);
-        else if (entityType == RainglowEntity.ALLAY) return ALLAY_TEXTURES.get(colour);
-        else return SLIME_TEXTURES.get(colour);
-    }
-
-    public static int getColourIndex(String colour) {
-        return COLOURS.indexOf(RainglowColour.get(colour));
-    }
-
-    public static RainglowColour.RGB getInkRgb(int index) {
-        return COLOURS.get(index).getInkRgb();
-    }
-
-    public static RainglowColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
-        RainglowColour colour = COLOURS.get(index);
-        return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
-    }
-
-    public static Item getItem(RainglowEntity entity, int index) {
-        if (index == -1) {
-            return entity.getDefaultColour().getItem();
-        }
-
-        return COLOURS.get(index).getItem();
+        return switch (entityType) {
+            case ALLAY -> ALLAY_TEXTURES.get(colour);
+            case SLIME -> SLIME_TEXTURES.get(colour);
+            case GLOW_SQUID -> GLOW_SQUID_TEXTURES.get(colour);
+        };
     }
 
     public static String generateRandomColourId(RandomGenerator random) {
         return COLOURS.get(random.nextInt(COLOURS.size())).getId();
-    }
-
-    public static Identifier getDefaultTexture(RainglowEntity entityType) {
-        if (entityType == RainglowEntity.SLIME) return RainglowColour.LIME.getTexture(entityType);
-        else return RainglowColour.BLUE.getTexture(entityType);
     }
 
     public static boolean colourUnloaded(RainglowEntity entityType, String colour) {
@@ -147,7 +117,7 @@ public class Rainglow implements ModInitializer {
         return Text.translatable(translatableTextKey(key));
     }
 
-    public static String getColour(RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
+    public static RainglowColour getColour(RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(entityType.getTrackedData());
         if (colourUnloaded(entityType, colour)) {
@@ -156,6 +126,6 @@ public class Rainglow implements ModInitializer {
             colour = tracker.get(entityType.getTrackedData());
         }
 
-        return colour;
+        return RainglowColour.get(colour);
     }
 }

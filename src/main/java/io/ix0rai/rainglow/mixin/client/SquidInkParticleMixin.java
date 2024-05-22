@@ -45,7 +45,7 @@ public class SquidInkParticleMixin {
             // when we catch an exception we use white as it looks the most normal
             RainglowColour.RGB rgb;
             try {
-                rgb = Rainglow.getInkRgb(colourIndex);
+                rgb = RainglowColour.getInkRgb(colourIndex);
             } catch (IndexOutOfBoundsException ignored) {
                 rgb = RainglowColour.WHITE.getInkRgb();
             }

@@ -1,12 +1,17 @@
 package io.ix0rai.rainglow.data;
 
+import io.ix0rai.rainglow.Rainglow;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.random.RandomGenerator;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -42,6 +47,28 @@ public enum RainglowEntity {
 
     public TrackedData<String> getTrackedData() {
         return this.trackedData;
+    }
+
+    public Identifier getDefaultTexture() {
+        return this.defaultColour.getTexture(this);
+    }
+
+    public Item getItem(int index) {
+        if (index == -1) {
+            return this.getDefaultColour().getItem();
+        }
+
+        return RainglowColour.values()[index].getItem();
+    }
+
+    public RainglowColour readNbt(NbtCompound nbt, RandomGenerator random) {
+        String colour = nbt.getString(Rainglow.CUSTOM_NBT_KEY);
+
+        if (Rainglow.colourUnloaded(this, colour)) {
+            colour = Rainglow.generateRandomColourId(random);
+        }
+
+        return RainglowColour.get(colour);
     }
 
     public static RainglowEntity read(PacketByteBuf buf) {
