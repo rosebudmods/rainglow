@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public enum RainglowColour {
     BLACK("black", new RGB(0.0F, 0.0F, 0.0F), new RGB(0.0F, 0.0F, 0.0F), new RGB(0, 0, 0), Items.BLACK_DYE),
@@ -35,7 +36,7 @@ public enum RainglowColour {
     }
 
     private final String id;
-    private Identifier texture;
+    private final Map<RainglowEntity, Identifier> textures;
     private final RGB passiveParticleRgb;
     private final RGB altPassiveParticleRgb;
     private final RGB inkRgb;
@@ -43,7 +44,7 @@ public enum RainglowColour {
 
     RainglowColour(String id, RGB passiveParticleRgb, RGB altPassiveParticleRgb, RGB inkRgb, Item item) {
         this.id = id;
-        this.texture = new Identifier("textures/entity/squid/" + this.getId() + ".png");
+        this.textures = new HashMap<>();
         this.passiveParticleRgb = passiveParticleRgb;
         this.altPassiveParticleRgb = altPassiveParticleRgb;
         this.inkRgb = inkRgb;
@@ -51,19 +52,27 @@ public enum RainglowColour {
     }
 
     public Identifier getTexture(RainglowEntity entityType) {
-        // use minecraft's textures when possible, so we can ship fewer textures
-        if (entityType == RainglowEntity.GLOW_SQUID) {
-            String textureName = this.getId().equals("blue") ? "glow_squid" : this.getId();
-            this.texture = new Identifier("textures/entity/squid/" + textureName + ".png");
-        } else if (entityType == RainglowEntity.ALLAY) {
-            String textureName = this.getId().equals("blue") ? "allay" : this.getId();
-            this.texture = new Identifier("textures/entity/allay/" + textureName + ".png");
-        } else {
-            String textureName = this.getId().equals("lime") ? "slime" : this.getId();
-            this.texture = new Identifier("textures/entity/slime/" + textureName + ".png");
+        if (this.textures.isEmpty()) {
+            for (RainglowEntity entity : RainglowEntity.values()) {
+                // use minecraft's textures when possible, so we can ship fewer textures
+                switch (entity) {
+                    case GLOW_SQUID -> {
+                        String textureName = RainglowEntity.GLOW_SQUID.getDefaultColour() == this ? "glow_squid" : this.getId();
+                        this.textures.put(entity, new Identifier("textures/entity/squid/" + textureName + ".png"));
+                    }
+                    case ALLAY -> {
+                        String textureName = RainglowEntity.ALLAY.getDefaultColour() == this ? "allay" : this.getId();
+                        this.textures.put(entity, new Identifier("textures/entity/allay/" + textureName + ".png"));
+                    }
+                    case SLIME -> {
+                        String textureName = RainglowEntity.SLIME.getDefaultColour() == this ? "slime" : this.getId();
+                        this.textures.put(entity, new Identifier("textures/entity/slime/" + textureName + ".png"));
+                    }
+                }
+            }
         }
 
-        return this.texture;
+        return this.textures.get(entityType);
     }
 
     public String getId() {

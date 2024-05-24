@@ -1,6 +1,7 @@
 package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -13,6 +14,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.random.RandomGenerator;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -82,5 +84,16 @@ public enum RainglowEntity {
     @Nullable
     public static RainglowEntity get(String id) {
         return BY_ID.get(id);
+    }
+
+    public void overrideTexture(Entity entity, CallbackInfoReturnable<Identifier> cir) {
+        RainglowColour colour = Rainglow.getColour(this, entity.getDataTracker(), entity.getWorld().getRandom());
+
+        // if the colour is default we don't need to override the method
+        // this optimises a tiny bit
+        if (Rainglow.CONFIG.isEntityEnabled(this) && colour != this.getDefaultColour()) {
+            Identifier texture = Rainglow.getTexture(this, colour.getId());
+            cir.setReturnValue(texture != null ? texture : this.getDefaultTexture());
+        }
     }
 }
