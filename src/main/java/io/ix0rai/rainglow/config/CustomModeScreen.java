@@ -2,7 +2,6 @@ package io.ix0rai.rainglow.config;
 
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
-import io.ix0rai.rainglow.data.RainglowMode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -73,11 +72,6 @@ public class CustomModeScreen extends GameOptionsScreen {
 		}
 
 		Rainglow.CONFIG.save();
-
-		// refresh colours of custom mode
-		if (Rainglow.CONFIG.getMode().getId().equals("custom")) {
-			Rainglow.setMode(RainglowMode.get("custom"));
-		}
 	}
 
 	@Override

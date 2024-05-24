@@ -47,9 +47,6 @@ public class RainglowClient implements ClientModInitializer {
                     }
                     Rainglow.CONFIG.toggles.setOverride(toggles.build());
 
-                    // lock the config from reloading on resource reload
-                    Rainglow.CONFIG.setEditLocked(true);
-
                     // log
                     Rainglow.LOGGER.info("received config from server: set mode to " + payload.currentMode() + " and custom colours to " + payload.customMode());
                 });
@@ -69,10 +66,6 @@ public class RainglowClient implements ClientModInitializer {
                     }
                 }
 
-                // now that we have modes, we can load the config
-                if (!Rainglow.CONFIG.isInitialized()) {
-                    Rainglow.setMode(Rainglow.CONFIG.getMode());
-                }
 
                 // log
                 if (!newModeIds.isEmpty()) {
@@ -83,13 +76,8 @@ public class RainglowClient implements ClientModInitializer {
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
             client.execute(() -> {
-                if (Rainglow.CONFIG.isEditLocked(client)) {
-                    // unlock config
-                    Rainglow.CONFIG.setEditLocked(false);
-
-                    // reset values to those configured in file
-                    Rainglow.CONFIG.values().forEach(TrackedValue::removeOverride);
-                }
+                // reset values to those configured in file
+                Rainglow.CONFIG.values().forEach(TrackedValue::removeOverride);
             })
         );
 

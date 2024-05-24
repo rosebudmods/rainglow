@@ -156,7 +156,6 @@ public class RainglowConfigScreen extends Screen {
         }
 
         Rainglow.CONFIG.mode.setValue(this.mode.getId());
-        Rainglow.setMode(RainglowMode.get(this.mode.getId()));
     }
 
     private Tooltip createColourListLabel(RainglowMode mode) {
@@ -199,7 +198,8 @@ public class RainglowConfigScreen extends Screen {
             this.isConfirming = true;
             this.clearAndInit();
         } else {
-            if (Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance())) {
+            // overrides will exist when connected to a server syncing its values
+            if (Rainglow.CONFIG.mode.isBeingOverridden()) {
                 sendConfigLockedToast();
             }
 

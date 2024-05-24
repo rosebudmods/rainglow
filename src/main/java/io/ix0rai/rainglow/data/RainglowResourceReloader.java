@@ -1,13 +1,10 @@
 package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.client.MinecraftClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,10 +42,5 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
         }
 
         this.log();
-
-        // load config
-        if (!Rainglow.CONFIG.isInitialized() || (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) && !Rainglow.CONFIG.isEditLocked(MinecraftClient.getInstance()))) {
-            Rainglow.setMode(Rainglow.CONFIG.getMode());
-        }
     }
 }

@@ -7,10 +7,10 @@ import folk.sisby.kaleido.lib.quiltconfig.api.metadata.NamingSchemes;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueList;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueMap;
+import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.RainglowMode;
-import net.minecraft.client.MinecraftClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,11 +29,16 @@ public class RainglowConfig extends ReflectiveConfig {
     @Comment("The custom colours to use when the mode is set to custom.")
     public final TrackedValue<ValueList<String>> customColours = this.list("", RainglowMode.getDefaultCustom().stream().map(RainglowColour::getId).toArray(String[]::new));
 
-    private transient boolean editLocked = false;
-    private transient boolean initialized = false;
-
     public RainglowMode getMode() {
-        return RainglowMode.get(this.mode.value());
+        var mode = RainglowMode.get(this.mode.value());
+
+        if (mode == null) {
+            Rainglow.LOGGER.warn("unknown mode {}, defaulting to rainbow", this.mode.value());
+            this.mode.setValue("rainbow");
+            return getMode();
+        }
+
+        return mode;
     }
 
     public List<RainglowColour> getCustom() {
@@ -62,33 +67,8 @@ public class RainglowConfig extends ReflectiveConfig {
         return this.toggles.value().get(entity.getId());
     }
 
-    public void setEntityEnabled(RainglowEntity entity, boolean enabled) {
-        this.toggles.value().put(entity.getId(), enabled);
-    }
-
     public int getRarity(RainglowEntity entity) {
         return this.rarities.value().get(entity.getId());
-    }
-
-    public void setRarity(RainglowEntity entity, int rarity) {
-        this.rarities.value().put(entity.getId(), rarity);
-    }
-
-    public boolean isEditLocked(MinecraftClient client) {
-        // client can only be locked inside a multiplayer server
-        return !client.isInSingleplayer() && (client.getCurrentServerEntry() != null && this.editLocked);
-    }
-
-    public void setEditLocked(boolean editLocked) {
-        this.editLocked = editLocked;
-    }
-
-    public boolean isInitialized() {
-        return this.initialized;
-    }
-
-    public void setInitialized() {
-        this.initialized = true;
     }
 
     /**

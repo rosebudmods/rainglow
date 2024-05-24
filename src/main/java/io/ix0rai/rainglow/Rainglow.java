@@ -18,8 +18,6 @@ import net.minecraft.util.random.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-
 public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -27,8 +25,6 @@ public class Rainglow implements ModInitializer {
     private static final ConfigEnvironment ENVIRONMENT = new ConfigEnvironment(FabricLoader.getInstance().getConfigDir(), FORMAT, TomlSerializer.INSTANCE);
     public static final RainglowConfig CONFIG = RainglowConfig.create(ENVIRONMENT, "", MOD_ID, RainglowConfig.class);
     public static final Gson GSON = new Gson();
-
-    private static final List<RainglowColour> COLOURS = new ArrayList<>();
 
     public static final String CUSTOM_NBT_KEY = "Colour";
 
@@ -52,38 +48,14 @@ public class Rainglow implements ModInitializer {
         return new Identifier(MOD_ID, id);
     }
 
-    public static void setMode(RainglowMode mode) {
-        if (mode == null) {
-            mode = RainglowMode.get("rainbow");
-            LOGGER.warn("attempted to load missing mode, resetting to rainbow");
-        }
-
-        COLOURS.clear();
-
-        List<RainglowColour> colours = mode.getColours();
-        if (colours.isEmpty()) {
-            LOGGER.info("No colours were present in the internal collection, adding blue so that the game doesn't crash");
-            colours.add(RainglowColour.BLUE);
-        }
-
-        colours.forEach(Rainglow::addColour);
-        CONFIG.setInitialized();
-    }
-
-    private static void addColour(RainglowColour colour) {
-        COLOURS.add(colour);
-
-        if (COLOURS.size() >= 100) {
-            throw new RuntimeException("Too many colours registered! Only up to 99 are allowed");
-        }
-    }
-
     public static String generateRandomColourId(RandomGenerator random) {
-        return COLOURS.get(random.nextInt(COLOURS.size())).getId();
+        var colours = CONFIG.getMode().getColours();
+        return colours.get(random.nextInt(colours.size())).getId();
     }
 
     public static boolean colourUnloaded(RainglowEntity entityType, String colour) {
-        return !COLOURS.contains(RainglowColour.get(colour)) && !colour.equals(entityType.getDefaultColour().getId());
+        var colours = CONFIG.getMode().getColours();
+        return !colours.contains(RainglowColour.get(colour)) && !colour.equals(entityType.getDefaultColour().getId());
     }
 
     public static String translatableTextKey(String key) {
