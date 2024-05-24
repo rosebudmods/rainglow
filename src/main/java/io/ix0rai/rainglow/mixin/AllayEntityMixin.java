@@ -48,18 +48,18 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
     @Redirect(method = "duplicate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     public boolean spawnWithColour(World instance, Entity entity) {
         RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.getRandom());
-        entity.getDataTracker().set(RainglowEntity.ALLAY.getTrackedData(), colour.getId());
+        entity.getDataTracker().set(THIS.getTrackedData(), colour.getId());
         return this.getWorld().spawnEntity(entity);
     }
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.getRandom());
+        return Rainglow.getColour(THIS, this.getDataTracker(), this.getRandom());
     }
 
     @Override
     public void setVariant(RainglowColour colour) {
-        this.getDataTracker().set(RainglowEntity.ALLAY.getTrackedData(), colour.getId());
+        this.getDataTracker().set(THIS.getTrackedData(), colour.getId());
     }
 
     @Unique
