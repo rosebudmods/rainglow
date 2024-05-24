@@ -30,6 +30,8 @@ import java.util.Map;
 
 public class RainglowConfigScreen extends Screen {
     private static final Text TITLE = Rainglow.translatableText("config.title");
+    public static final Text YES = Text.translatable("gui.yes").styled(style -> style.withColor(0x00FF00));
+    public static final Text NO = Text.translatable("gui.no").styled(style -> style.withColor(0xFF0000));
 
     private final Screen parent;
     private final Map<RainglowEntity, DeferredSaveOption<Boolean>> toggles = new HashMap<>();

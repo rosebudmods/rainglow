@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import io.ix0rai.rainglow.Rainglow;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Option;
-import net.minecraft.text.CommonTexts;
 
 import java.util.function.Consumer;
 
@@ -44,7 +43,7 @@ public class DeferredSaveOption<T> extends Option<T> {
 		return new DeferredSaveOption<>(
 				Rainglow.translatableTextKey(key),
 				tooltip != null ? Option.constantTooltip(Rainglow.translatableText(tooltip)) : Option.emptyTooltip(),
-				(text, value) -> value ? CommonTexts.YES : CommonTexts.NO,
+				(text, value) -> value ? RainglowConfigScreen.YES : RainglowConfigScreen.NO,
 				BOOLEAN_VALUES,
 				defaultValue,
 				updateCallback,
