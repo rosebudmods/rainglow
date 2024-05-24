@@ -29,9 +29,6 @@ public class Rainglow implements ModInitializer {
     public static final Gson GSON = new Gson();
 
     private static final List<RainglowColour> COLOURS = new ArrayList<>();
-    private static final Map<String, Identifier> GLOW_SQUID_TEXTURES = new HashMap<>();
-    private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
-    private static final Map<String, Identifier> SLIME_TEXTURES = new HashMap<>();
 
     public static final String CUSTOM_NBT_KEY = "Colour";
 
@@ -61,9 +58,6 @@ public class Rainglow implements ModInitializer {
             LOGGER.warn("attempted to load missing mode, resetting to rainbow");
         }
 
-        GLOW_SQUID_TEXTURES.clear();
-        ALLAY_TEXTURES.clear();
-        SLIME_TEXTURES.clear();
         COLOURS.clear();
 
         List<RainglowColour> colours = mode.getColours();
@@ -79,21 +73,9 @@ public class Rainglow implements ModInitializer {
     private static void addColour(RainglowColour colour) {
         COLOURS.add(colour);
 
-        GLOW_SQUID_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.GLOW_SQUID));
-        ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.ALLAY));
-        SLIME_TEXTURES.put(colour.getId(), colour.getTexture(RainglowEntity.SLIME));
-
         if (COLOURS.size() >= 100) {
             throw new RuntimeException("Too many colours registered! Only up to 99 are allowed");
         }
-    }
-
-    public static Identifier getTexture(RainglowEntity entityType, String colour) {
-        return switch (entityType) {
-            case ALLAY -> ALLAY_TEXTURES.get(colour);
-            case SLIME -> SLIME_TEXTURES.get(colour);
-            case GLOW_SQUID -> GLOW_SQUID_TEXTURES.get(colour);
-        };
     }
 
     public static String generateRandomColourId(RandomGenerator random) {

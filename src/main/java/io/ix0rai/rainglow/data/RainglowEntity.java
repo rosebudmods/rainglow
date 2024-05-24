@@ -92,7 +92,7 @@ public enum RainglowEntity {
         // if the colour is default we don't need to override the method
         // this optimises a tiny bit
         if (Rainglow.CONFIG.isEntityEnabled(this) && colour != this.getDefaultColour()) {
-            Identifier texture = Rainglow.getTexture(this, colour.getId());
+            Identifier texture = colour.getTexture(this);
             cir.setReturnValue(texture != null ? texture : this.getDefaultTexture());
         }
     }
