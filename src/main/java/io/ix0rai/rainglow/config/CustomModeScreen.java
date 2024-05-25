@@ -40,7 +40,6 @@ public class CustomModeScreen extends GameOptionsScreen {
 				sendNoColoursToast();
 			} else {
 				this.save();
-				this.closeScreen();
 			}
 		}).build();
 		this.saveButton.active = false;
@@ -72,6 +71,7 @@ public class CustomModeScreen extends GameOptionsScreen {
 		}
 
 		Rainglow.CONFIG.save();
+		this.saveButton.active = false;
 	}
 
 	@Override

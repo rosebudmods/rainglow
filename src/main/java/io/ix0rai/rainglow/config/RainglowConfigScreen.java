@@ -45,10 +45,7 @@ public class RainglowConfigScreen extends Screen {
         super(TITLE);
         this.parent = parent;
         this.mode = RainglowMode.get(Rainglow.CONFIG.mode.getRealValue());
-        this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> {
-            this.save();
-            this.closeScreen(true);
-        }).build();
+        this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> this.save()).build();
         this.saveButton.active = false;
     }
 
@@ -158,6 +155,7 @@ public class RainglowConfigScreen extends Screen {
         }
 
         Rainglow.CONFIG.mode.setValue(this.mode.getId());
+        this.saveButton.active = false;
     }
 
     private Tooltip createColourListLabel(RainglowMode mode) {
@@ -192,11 +190,7 @@ public class RainglowConfigScreen extends Screen {
 
     @Override
     public void closeScreen() {
-        this.closeScreen(false);
-    }
-
-    public void closeScreen(boolean saved) {
-        if (!saved && this.saveButton.active) {
+        if (this.saveButton.active) {
             this.isConfirming = true;
             this.clearAndInit();
         } else {
