@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public interface CyclingValueSetMixin {
 	@ModifyArg(
 			method = "method_42723",
-			remap = false,
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/client/gui/widget/button/CyclingButtonWidget$Builder;initially(Ljava/lang/Object;)Lnet/minecraft/client/gui/widget/button/CyclingButtonWidget$Builder;"
