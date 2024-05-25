@@ -49,7 +49,7 @@ public class RainglowConfigScreen extends Screen {
 
     private TextWidget getInfoText() {
         if (MinecraftClient.getInstance().isInSingleplayer()) {
-            return new TextWidget(Rainglow.translatableText("config.loaded_datapacks", RainglowMode.values().size(), Rainglow.RAINGLOW_DATAPACKS.size()), this.textRenderer).setTextColor(0x00FFFF);
+            return new TextWidget((Rainglow.RAINGLOW_DATAPACKS.size() == 1 ? Rainglow.translatableText("config.loaded_builtin", RainglowMode.values().size()) : Rainglow.translatableText("config.loaded_datapacks", RainglowMode.values().size(), Rainglow.RAINGLOW_DATAPACKS.size())), this.textRenderer).setTextColor(0x00FFFF);
         } else if (MinecraftClient.getInstance().world != null) {
             return new TextWidget(Rainglow.translatableText("config.server_locked"), this.textRenderer).setTextColor(0xFF0000);
         } else {

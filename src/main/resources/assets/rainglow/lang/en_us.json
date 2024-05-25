@@ -17,6 +17,7 @@
   "rainglow.config.unsaved_warning": "Config is not saved and changes will be lost! Leave without saving?",
   "rainglow.config.continue_editing": "Continue editing",
   "rainglow.config.loaded_datapacks": "Loaded %s modes from %s datapacks.",
+  "rainglow.config.loaded_builtin": "Loaded %s built-in modes.",
   "rainglow.config.slime_rarity.value": "Slime rarity: %s",
   "rainglow.tooltip.rarity": "Rarity determines what percent chance mobs have to spawn with a colour.",
   "rainglow.tooltip.entity_toggle": "Enable or disable rainbow colours for this entity.",
