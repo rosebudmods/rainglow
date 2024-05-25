@@ -18,6 +18,9 @@ import net.minecraft.util.random.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -27,10 +30,12 @@ public class Rainglow implements ModInitializer {
     public static final Gson GSON = new Gson();
 
     public static final String CUSTOM_NBT_KEY = "Colour";
+    public static final Identifier SERVER_MODE_DATA_ID = id("server_mode_data");
+    public static final List<String> RAINGLOW_DATAPACKS = new ArrayList<>();
 
     @Override
     public void onInitialize() {
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener((RainglowResourceReloader) () -> id("server_mode_data"));
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener((RainglowResourceReloader) () -> SERVER_MODE_DATA_ID);
 
         PayloadTypeRegistry.playS2C().register(RainglowNetworking.ConfigSyncPayload.PACKET_ID, RainglowNetworking.ConfigSyncPayload.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(RainglowNetworking.ModeSyncPayload.PACKET_ID, RainglowNetworking.ModeSyncPayload.PACKET_CODEC);

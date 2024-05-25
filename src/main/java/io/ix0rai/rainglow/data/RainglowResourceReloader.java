@@ -24,6 +24,7 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
         // this only clears modes that exist on both the server and the client
         // otherwise we would have to re-request the mode data packet on every reload
         RainglowMode.clearUniversalModes();
+        Rainglow.RAINGLOW_DATAPACKS.clear();
 
         // load custom modes from rainglow/custom_modes in the datapack
         // we only load files whose name ends with .json
@@ -36,6 +37,11 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
                 Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
                 RainglowMode.JsonMode result = Rainglow.GSON.fromJson(reader, RainglowMode.JsonMode.class);
                 RainglowMode.addMode(new RainglowMode(result, true));
+
+                String name = entry.getValue().getSourceName();
+                if (this.getFabricId().equals(Rainglow.SERVER_MODE_DATA_ID) && !Rainglow.RAINGLOW_DATAPACKS.contains(name)) {
+                    Rainglow.RAINGLOW_DATAPACKS.add(name);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

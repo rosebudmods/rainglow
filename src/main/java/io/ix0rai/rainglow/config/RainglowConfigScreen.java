@@ -15,8 +15,6 @@ import net.minecraft.client.gui.widget.layout.LayoutSettings;
 import net.minecraft.client.gui.widget.layout.LinearLayoutWidget;
 import net.minecraft.client.gui.widget.text.TextWidget;
 import net.minecraft.client.option.Option;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.client.toast.Toast;
 import net.minecraft.text.CommonTexts;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -49,6 +47,16 @@ public class RainglowConfigScreen extends Screen {
         this.saveButton.active = false;
     }
 
+    private TextWidget getInfoText() {
+        if (MinecraftClient.getInstance().isInSingleplayer()) {
+            return new TextWidget(Rainglow.translatableText("config.loaded_datapacks", RainglowMode.values().size(), Rainglow.RAINGLOW_DATAPACKS.size()), this.textRenderer).setTextColor(0x00FFFF);
+        } else if (MinecraftClient.getInstance().world != null) {
+            return new TextWidget(Rainglow.translatableText("config.server_locked"), this.textRenderer).setTextColor(0xFF0000);
+        } else {
+            return new TextWidget(Rainglow.translatableText("config.no_world"), this.textRenderer).setTextColor(0xFF0000);
+        }
+    }
+
     @Override
     public void init() {
         HeaderFooterLayoutWidget headerFooterWidget = new HeaderFooterLayoutWidget(this, 61, 33);
@@ -58,9 +66,7 @@ public class RainglowConfigScreen extends Screen {
             // header
             headerLayout.add(new TextWidget(TITLE, this.textRenderer), settings -> settings.alignHorizontallyCenter().alignVerticallyTop().setPadding(12));
             headerLayout.add(createModeButton(), LayoutSettings::alignVerticallyBottom);
-            if (MinecraftClient.getInstance().world == null) {
-                headerLayout.add(new TextWidget(Rainglow.translatableText("config.no_world"), this.textRenderer).setTextColor(0xc21919), LayoutSettings::alignHorizontallyCenter);
-            }
+            headerLayout.add(getInfoText(), LayoutSettings::alignHorizontallyCenter);
 
             // contents
             LinearLayoutWidget contentLayout = LinearLayoutWidget.createVertical();
@@ -194,17 +200,7 @@ public class RainglowConfigScreen extends Screen {
             this.isConfirming = true;
             this.clearAndInit();
         } else {
-            // overrides will exist when connected to a server syncing its values
-            if (Rainglow.CONFIG.mode.isBeingOverridden()) {
-                sendConfigLockedToast();
-            }
-
             MinecraftClient.getInstance().setScreen(this.parent);
         }
-    }
-
-    private static void sendConfigLockedToast() {
-        Toast toast = new SystemToast(SystemToast.Id.PACK_LOAD_FAILURE, Rainglow.translatableText("config.server_locked_title"), Rainglow.translatableText("config.server_locked_description"));
-        MinecraftClient.getInstance().getToastManager().add(toast);
     }
 }
