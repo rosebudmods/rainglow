@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RainglowConfigScreen extends Screen {
+public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWarning {
     private static final Text TITLE = Rainglow.translatableText("config.title");
     public static final Text YES = Text.translatable("gui.yes").styled(style -> style.withColor(0x00FF00));
     public static final Text NO = Text.translatable("gui.no").styled(style -> style.withColor(0xFF0000));
@@ -93,17 +93,7 @@ public class RainglowConfigScreen extends Screen {
             linearLayout.add(ButtonWidget.builder(CommonTexts.DONE, button -> this.closeScreen()).build());
             linearLayout.add(this.saveButton);
         } else {
-            LinearLayoutWidget contentWidget = headerFooterWidget.addToContents(new LinearLayoutWidget(250, 100, LinearLayoutWidget.Orientation.VERTICAL).setSpacing(8));
-            contentWidget.add(new TextWidget(Rainglow.translatableText("config.unsaved_warning"), this.textRenderer), LayoutSettings::alignHorizontallyCenter);
-
-            LinearLayoutWidget buttons = new LinearLayoutWidget(250, 20, LinearLayoutWidget.Orientation.HORIZONTAL).setSpacing(8);
-            buttons.add(ButtonWidget.builder(Rainglow.translatableText("config.continue_editing"), (buttonWidget) -> {
-                this.isConfirming = false;
-                this.clearAndInit();
-            }).build());
-            buttons.add(ButtonWidget.builder(CommonTexts.YES, (buttonWidget) -> MinecraftClient.getInstance().setScreen(this.parent)).build());
-
-            contentWidget.add(buttons, LayoutSettings::alignHorizontallyCenter);
+            this.setUpUnsavedWarning(headerFooterWidget, this.textRenderer, this.parent);
         }
 
         headerFooterWidget.visitWidgets(this::addDrawableSelectableElement);
@@ -202,5 +192,15 @@ public class RainglowConfigScreen extends Screen {
         } else {
             MinecraftClient.getInstance().setScreen(this.parent);
         }
+    }
+
+    @Override
+    public void setConfirming(boolean confirming) {
+        this.isConfirming = confirming;
+    }
+
+    @Override
+    public void clearAndInit() {
+        super.clearAndInit();
     }
 }

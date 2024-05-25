@@ -19,9 +19,10 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomModeScreen extends GameOptionsScreen {
+public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUnsavedWarning {
 	private final ButtonWidget saveButton;
 	private final List<DeferredSaveOption<Boolean>> options = new ArrayList<>();
+	private boolean isConfirming;
 
 	private static final Text TITLE = Rainglow.translatableText("config.custom");
 
@@ -79,13 +80,17 @@ public class CustomModeScreen extends GameOptionsScreen {
 		HeaderFooterLayoutWidget headerFooterWidget = new HeaderFooterLayoutWidget(this, 61, 33);
 		headerFooterWidget.addToHeader(new TextWidget(TITLE, this.textRenderer), settings -> settings.alignHorizontallyCenter().setBottomPadding(28));
 
-		ButtonListWidget buttonListWidget = headerFooterWidget.addToContents(new ButtonListWidget(this.client, this.width, this.height, this));
-		createColourToggles();
-		buttonListWidget.addEntries(this.options.toArray(new Option<?>[0]));
+		if (!this.isConfirming) {
+			ButtonListWidget buttonListWidget = headerFooterWidget.addToContents(new ButtonListWidget(this.client, this.width, this.height, this));
+			createColourToggles();
+			buttonListWidget.addEntries(this.options.toArray(new Option<?>[0]));
 
-		LinearLayoutWidget linearLayout = headerFooterWidget.addToFooter(LinearLayoutWidget.createHorizontal().setSpacing(8));
-		linearLayout.add(ButtonWidget.builder(CommonTexts.DONE, button -> this.closeScreen()).build());
-		linearLayout.add(this.saveButton);
+			LinearLayoutWidget linearLayout = headerFooterWidget.addToFooter(LinearLayoutWidget.createHorizontal().setSpacing(8));
+			linearLayout.add(ButtonWidget.builder(CommonTexts.DONE, button -> this.closeScreen()).build());
+			linearLayout.add(this.saveButton);
+		} else {
+			this.setUpUnsavedWarning(headerFooterWidget, this.textRenderer, this.parent);
+		}
 
 		headerFooterWidget.visitWidgets(this::addDrawableSelectableElement);
 		headerFooterWidget.arrangeElements();
@@ -94,5 +99,25 @@ public class CustomModeScreen extends GameOptionsScreen {
 	private static void sendNoColoursToast() {
 		Toast toast = new SystemToast(SystemToast.Id.PACK_LOAD_FAILURE, Rainglow.translatableText("config.no_custom_colours"), Rainglow.translatableText("config.no_custom_colours_description"));
 		MinecraftClient.getInstance().getToastManager().add(toast);
+	}
+
+	@Override
+	public void setConfirming(boolean confirming) {
+		this.isConfirming = confirming;
+	}
+
+	@Override
+	public void clearAndInit() {
+		super.clearAndInit();
+	}
+
+	@Override
+	public void closeScreen() {
+		if (this.saveButton.active) {
+			this.isConfirming = true;
+			this.clearAndInit();
+		} else {
+			MinecraftClient.getInstance().setScreen(this.parent);
+		}
 	}
 }
