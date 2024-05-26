@@ -11,8 +11,9 @@
   ],
 
   "contact": {
-    "website": "https://modrinth.com/mod/rainglow",
-    "repo": "https://github.com/ix0rai/rainglow"
+    "homepage": "https://modrinth.com/mod/rainglow",
+    "sources": "https://github.com/ix0rai/rainglow",
+    "issues": "https://github.com/ix0rai/rainglow/issues"
   },
 
   "license": "MIT",
