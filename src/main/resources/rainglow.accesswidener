@@ -2,6 +2,15 @@ accessWidener	v1	named
 
 accessible   class   net/minecraft/client/particle/GlowParticle$GlowFactory
 
+extendable   class   net/minecraft/client/option/Option
+accessible class net/minecraft/client/option/Option$ValueSet
+accessible field net/minecraft/client/option/Option value Ljava/lang/Object;
+accessible field net/minecraft/client/option/Option defaultValue Ljava/lang/Object;
+accessible field net/minecraft/client/option/Option updateCallback Ljava/util/function/Consumer;
+accessible field net/minecraft/client/option/Option text Lnet/minecraft/text/Text;
+accessible field net/minecraft/client/option/Option valueToText Ljava/util/function/Function;
+accessible class net/minecraft/client/option/Option$CyclingValueSet
+
 accessible  method   net/minecraft/client/particle/GlowParticle <init>  (Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/client/particle/SpriteProvider;)V
 accessible field net/minecraft/client/particle/GlowParticle RANDOM Lnet/minecraft/util/random/RandomGenerator;
 

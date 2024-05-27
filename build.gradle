@@ -1,6 +1,6 @@
 plugins {
-    id "fabric-loom" version "1.5.+"
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "fabric-loom" version "1.6.+"
+    id "com.github.johnrengelman.shadow" version "7.1.+"
     id "com.modrinth.minotaur" version "2.+"
 }
 
@@ -12,6 +12,7 @@ repositories {
     maven { url = "https://maven.gegy.dev/" }
     maven { url = "https://maven.terraformersmc.com/releases/" }
     maven { url = "https://maven.quiltmc.org/repository/release/" }
+    maven { url = "https://repo.sleeping.town/" }
 }
 
 configurations {
@@ -25,12 +26,16 @@ dependencies {
     mappings("org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.quilt_mappings}:intermediary-v2")
     modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
 
-    include(modImplementation("dev.lambdaurora:spruceui:${project.spruceui_version}"))
     modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
+    implementation("folk.sisby:kaleido-config:0.3.1+1.3.1")
+    include("folk.sisby:kaleido-config:0.3.1+1.3.1")
 
     Set<String> apiModules = [
             "fabric-networking-api-v1",
-            "fabric-resource-loader-v0"
+            "fabric-resource-loader-v0",
+            "fabric-screen-api-v1",
+            "fabric-key-binding-api-v1",
+            "fabric-lifecycle-events-v1",
     ]
 
     apiModules.forEach {

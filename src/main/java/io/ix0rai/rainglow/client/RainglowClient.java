@@ -1,9 +1,12 @@
 package io.ix0rai.rainglow.client;
 
+import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueList;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueMap;
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowMode;
 import io.ix0rai.rainglow.data.RainglowResourceReloader;
-import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -11,56 +14,58 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class RainglowClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.CONFIG_SYNC_ID, (client, handler, buf, responseSender) -> {
-            String mode = buf.readString();
+        ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.ConfigSyncPayload.PACKET_ID, (payload, context) -> {
+            MinecraftClient client = context.client();
+            if (!client.isIntegratedServerRunning()) {
+                client.execute(() -> {
+                    // custom must be set before mode so that if the server sends a custom mode it is set correctly
+                    // otherwise the client's custom would be used
+                    ValueList<String> customColours = ValueList.create("", payload.customMode().stream().map(RainglowColour::getId).toArray(String[]::new));
+                    Rainglow.CONFIG.customColours.setOverride(customColours);
+                    Rainglow.CONFIG.mode.setOverride(payload.currentMode());
 
-            List<String> colourIds = buf.readList(PacketByteBuf::readString);
-            List<RainglowColour> colours = colourIds.stream().map(RainglowColour::get).toList();
+                    var rarities = ValueMap.builder(0);
+                    for (var entry : payload.rarities().entrySet()) {
+                        rarities.put(entry.getKey().getId(), entry.getValue());
+                    }
+                    Rainglow.CONFIG.rarities.setOverride(rarities.build());
 
-            client.execute(() -> {
-                // custom must be set before mode so that if the server sends a custom mode it is set correctly
-                // otherwise the client's custom would be used
-                Rainglow.CONFIG.setCustom(colours);
-                Rainglow.CONFIG.setMode(RainglowMode.byId(mode));
+                    var toggles = ValueMap.builder(true);
+                    for (var entry : payload.enabledMobs().entrySet()) {
+                        toggles.put(entry.getKey().getId(), entry.getValue());
+                    }
+                    Rainglow.CONFIG.toggles.setOverride(toggles.build());
 
-                // lock the config from reloading on resource reload
-                Rainglow.CONFIG.setEditLocked(true);
-
-                // log
-                Rainglow.LOGGER.info("received config from server: set mode to " + mode + " and custom colours to " + colourIds);
-            });
+                    // log
+                    Rainglow.LOGGER.info("received config from server: set mode to " + payload.currentMode() + " and custom colours to " + payload.customMode());
+                });
+            }
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.MODE_SYNC_ID, (client, handler, buf, responseSender) -> {
-            Collection<RainglowMode> modes = RainglowNetworking.readModeData(buf);
-
+        ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.ModeSyncPayload.PACKET_ID, (payload, context) -> {
+            MinecraftClient client = context.client();
             client.execute(() -> {
                 List<String> newModeIds = new ArrayList<>();
 
                 // add modes that do not exist on the client to the map
-                for (RainglowMode mode : modes) {
+                for (RainglowMode mode : payload.modes()) {
                     if (!mode.existsLocally()) {
                         newModeIds.add(mode.getId());
                         RainglowMode.addMode(mode);
                     }
                 }
 
-                // now that we have modes, we can load the config
-                if (Rainglow.CONFIG.isUninitialised()) {
-                    Rainglow.CONFIG.reloadFromFile();
-                }
 
                 // log
                 if (!newModeIds.isEmpty()) {
@@ -71,13 +76,8 @@ public class RainglowClient implements ClientModInitializer {
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
             client.execute(() -> {
-                if (Rainglow.CONFIG.isEditLocked(client)) {
-                    // unlock config
-                    Rainglow.CONFIG.setEditLocked(false);
-
-                    // reset values to those configured in file
-                    Rainglow.CONFIG.reloadFromFile();
-                }
+                // reset values to those configured in file
+                Rainglow.CONFIG.values().forEach(TrackedValue::removeOverride);
             })
         );
 

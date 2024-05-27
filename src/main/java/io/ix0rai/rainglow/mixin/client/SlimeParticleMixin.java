@@ -25,7 +25,7 @@ public class SlimeParticleMixin {
             cir.setReturnValue(new ItemBreakParticle(clientWorld, d, e, f, new ItemStack(Items.SLIME_BALL)));
         // 99.9d and 100.1d are used to account for floating point errors
         } else if (h >= 99.9d && h <= 100.1d) {
-            ItemStack stack = Rainglow.getItem((int) g).getDefaultStack();
+            ItemStack stack = RainglowEntity.SLIME.getItem((int) g).getDefaultStack();
             cir.setReturnValue(new ItemBreakParticle(clientWorld, d, e, f, stack));
         } else {
             cir.setReturnValue(null);

@@ -11,13 +11,9 @@
   "rainglow.config.enable_slime": "Regenbogenfarbener Schleim",
   "rainglow.config.enable_allay": "Regenbogenfarbene Hilfsgeister",
   "rainglow.config.server_locked_title": "Konfiguration vom Server gesperrt",
-  "rainglow.config.server_locked_description": "Du kannst dies nicht ändern, solange der Server diese Konfiguration gesperrt hat!",
-  "rainglow.tooltip.mode": "Der Modus bestimmt, welche Farben gerade aktiviert sind",
-  "rainglow.config.cannot_be_loaded_outside_world": "Die Rainglow Konfiguration kann nicht außerhalb einer Welt geladen werden!",
   "rainglow.mode.rainbow": "Regenbogen",
   "rainglow.mode.all_colours": "Alle Farben",
   "rainglow.mode.monochrome": "Monochrom",
-  "rainglow.mode.vanilla": "Standard",
   "rainglow.mode.custom": "Benutzerdefiniert",
   "rainglow.mode.trans_pride": "Transgender Pride!",
   "rainglow.mode.lesbian_pride": "Lesbian Pride!",
@@ -44,5 +40,6 @@
   "rainglow.colour.light_gray": "Hellgrau",
   "rainglow.colour.lime": "Hellgrün",
   "rainglow.colour.magenta": "Magenta",
-  "rainglow.colour.indigo": "Indigo"
+  "rainglow.colour.indigo": "Indigo",
+  "rainglow.tooltip.rarity": "Rarity determines what percent chance mobs have to spawn with a colour."
 }

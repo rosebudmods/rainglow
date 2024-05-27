@@ -1,13 +1,14 @@
 package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.text.TextColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -31,7 +32,7 @@ public class RainglowMode {
 
     public RainglowMode(String id, List<String> colourIds, Text text, boolean existsLocally) {
         if (!id.matches("^[a-z0-9_]+$")) {
-            throw new IllegalArgumentException("loaded rainglow mode with id " + id + " which contains invalid characters");
+            Rainglow.LOGGER.error("loaded rainglow mode with id {} which contains invalid characters! (only lowercase letters, numbers, and underscores are allowed)", id);
         }
 
         this.id = id;
@@ -43,6 +44,10 @@ public class RainglowMode {
                 continue;
             }
             this.colours.add(RainglowColour.get(colour));
+        }
+
+        if (this.colours.isEmpty() && !id.equals("all_colours") && !id.equals("custom")) {
+            Rainglow.LOGGER.error("cannot load mode with id {}: no colours found!", id);
         }
 
         this.text = text;
@@ -59,23 +64,6 @@ public class RainglowMode {
             case "all_colours" -> List.of(RainglowColour.values());
             default -> this.colours;
         };
-    }
-
-    public RainglowMode cycle() {
-        // cycle to next in list, wrapping around to 0 if the next ordinal is larger than the map's size
-        Collection<RainglowMode> values = MODES.values();
-        Iterator<RainglowMode> iterator = values.iterator();
-
-        // look for matching key and return next mode
-        while (iterator.hasNext()) {
-            RainglowMode mode = iterator.next();
-            if (mode.id.equals(this.id) && iterator.hasNext()) {
-                return iterator.next();
-            }
-        }
-
-        // otherwise return first mode
-        return values.iterator().next();
     }
 
     @Override
@@ -95,12 +83,8 @@ public class RainglowMode {
         return this.existsLocally;
     }
 
-    public static RainglowMode byId(String id) {
+    public static RainglowMode get(String id) {
         return MODES.get(id);
-    }
-
-    public static RainglowMode getDefault() {
-        return MODES.get("rainbow");
     }
 
     public static void addMode(RainglowMode mode) {
@@ -132,6 +116,21 @@ public class RainglowMode {
         // remove trailing space and comma
         formatted.append("\b\b");
         Rainglow.LOGGER.info("Loaded modes: [" + formatted + "]");
+    }
+
+    public static void write(PacketByteBuf buf, RainglowMode mode) {
+        buf.writeString(mode.getId());
+        TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.encode(buf, mode.getText());
+        List<String> colourIds = mode.getColours().stream().map(RainglowColour::getId).toList();
+        buf.writeCollection(colourIds, PacketByteBuf::writeString);
+    }
+
+    public static RainglowMode read(PacketByteBuf buf) {
+        String id = buf.readString();
+        Text text = TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.decode(buf);
+        List<String> colourIds = buf.readList(PacketByteBuf::readString);
+
+        return new RainglowMode(id, colourIds, text, RainglowMode.get(id) != null);
     }
 
 

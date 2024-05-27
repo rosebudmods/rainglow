@@ -1,89 +1,123 @@
 package io.ix0rai.rainglow.config;
 
-import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
-import dev.lambdaurora.spruceui.option.SpruceOption;
-import dev.lambdaurora.spruceui.option.SpruceSimpleActionOption;
-import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.gui.screen.option.GameOptionsScreen;
+import net.minecraft.client.gui.widget.button.ButtonWidget;
+import net.minecraft.client.gui.widget.layout.HeaderFooterLayoutWidget;
+import net.minecraft.client.gui.widget.layout.LinearLayoutWidget;
+import net.minecraft.client.gui.widget.list.ButtonListWidget;
+import net.minecraft.client.gui.widget.text.TextWidget;
+import net.minecraft.client.option.Option;
+import net.minecraft.client.toast.SystemToast;
+import net.minecraft.client.toast.Toast;
+import net.minecraft.text.CommonTexts;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomModeScreen extends RainglowScreen {
-    private final SpruceOption clearOption;
-    private final SpruceOption saveOption;
-    private final SpruceBooleanOption[] colourToggles = new SpruceBooleanOption[RainglowColour.values().length];
-    private final boolean[] toggleStates = new boolean[RainglowColour.values().length];
+public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUnsavedWarning {
+	private final ButtonWidget saveButton;
+	private final List<DeferredSaveOption<Boolean>> options = new ArrayList<>();
+	private boolean isConfirming;
 
-    public CustomModeScreen(@Nullable Screen parent) {
-        super(parent, Rainglow.translatableText("config.title"));
+	private static final Text TITLE = Rainglow.translatableText("config.custom");
 
-        // create toggles for each colour
-        for (int i = 0; i < RainglowColour.values().length; i ++) {
-            final RainglowColour colour = RainglowColour.values()[i];
-            final int index = i;
+	public CustomModeScreen(Screen parent) {
+		super(parent, MinecraftClient.getInstance().options, TITLE);
+		this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> {
+			boolean hasColourSelected = false;
+			for (DeferredSaveOption<Boolean> option : this.options) {
+				if (option.deferredValue) {
+					hasColourSelected = true;
+					break;
+				}
+			}
 
-            toggleStates[index] = Rainglow.CONFIG.getCustom().contains(colour);
+			if (!hasColourSelected) {
+				sendNoColoursToast();
+			} else {
+				this.save();
+			}
+		}).build();
+		this.saveButton.active = false;
+	}
 
-            colourToggles[index] = new SpruceBooleanOption(Rainglow.translatableTextKey("colour." + colour.getId()),
-                    () -> toggleStates[index],
-                    enable -> toggleStates[index] = enable,
-                    null,
-                    true
-            );
-        }
+	private void createColourToggles() {
+		this.options.clear();
 
-        // toggles all colours to false
-        this.clearOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.clear"),
-            btn -> {
-                for (int i = 0; i < RainglowColour.values().length; i ++) {
-                    toggleStates[i] = false;
-                }
+		for (RainglowColour colour : RainglowColour.values()) {
+			this.options.add(DeferredSaveOption.createDeferredBoolean(
+				"colour." + colour.getId(),
+				null,
+				Rainglow.CONFIG.customColours.getRealValue().contains(colour.getId()),
+				enabled -> {
+					if (enabled) {
+						Rainglow.CONFIG.customColours.getRealValue().add(colour.getId());
+					}
+				},
+				enabled -> this.saveButton.active = true
+			));
+		}
+	}
 
-                MinecraftClient client = MinecraftClient.getInstance();
-                this.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
-        });
+	private void save() {
+		Rainglow.CONFIG.customColours.getRealValue().clear();
 
-        // writes all the toggled colours to the config and reloads custom mode
-        this.saveOption = SpruceSimpleActionOption.of(Rainglow.translatableTextKey("config.save"),
-                buttonWidget -> {
-                    List<RainglowColour> newCustom = new ArrayList<>();
+		for (DeferredSaveOption<?> option : this.options) {
+			option.save();
+		}
 
-                    for (int i = 0; i < RainglowColour.values().length; i ++) {
-                        if (toggleStates[i]) {
-                            newCustom.add(RainglowColour.values()[i]);
-                        }
-                    }
+		Rainglow.CONFIG.save();
+		this.saveButton.active = false;
+	}
 
-                    Rainglow.CONFIG.setCustom(newCustom);
-                    Rainglow.CONFIG.saveCustom();
-                    this.closeScreen();
-                }
-        );
-    }
+	@Override
+	public void init() {
+		HeaderFooterLayoutWidget headerFooterWidget = new HeaderFooterLayoutWidget(this, 61, 33);
+		headerFooterWidget.addToHeader(new TextWidget(TITLE, this.textRenderer), settings -> settings.alignHorizontallyCenter().setBottomPadding(28));
 
-    @Override
-    protected void init() {
-        super.init();
+		if (!this.isConfirming) {
+			ButtonListWidget buttonListWidget = headerFooterWidget.addToContents(new ButtonListWidget(this.client, this.width, this.height, this));
+			createColourToggles();
+			buttonListWidget.addEntries(this.options.toArray(new Option<?>[0]));
 
-        // create a list of toggles for each colour
-        SpruceOptionListWidget options = new SpruceOptionListWidget(Position.of(0, 22), this.width, this.height - (35 + 22));
-        for (int i = 0; i < RainglowColour.values().length; i += 2) {
-            SpruceOption secondToggle = null;
-            if (i + 1 < RainglowColour.values().length) {
-                secondToggle = colourToggles[i + 1];
-            }
-            options.addOptionEntry(colourToggles[i], secondToggle);
-        }
-        this.addDrawableSelectableElement(options);
+			LinearLayoutWidget linearLayout = headerFooterWidget.addToFooter(LinearLayoutWidget.createHorizontal().setSpacing(8));
+			linearLayout.add(ButtonWidget.builder(CommonTexts.DONE, button -> this.closeScreen()).build());
+			linearLayout.add(this.saveButton);
+		} else {
+			this.setUpUnsavedWarning(headerFooterWidget, this.textRenderer, this.parent);
+		}
 
-        // save and clear buttons
-        this.addDrawableSelectableElement(this.clearOption.createWidget(Position.of(this, this.width / 2 - 155, this.height - 29), 150));
-        this.addDrawableSelectableElement(this.saveOption.createWidget(Position.of(this, this.width / 2 - 155 + 160, this.height - 29), 150));
-    }
+		headerFooterWidget.visitWidgets(this::addDrawableSelectableElement);
+		headerFooterWidget.arrangeElements();
+	}
+
+	private static void sendNoColoursToast() {
+		Toast toast = new SystemToast(SystemToast.Id.PACK_LOAD_FAILURE, Rainglow.translatableText("config.no_custom_colours"), Rainglow.translatableText("config.no_custom_colours_description"));
+		MinecraftClient.getInstance().getToastManager().add(toast);
+	}
+
+	@Override
+	public void setConfirming(boolean confirming) {
+		this.isConfirming = confirming;
+	}
+
+	@Override
+	public void clearAndInit() {
+		super.clearAndInit();
+	}
+
+	@Override
+	public void closeScreen() {
+		if (this.saveButton.active) {
+			this.isConfirming = true;
+			this.clearAndInit();
+		} else {
+			MinecraftClient.getInstance().setScreen(this.parent);
+		}
+	}
 }
