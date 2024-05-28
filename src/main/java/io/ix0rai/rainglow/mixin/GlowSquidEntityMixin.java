@@ -15,7 +15,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -23,9 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GlowSquidEntity.class)
 public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSquidVariantProvider {
-    @Unique
-    private static final RainglowEntity THIS = RainglowEntity.GLOW_SQUID;
-
     protected GlowSquidEntityMixin(EntityType<? extends SquidEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
@@ -33,18 +29,18 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(Builder builder, CallbackInfo ci) {
-        builder.add(THIS.getTrackedData(), THIS.getDefaultColour().getId());
+        builder.add(RainglowEntity.GLOW_SQUID.getTrackedData(), RainglowEntity.GLOW_SQUID.getDefaultColour().getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.getRandom());
+        RainglowColour colour = Rainglow.getColour(RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.getRandom());
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.setVariant(THIS.readNbt(nbt, this.getRandom()));
+        this.setVariant(RainglowEntity.GLOW_SQUID.readNbt(nbt, this.getRandom()));
     }
 
     /**
@@ -53,7 +49,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
      */
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"), cancellable = true)
     public void tickMovement(CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.getRandom());
+        RainglowColour colour = Rainglow.getColour(RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.getRandom());
 
         if (colour != RainglowColour.BLUE) {
             // we add 100 to g to let the mixin know that we want to override the method
@@ -64,12 +60,12 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(THIS, this.getDataTracker(), this.getRandom());
+        return Rainglow.getColour(RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.getRandom());
     }
 
     @Override
     public void setVariant(RainglowColour colour) {
-        this.getDataTracker().set(THIS.getTrackedData(), colour.getId());
+        this.getDataTracker().set(RainglowEntity.GLOW_SQUID.getTrackedData(), colour.getId());
     }
 
     @Mixin(SquidEntity.class)
@@ -89,7 +85,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
         private int spawnParticles(ServerWorld instance, ParticleEffect particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed) {
             if (((Object) this) instanceof GlowSquidEntity) {
                 // send in custom colour data
-                RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.getRandom());
+                RainglowColour colour = Rainglow.getColour(RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.getRandom());
                 int index = colour.ordinal();
                 // round x to 1 decimal place and append index data to the next two
                 return ((ServerWorld) this.getWorld()).spawnParticles(particle, (Math.round(x * 10)) / 10D + index / 1000D, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
