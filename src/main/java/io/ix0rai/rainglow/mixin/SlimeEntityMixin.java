@@ -14,7 +14,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -23,9 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SlimeEntity.class)
 public abstract class SlimeEntityMixin extends Entity implements SlimeVariantProvider {
-    @Unique
-    private static final RainglowEntity THIS = RainglowEntity.SLIME;
-
     @Shadow
     protected abstract ParticleEffect getParticles();
 
@@ -36,18 +32,18 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     protected void initDataTracker(DataTracker.Builder builder, CallbackInfo ci) {
-        builder.add(THIS.getTrackedData(), THIS.getDefaultColour().getId());
+        builder.add(RainglowEntity.SLIME.getTrackedData(), RainglowEntity.SLIME.getDefaultColour().getId());
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.setVariant(THIS.readNbt(nbt, this.random));
+        this.setVariant(RainglowEntity.SLIME.readNbt(nbt, this.random));
     }
 
     /**
@@ -55,8 +51,8 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
      */
     @Redirect(method = "remove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     public boolean spawnWithParentColour(World instance, Entity entity) {
-        RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.random);
-        entity.getDataTracker().set(THIS.getTrackedData(), colour.getId());
+        RainglowColour colour = Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random);
+        entity.getDataTracker().set(RainglowEntity.SLIME.getTrackedData(), colour.getId());
         return this.getWorld().spawnEntity(entity);
     }
 
@@ -72,7 +68,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     )
     public void tick(CallbackInfo ci) {
         float size = this.getDimensions(this.getPose()).width();
-        RainglowColour colour = Rainglow.getColour(THIS, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random);
         int index = colour.ordinal();
 
         for (int j = 0; j < size / 2; j ++) {
@@ -87,11 +83,11 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(THIS, this.getDataTracker(), this.random);
+        return Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random);
     }
 
     @Override
     public void setVariant(RainglowColour colour) {
-        this.getDataTracker().set(THIS.getTrackedData(), colour.getId());
+        this.getDataTracker().set(RainglowEntity.SLIME.getTrackedData(), colour.getId());
     }
 }
