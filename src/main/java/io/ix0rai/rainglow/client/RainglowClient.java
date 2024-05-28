@@ -58,12 +58,10 @@ public class RainglowClient implements ClientModInitializer {
             client.execute(() -> {
                 List<String> newModeIds = new ArrayList<>();
 
-                // add modes that do not exist on the client to the map
+                // add modes on the client
                 for (RainglowMode mode : payload.modes()) {
-                    if (!mode.existsLocally()) {
-                        newModeIds.add(mode.getId());
-                        RainglowMode.addMode(mode);
-                    }
+                    newModeIds.add(mode.getId());
+                    RainglowMode.addMode(mode);
                 }
 
 

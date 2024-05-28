@@ -20,10 +20,6 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
 
     @Override
     default void reload(ResourceManager manager) {
-        // remove existing modes to avoid adding duplicates
-        // this only clears modes that exist on both the server and the client
-        // otherwise we would have to re-request the mode data packet on every reload
-        RainglowMode.clearUniversalModes();
         Rainglow.RAINGLOW_DATAPACKS.clear();
 
         // load custom modes from rainglow/custom_modes in the datapack
@@ -36,9 +32,11 @@ public interface RainglowResourceReloader extends SimpleSynchronousResourceReloa
             try (InputStream stream = entry.getValue().open()) {
                 Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
                 RainglowMode.JsonMode result = Rainglow.GSON.fromJson(reader, RainglowMode.JsonMode.class);
-                RainglowMode.addMode(new RainglowMode(result, true));
 
+                // todo logic for handling duplicates
                 String name = entry.getValue().getSourceName();
+                RainglowMode.addMode(new RainglowMode(result));
+
                 if (this.getFabricId().equals(Rainglow.SERVER_MODE_DATA_ID) && !Rainglow.RAINGLOW_DATAPACKS.contains(name)) {
                     Rainglow.RAINGLOW_DATAPACKS.add(name);
                 }

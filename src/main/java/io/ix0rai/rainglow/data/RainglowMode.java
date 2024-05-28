@@ -19,18 +19,16 @@ public class RainglowMode {
     private final String id;
     private final List<RainglowColour> colours = new ArrayList<>();
     private final Text text;
-    private final boolean existsLocally;
 
-    public RainglowMode(JsonMode mode, boolean existsLocally) {
+    public RainglowMode(JsonMode mode) {
         this(
                 mode.id,
                 mode.colourIds,
-                Rainglow.translatableText("mode." + mode.id).copy().setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt(mode.textColour, 16)))),
-                existsLocally
+                Rainglow.translatableText("mode." + mode.id).copy().setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt(mode.textColour, 16))))
         );
     }
 
-    public RainglowMode(String id, List<String> colourIds, Text text, boolean existsLocally) {
+    public RainglowMode(String id, List<String> colourIds, Text text) {
         if (!id.matches("^[a-z0-9_]+$")) {
             Rainglow.LOGGER.error("loaded rainglow mode with id {} which contains invalid characters! (only lowercase letters, numbers, and underscores are allowed)", id);
         }
@@ -51,7 +49,6 @@ public class RainglowMode {
         }
 
         this.text = text;
-        this.existsLocally = existsLocally;
 
         MODES.put(this.id, this);
     }
@@ -79,10 +76,6 @@ public class RainglowMode {
         return this.id;
     }
 
-    public boolean existsLocally() {
-        return this.existsLocally;
-    }
-
     public static RainglowMode get(String id) {
         return MODES.get(id);
     }
@@ -97,11 +90,6 @@ public class RainglowMode {
 
     public static List<RainglowColour> getDefaultCustom() {
         return List.of(RainglowColour.BLUE, RainglowColour.WHITE, RainglowColour.PINK);
-    }
-
-    public static void clearUniversalModes() {
-        Collection<RainglowMode> modes = List.copyOf(MODES.values());
-        for (RainglowMode mode : modes) if (mode.existsLocally()) MODES.remove(mode.id);
     }
 
     public static void printLoadedModes() {
@@ -130,7 +118,7 @@ public class RainglowMode {
         Text text = TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.decode(buf);
         List<String> colourIds = buf.readList(PacketByteBuf::readString);
 
-        return new RainglowMode(id, colourIds, text, RainglowMode.get(id) != null);
+        return new RainglowMode(id, colourIds, text);
     }
 
 
