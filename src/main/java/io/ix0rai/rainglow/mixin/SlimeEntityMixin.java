@@ -37,13 +37,13 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.SLIME, this.getDataTracker(), this.random);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.setVariant(RainglowEntity.SLIME.readNbt(nbt, this.random));
+        this.setVariant(RainglowEntity.SLIME.readNbt(this.getWorld(), nbt, this.random));
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
      */
     @Redirect(method = "remove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     public boolean spawnWithParentColour(World instance, Entity entity) {
-        RainglowColour colour = Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.SLIME, this.getDataTracker(), this.random);
         entity.getDataTracker().set(RainglowEntity.SLIME.getTrackedData(), colour.getId());
         return this.getWorld().spawnEntity(entity);
     }
@@ -68,7 +68,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     )
     public void tick(CallbackInfo ci) {
         float size = this.getDimensions(this.getPose()).width();
-        RainglowColour colour = Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.SLIME, this.getDataTracker(), this.random);
         int index = colour.ordinal();
 
         for (int j = 0; j < size / 2; j ++) {
@@ -83,7 +83,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(RainglowEntity.SLIME, this.getDataTracker(), this.random);
+        return Rainglow.getColour(this.getWorld(), RainglowEntity.SLIME, this.getDataTracker(), this.random);
     }
 
     @Override

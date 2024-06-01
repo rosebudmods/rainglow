@@ -42,9 +42,25 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
     public RainglowConfigScreen(@Nullable Screen parent) {
         super(TITLE);
         this.parent = parent;
-        this.mode = RainglowMode.get(Rainglow.CONFIG.mode.getRealValue());
+        this.mode = getMode();
         this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> this.save()).build();
         this.saveButton.active = false;
+    }
+
+    private void setMode(RainglowMode mode) {
+        if (MinecraftClient.getInstance().world == null) {
+            Rainglow.CONFIG.defaultMode.setValue(mode.getId());
+        } else {
+            Rainglow.MODE_CONFIG.setMode(MinecraftClient.getInstance().world, mode);
+        }
+    }
+
+    private RainglowMode getMode() {
+        if (MinecraftClient.getInstance().world == null) {
+            return RainglowMode.get(Rainglow.CONFIG.defaultMode.getRealValue());
+        } else {
+            return Rainglow.MODE_CONFIG.getMode(MinecraftClient.getInstance().world);
+        }
     }
 
     private TextWidget getInfoText() {
@@ -150,7 +166,7 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
             }
         }
 
-        Rainglow.CONFIG.mode.setValue(this.mode.getId());
+        this.setMode(this.mode);
         this.saveButton.active = false;
     }
 

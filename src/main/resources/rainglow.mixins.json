@@ -8,6 +8,7 @@
     "DyeItemMixin",
     "GlowSquidEntityMixin",
     "GlowSquidEntityMixin$SquidEntityMixin",
+    "MinecraftServerAccessor",
     "MobEntityMixin",
     "SlimeEntityMixin"
   ],

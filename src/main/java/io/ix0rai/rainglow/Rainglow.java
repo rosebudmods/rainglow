@@ -1,8 +1,10 @@
 package io.ix0rai.rainglow;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import folk.sisby.kaleido.lib.quiltconfig.api.serializers.TomlSerializer;
 import folk.sisby.kaleido.lib.quiltconfig.implementor_api.ConfigEnvironment;
+import io.ix0rai.rainglow.config.PerWorldConfig;
 import io.ix0rai.rainglow.config.RainglowConfig;
 import io.ix0rai.rainglow.data.*;
 import net.fabricmc.api.ModInitializer;
@@ -15,6 +17,7 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +30,8 @@ public class Rainglow implements ModInitializer {
     private static final String FORMAT = "toml";
     private static final ConfigEnvironment ENVIRONMENT = new ConfigEnvironment(FabricLoader.getInstance().getConfigDir(), FORMAT, TomlSerializer.INSTANCE);
     public static final RainglowConfig CONFIG = RainglowConfig.create(ENVIRONMENT, "", MOD_ID, RainglowConfig.class);
-    public static final Gson GSON = new Gson();
+    public static final PerWorldConfig MODE_CONFIG = PerWorldConfig.create(ENVIRONMENT, MOD_ID, "per_world", PerWorldConfig.class);
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static final String CUSTOM_NBT_KEY = "Colour";
     public static final Identifier SERVER_MODE_DATA_ID = id("server_mode_data");
@@ -53,13 +57,13 @@ public class Rainglow implements ModInitializer {
         return new Identifier(MOD_ID, id);
     }
 
-    public static String generateRandomColourId(RandomGenerator random) {
-        var colours = CONFIG.getMode().getColours();
+    public static String generateRandomColourId(World world, RandomGenerator random) {
+        var colours = MODE_CONFIG.getMode(world).getColours();
         return colours.get(random.nextInt(colours.size())).getId();
     }
 
-    public static boolean colourUnloaded(RainglowEntity entityType, String colour) {
-        var colours = CONFIG.getMode().getColours();
+    public static boolean colourUnloaded(World world, RainglowEntity entityType, String colour) {
+        var colours = MODE_CONFIG.getMode(world).getColours();
         return !colours.contains(RainglowColour.get(colour)) && !colour.equals(entityType.getDefaultColour().getId());
     }
 
@@ -76,12 +80,12 @@ public class Rainglow implements ModInitializer {
         return Text.translatable(translatableTextKey(key));
     }
 
-    public static RainglowColour getColour(RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
+    public static RainglowColour getColour(World world, RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
         // generate random colour if the squid's colour isn't currently loaded
         String colour = tracker.get(entityType.getTrackedData());
-        if (colourUnloaded(entityType, colour)) {
+        if (colourUnloaded(world, entityType, colour)) {
             // Use last generated colour if not null else generate a new colour
-            tracker.set(entityType.getTrackedData(), generateRandomColourId(random));
+            tracker.set(entityType.getTrackedData(), generateRandomColourId(world, random));
             colour = tracker.get(entityType.getTrackedData());
         }
 

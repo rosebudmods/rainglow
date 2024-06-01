@@ -30,26 +30,26 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.ALLAY, this.getDataTracker(), this.random);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.setVariant(RainglowEntity.ALLAY.readNbt(nbt, this.random));
+        this.setVariant(RainglowEntity.ALLAY.readNbt(this.getWorld(), nbt, this.random));
     }
 
     // triggered when an allay duplicates, to apply the same colour as parent
     @Redirect(method = "duplicate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     public boolean spawnWithColour(World instance, Entity entity) {
-        RainglowColour colour = Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.ALLAY, this.getDataTracker(), this.random);
         entity.getDataTracker().set(RainglowEntity.ALLAY.getTrackedData(), colour.getId());
         return this.getWorld().spawnEntity(entity);
     }
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(RainglowEntity.ALLAY, this.getDataTracker(), this.random);
+        return Rainglow.getColour(this.getWorld(), RainglowEntity.ALLAY, this.getDataTracker(), this.random);
     }
 
     @Override

@@ -1,13 +1,13 @@
 package io.ix0rai.rainglow.config;
 
 import folk.sisby.kaleido.api.ReflectiveConfig;
+import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Alias;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.SerializedNameConvention;
 import folk.sisby.kaleido.lib.quiltconfig.api.metadata.NamingSchemes;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueList;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueMap;
-import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.RainglowMode;
@@ -21,25 +21,14 @@ import java.util.stream.Collectors;
 public class RainglowConfig extends ReflectiveConfig {
     @Comment("The currently active rainglow mode, which determines the possible colours for entities to spawn with.")
     @Comment("If custom, will be reset to the default mode if you join a server that does not have the mode.")
-    public final TrackedValue<String> mode = this.value("rainbow");
+    @Alias("mode")
+    public final TrackedValue<String> defaultMode = this.value("rainbow");
     @Comment("The rarity of coloured entities, with 0 making all entities vanilla and 100 making all entities coloured.")
     public final TrackedValue<ValueMap<Integer>> rarities = this.createMap(100);
     @Comment("Toggles for disabling colours for each entity.")
     public final TrackedValue<ValueMap<Boolean>> toggles = this.createMap(true);
     @Comment("The custom colours to use when the mode is set to custom.")
     public final TrackedValue<ValueList<String>> customColours = this.list("", RainglowMode.getDefaultCustom().stream().map(RainglowColour::getId).toArray(String[]::new));
-
-    public RainglowMode getMode() {
-        var mode = RainglowMode.get(this.mode.value());
-
-        if (mode == null) {
-            Rainglow.LOGGER.warn("unknown mode {}, defaulting to rainbow", this.mode.value());
-            this.mode.setValue("rainbow");
-            return getMode();
-        }
-
-        return mode;
-    }
 
     public List<RainglowColour> getCustom() {
         return this.customColours.value().stream().map(RainglowColour::get).collect(Collectors.toList());

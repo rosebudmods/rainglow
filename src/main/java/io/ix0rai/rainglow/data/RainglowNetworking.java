@@ -16,7 +16,7 @@ public class RainglowNetworking {
     public static void syncConfig(ServerPlayerEntity player) {
         // note: client does not need to know if server sync is enabled or not
         // they already know that it is enabled because they are receiving this packet
-        ServerPlayNetworking.send(player, new ConfigSyncPayload(Rainglow.CONFIG.mode.value(), Rainglow.CONFIG.getCustom(), Rainglow.CONFIG.getToggles(), Rainglow.CONFIG.getRarities()));
+        ServerPlayNetworking.send(player, new ConfigSyncPayload(Rainglow.CONFIG.defaultMode.value(), Rainglow.CONFIG.getCustom(), Rainglow.CONFIG.getToggles(), Rainglow.CONFIG.getRarities()));
     }
 
     public record ConfigSyncPayload(String currentMode, List<RainglowColour> customMode, Map<RainglowEntity, Boolean> enabledMobs, Map<RainglowEntity, Integer> rarities) implements CustomPayload {

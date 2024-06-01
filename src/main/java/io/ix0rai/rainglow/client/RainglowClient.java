@@ -33,7 +33,7 @@ public class RainglowClient implements ClientModInitializer {
                     // otherwise the client's custom would be used
                     ValueList<String> customColours = ValueList.create("", payload.customMode().stream().map(RainglowColour::getId).toArray(String[]::new));
                     Rainglow.CONFIG.customColours.setOverride(customColours);
-                    Rainglow.CONFIG.mode.setOverride(payload.currentMode());
+                    Rainglow.CONFIG.defaultMode.setOverride(payload.currentMode());
 
                     var rarities = ValueMap.builder(0);
                     for (var entry : payload.rarities().entrySet()) {

@@ -14,6 +14,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -72,11 +73,11 @@ public enum RainglowEntity {
         return RainglowColour.values()[index].getItem();
     }
 
-    public RainglowColour readNbt(NbtCompound nbt, RandomGenerator random) {
+    public RainglowColour readNbt(World world, NbtCompound nbt, RandomGenerator random) {
         String colour = nbt.getString(Rainglow.CUSTOM_NBT_KEY);
 
-        if (Rainglow.colourUnloaded(this, colour)) {
-            colour = Rainglow.generateRandomColourId(random);
+        if (Rainglow.colourUnloaded(world, this, colour)) {
+            colour = Rainglow.generateRandomColourId(world, random);
         }
 
         return RainglowColour.get(colour);
@@ -110,7 +111,7 @@ public enum RainglowEntity {
     }
 
     public void overrideTexture(Entity entity, CallbackInfoReturnable<Identifier> cir) {
-        RainglowColour colour = Rainglow.getColour(this, entity.getDataTracker(), entity.getWorld().getRandom());
+        RainglowColour colour = Rainglow.getColour(entity.getWorld(), this, entity.getDataTracker(), entity.getWorld().getRandom());
 
         // if the colour is default we don't need to override the method
         // this optimises a tiny bit
