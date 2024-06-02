@@ -102,6 +102,7 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 	@Override
 	protected void method_60325() {}
 
+	@Override
 	protected void repositionElements() {
 		this.clearAndInit();
 	}
