@@ -100,7 +100,11 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
             }
 
             contentLayout.add(gridWidget);
-            contentLayout.add(ButtonWidget.builder(Rainglow.translatableText("config.custom"), button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))).width(308).position(4, 0).build(), LayoutSettings.create().setPadding(4, 0));
+            contentLayout.add(ButtonWidget.builder(
+                    Rainglow.translatableText("config.custom"),
+                    button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
+                ).width(308).position(4, 0).build(),
+                LayoutSettings.create().setPadding(4, 0));
 
             headerFooterWidget.addToContents(contentLayout);
 

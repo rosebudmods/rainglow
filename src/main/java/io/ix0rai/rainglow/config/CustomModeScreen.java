@@ -28,21 +28,24 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 
 	public CustomModeScreen(Screen parent) {
 		super(parent, MinecraftClient.getInstance().options, TITLE);
-		this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> {
-			boolean hasColourSelected = false;
-			for (DeferredSaveOption<Boolean> option : this.options) {
-				if (option.deferredValue) {
-					hasColourSelected = true;
-					break;
-				}
-			}
 
-			if (!hasColourSelected) {
-				sendNoColoursToast();
-			} else {
-				this.save();
-			}
-		}).build();
+		this.saveButton = ButtonWidget.builder(
+			Rainglow.translatableText("config.save"),
+			button -> {
+				boolean hasColourSelected = false;
+				for (DeferredSaveOption<Boolean> option : this.options) {
+					if (option.deferredValue) {
+						hasColourSelected = true;
+						break;
+					}
+				}
+
+				if (!hasColourSelected) {
+					sendNoColoursToast();
+				} else {
+					this.save();
+				}
+			}).build();
 		this.saveButton.active = false;
 	}
 
@@ -76,7 +79,7 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 	}
 
 	@Override
-	public void method_60325() {
+	public void init() {
 		HeaderFooterLayoutWidget headerFooterWidget = new HeaderFooterLayoutWidget(this, 61, 33);
 		headerFooterWidget.addToHeader(new TextWidget(TITLE, this.textRenderer), settings -> settings.alignHorizontallyCenter().setBottomPadding(28));
 
@@ -94,6 +97,13 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 
 		headerFooterWidget.visitWidgets(this::addDrawableSelectableElement);
 		headerFooterWidget.arrangeElements();
+	}
+
+	@Override
+	protected void method_60325() {}
+
+	protected void repositionElements() {
+		this.clearAndInit();
 	}
 
 	private static void sendNoColoursToast() {

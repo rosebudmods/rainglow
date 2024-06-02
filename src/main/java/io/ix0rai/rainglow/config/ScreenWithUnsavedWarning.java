@@ -16,7 +16,7 @@ public interface ScreenWithUnsavedWarning {
 
 	void clearAndInit();
 
-	default void  setUpUnsavedWarning(HeaderFooterLayoutWidget headerFooterWidget, TextRenderer renderer, Screen parent) {
+	default void setUpUnsavedWarning(HeaderFooterLayoutWidget headerFooterWidget, TextRenderer renderer, Screen parent) {
 		LinearLayoutWidget contentWidget = headerFooterWidget.addToContents(new LinearLayoutWidget(250, 100, LinearLayoutWidget.Orientation.VERTICAL).setSpacing(8));
 		contentWidget.add(new TextWidget(Rainglow.translatableText("config.unsaved_warning"), renderer), LayoutSettings::alignHorizontallyCenter);
 
