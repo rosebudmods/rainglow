@@ -58,15 +58,15 @@ public enum RainglowColour {
                 switch (entity) {
                     case GLOW_SQUID -> {
                         String textureName = RainglowEntity.GLOW_SQUID.getDefaultColour() == this ? "glow_squid" : this.getId();
-                        this.textures.put(entity, new Identifier("textures/entity/squid/" + textureName + ".png"));
+                        this.textures.put(entity, Identifier.ofDefault("textures/entity/squid/" + textureName + ".png"));
                     }
                     case ALLAY -> {
                         String textureName = RainglowEntity.ALLAY.getDefaultColour() == this ? "allay" : this.getId();
-                        this.textures.put(entity, new Identifier("textures/entity/allay/" + textureName + ".png"));
+                        this.textures.put(entity, Identifier.ofDefault("textures/entity/allay/" + textureName + ".png"));
                     }
                     case SLIME -> {
                         String textureName = RainglowEntity.SLIME.getDefaultColour() == this ? "slime" : this.getId();
-                        this.textures.put(entity, new Identifier("textures/entity/slime/" + textureName + ".png"));
+                        this.textures.put(entity, Identifier.ofDefault("textures/entity/slime/" + textureName + ".png"));
                     }
                 }
             }
