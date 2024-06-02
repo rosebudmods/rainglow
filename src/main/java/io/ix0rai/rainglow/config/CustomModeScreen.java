@@ -76,12 +76,12 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 	}
 
 	@Override
-	public void init() {
+	public void method_60325() {
 		HeaderFooterLayoutWidget headerFooterWidget = new HeaderFooterLayoutWidget(this, 61, 33);
 		headerFooterWidget.addToHeader(new TextWidget(TITLE, this.textRenderer), settings -> settings.alignHorizontallyCenter().setBottomPadding(28));
 
 		if (!this.isConfirming) {
-			ButtonListWidget buttonListWidget = headerFooterWidget.addToContents(new ButtonListWidget(this.client, this.width, this.height, this));
+			ButtonListWidget buttonListWidget = headerFooterWidget.addToContents(new ButtonListWidget(this.client, this.width, this));
 			createColourToggles();
 			buttonListWidget.addEntries(this.options.toArray(new Option<?>[0]));
 
