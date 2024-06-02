@@ -29,6 +29,8 @@ public class RainglowConfig extends ReflectiveConfig {
     public final TrackedValue<ValueMap<Boolean>> toggles = this.createMap(true);
     @Comment("The custom colours to use when the mode is set to custom.")
     public final TrackedValue<ValueList<String>> customColours = this.list("", RainglowMode.getDefaultCustom().stream().map(RainglowColour::getId).toArray(String[]::new));
+    @Comment("Whether to allow recolouring entities via dyes.")
+    public final TrackedValue<Boolean> allowDyeing = this.value(false);
 
     public List<RainglowColour> getCustom() {
         return this.customColours.value().stream().map(RainglowColour::get).collect(Collectors.toList());
