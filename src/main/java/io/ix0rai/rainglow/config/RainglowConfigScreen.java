@@ -87,52 +87,52 @@ public class RainglowConfigScreen extends SaveableGameOptionsScreen {
 
         contentLayout.add(gridWidget);
         contentLayout.add(ButtonWidget.builder(
-                Rainglow.translatableText("config.custom"),
-                button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
-            ).width(308).position(4, 0).build(),
-            LayoutSettings.create().setPadding(4, 0));
+                        Rainglow.translatableText("config.custom"),
+                        button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
+                ).width(308).position(4, 0).build(),
+                LayoutSettings.create().setPadding(4, 0));
 
         this.field_49503.addToContents(contentLayout);
     }
 
     private DeferredSaveOption<Boolean> createEntityToggle(RainglowEntity entity) {
         return DeferredSaveOption.createDeferredBoolean(
-            "config.enable_" + entity.getId(),
-            "tooltip.entity_toggle",
-            Rainglow.CONFIG.toggles.getRealValue().get(entity.getId()),
-            enabled -> Rainglow.CONFIG.toggles.getRealValue().put(entity.getId(), enabled),
-            enabled -> this.saveButton.active = true
+                "config.enable_" + entity.getId(),
+                "tooltip.entity_toggle",
+                Rainglow.CONFIG.toggles.getRealValue().get(entity.getId()),
+                enabled -> Rainglow.CONFIG.toggles.getRealValue().put(entity.getId(), enabled),
+                enabled -> this.saveButton.active = true
         );
     }
 
     private DeferredSaveOption<Integer> createColourRaritySlider(RainglowEntity entity) {
         return DeferredSaveOption.createDeferredRangedInt(
-            "config." + entity.getId() + "_rarity",
-            "tooltip.rarity",
-            Rainglow.CONFIG.rarities.getRealValue().get(entity.getId()),
-            0,
-            100,
-            rarity -> Rainglow.CONFIG.rarities.getRealValue().put(entity.getId(), rarity),
-            rarity -> this.saveButton.active = true
-		);
+                "config." + entity.getId() + "_rarity",
+                "tooltip.rarity",
+                Rainglow.CONFIG.rarities.getRealValue().get(entity.getId()),
+                0,
+                100,
+                rarity -> Rainglow.CONFIG.rarities.getRealValue().put(entity.getId(), rarity),
+                rarity -> this.saveButton.active = true
+        );
     }
 
     public CyclingButtonWidget<RainglowMode> createModeButton() {
         return CyclingButtonWidget.builder(RainglowMode::getText)
-            .values(RainglowMode.values())
-            .initially(this.mode)
-            .tooltip(this::createColourListLabel)
-            .build(
-                0,
-                0,
-                308,
-                20,
-                Rainglow.translatableText("config.mode"),
-                (cyclingButtonWidget, mode) -> {
-                    this.saveButton.active = true;
-                    this.mode = mode;
-                }
-            );
+                .values(RainglowMode.values())
+                .initially(this.mode)
+                .tooltip(this::createColourListLabel)
+                .build(
+                        0,
+                        0,
+                        308,
+                        20,
+                        Rainglow.translatableText("config.mode"),
+                        (cyclingButtonWidget, mode) -> {
+                            this.saveButton.active = true;
+                            this.mode = mode;
+                        }
+                );
     }
 
     private Tooltip createColourListLabel(RainglowMode mode) {

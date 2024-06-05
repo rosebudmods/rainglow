@@ -23,12 +23,12 @@ public abstract class SaveableGameOptionsScreen extends GameOptionsScreen {
         super(parent, MinecraftClient.getInstance().options, title);
 
         this.saveButton = ButtonWidget.builder(
-            Rainglow.translatableText("config.save"),
-            button -> {
-                if (this.validate()) {
-                    this.save();
-                }
-            }).build();
+                Rainglow.translatableText("config.save"),
+                button -> {
+                    if (this.validate()) {
+                        this.save();
+                    }
+                }).build();
         this.saveButton.active = false;
     }
 
@@ -74,9 +74,10 @@ public abstract class SaveableGameOptionsScreen extends GameOptionsScreen {
             contentWidget.add(new TextWidget(Rainglow.translatableText("config.unsaved_warning"), this.textRenderer), LayoutSettings::alignHorizontallyCenter);
 
             LinearLayoutWidget buttons = new LinearLayoutWidget(250, 20, LinearLayoutWidget.Orientation.HORIZONTAL).setSpacing(8);
-            buttons.add(ButtonWidget.builder(Rainglow.translatableText("config.continue_editing"), (buttonWidget) -> {
-                MinecraftClient.getInstance().setScreen(SaveableGameOptionsScreen.this);
-            }).build());
+            buttons.add(ButtonWidget.builder(
+                    Rainglow.translatableText("config.continue_editing"),
+                    (buttonWidget) -> MinecraftClient.getInstance().setScreen(SaveableGameOptionsScreen.this)
+            ).build());
             buttons.add(ButtonWidget.builder(CommonTexts.YES, (buttonWidget) -> MinecraftClient.getInstance().setScreen(parent)).build());
 
             contentWidget.add(buttons, LayoutSettings::alignHorizontallyCenter);
