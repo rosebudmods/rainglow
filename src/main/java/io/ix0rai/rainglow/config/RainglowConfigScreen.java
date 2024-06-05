@@ -64,10 +64,10 @@ public class RainglowConfigScreen extends SaveableGameOptionsScreen {
     }
 
     @Override
-    protected void method_60325() {
+    protected void method_60329() {
         LinearLayoutWidget contentLayout = LinearLayoutWidget.createVertical().setSpacing(8);
 
-        contentLayout.add(createModeButton(), LayoutSettings::alignVerticallyBottom);
+        contentLayout.add(createModeButton(), LayoutSettings::alignHorizontallyCenter);
         contentLayout.add(getInfoText(), LayoutSettings::alignHorizontallyCenter);
 
         GridWidget gridWidget = new GridWidget();
@@ -89,11 +89,14 @@ public class RainglowConfigScreen extends SaveableGameOptionsScreen {
         contentLayout.add(ButtonWidget.builder(
                         Rainglow.translatableText("config.custom"),
                         button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
-                ).width(308).position(4, 0).build(),
-                LayoutSettings.create().setPadding(4, 0));
+                ).width(308).build(),
+                LayoutSettings::alignHorizontallyCenter);
 
         this.field_49503.addToContents(contentLayout);
     }
+
+    @Override
+    protected void method_60325() {}
 
     private DeferredSaveOption<Boolean> createEntityToggle(RainglowEntity entity) {
         return DeferredSaveOption.createDeferredBoolean(
