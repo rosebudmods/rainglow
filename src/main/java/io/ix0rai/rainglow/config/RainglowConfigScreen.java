@@ -94,8 +94,7 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
             modeLayout.add(createModeButton(), LayoutSettings::alignVerticallyBottom);
             // todo link to page with per-entity mode editing
             modeLayout.add(ButtonWidget.builder(Text.literal("grind"), button -> {
-                //this.mode = RainglowMode.get("grind");
-               // this.saveButton.active = true;
+                this.client.setScreen(new ModeConfigScreen(this));
             }).width(100).build(), LayoutSettings::alignVerticallyBottom);
             headerLayout.add(getInfoText(), settings -> settings.alignHorizontallyCenter().alignVerticallyBottom().setBottomPadding(1));
 
@@ -158,7 +157,7 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
             return CyclingButtonWidget.builder(RainglowMode::getText)
                     .values(RainglowMode.values())
                     .initially(this.mode)
-                    .tooltip(this::createColourListLabel)
+                    .tooltip(RainglowConfigScreen::createColourListLabel)
                     .build(
                             0,
                             0,
@@ -202,7 +201,7 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
         this.saveButton.active = false;
     }
 
-    private Tooltip createColourListLabel(RainglowMode mode) {
+    static Tooltip createColourListLabel(RainglowMode mode) {
         // creates a label and appends all the colours that will be applied in the given mode
         StringBuilder text = new StringBuilder(Language.getInstance().get(Rainglow.translatableTextKey("config.colours_to_apply")));
         int maxDisplayedColourCount = 16;
