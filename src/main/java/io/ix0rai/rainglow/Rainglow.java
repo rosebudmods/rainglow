@@ -57,13 +57,13 @@ public class Rainglow implements ModInitializer {
         return new Identifier(MOD_ID, id);
     }
 
-    public static String generateRandomColourId(World world, RandomGenerator random) {
-        var colours = MODE_CONFIG.getMode(world).getColours();
+    public static String generateRandomColourId(World world, RandomGenerator random, RainglowEntity entity) {
+        var colours = MODE_CONFIG.getMode(world, entity).getColours();
         return colours.get(random.nextInt(colours.size())).getId();
     }
 
     public static boolean colourUnloaded(World world, RainglowEntity entityType, String colour) {
-        var colours = MODE_CONFIG.getMode(world).getColours();
+        var colours = MODE_CONFIG.getMode(world, entityType).getColours();
         return !colours.contains(RainglowColour.get(colour)) && !colour.equals(entityType.getDefaultColour().getId());
     }
 
@@ -85,7 +85,7 @@ public class Rainglow implements ModInitializer {
         String colour = tracker.get(entityType.getTrackedData());
         if (colourUnloaded(world, entityType, colour)) {
             // Use last generated colour if not null else generate a new colour
-            tracker.set(entityType.getTrackedData(), generateRandomColourId(world, random));
+            tracker.set(entityType.getTrackedData(), generateRandomColourId(world, random, entityType));
             colour = tracker.get(entityType.getTrackedData());
         }
 

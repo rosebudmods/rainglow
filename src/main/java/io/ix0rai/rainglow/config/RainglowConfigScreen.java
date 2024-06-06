@@ -7,6 +7,7 @@ import io.ix0rai.rainglow.data.RainglowMode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.button.ButtonWidget;
 import net.minecraft.client.gui.widget.button.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.layout.GridWidget;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.widget.layout.LinearLayoutWidget;
 import net.minecraft.client.gui.widget.text.TextWidget;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.CommonTexts;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Language;
@@ -42,7 +44,14 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
     public RainglowConfigScreen(@Nullable Screen parent) {
         super(TITLE);
         this.parent = parent;
-        this.mode = getMode();
+        if (MinecraftClient.getInstance().world != null) {
+            var modes = Rainglow.MODE_CONFIG.getModes(MinecraftClient.getInstance().world);
+            // if all modes are the same, set the mode to that mode, otherwise set it to null
+            this.mode = modes.entrySet().stream().allMatch(entry -> entry.getValue().equals(modes.get(RainglowEntity.GLOW_SQUID))) ? modes.get(RainglowEntity.GLOW_SQUID) : null;
+        } else {
+            this.mode = RainglowMode.get(Rainglow.CONFIG.defaultMode.getRealValue());
+        }
+
         this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> this.save()).build();
         this.saveButton.active = false;
     }
@@ -51,15 +60,15 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
         if (MinecraftClient.getInstance().world == null) {
             Rainglow.CONFIG.defaultMode.setValue(mode.getId());
         } else {
-            Rainglow.MODE_CONFIG.setMode(MinecraftClient.getInstance().world, mode);
+            Rainglow.MODE_CONFIG.setMode(MinecraftClient.getInstance().world, mode, null);
         }
     }
 
-    private RainglowMode getMode() {
+    private RainglowMode getMode(RainglowEntity entity) {
         if (MinecraftClient.getInstance().world == null) {
             return RainglowMode.get(Rainglow.CONFIG.defaultMode.getRealValue());
         } else {
-            return Rainglow.MODE_CONFIG.getMode(MinecraftClient.getInstance().world);
+            return Rainglow.MODE_CONFIG.getMode(MinecraftClient.getInstance().world, entity);
         }
     }
 
@@ -81,8 +90,14 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
         if (!this.isConfirming) {
             // header
             headerLayout.add(new TextWidget(TITLE, this.textRenderer), settings -> settings.alignHorizontallyCenter().alignVerticallyTop().setPadding(12));
-            headerLayout.add(createModeButton(), LayoutSettings::alignVerticallyBottom);
-            headerLayout.add(getInfoText(), LayoutSettings::alignHorizontallyCenter);
+            LinearLayoutWidget modeLayout = headerLayout.add(LinearLayoutWidget.createHorizontal().setSpacing(8), LayoutSettings::alignVerticallyBottom);
+            modeLayout.add(createModeButton(), LayoutSettings::alignVerticallyBottom);
+            // todo link to page with per-entity mode editing
+            modeLayout.add(ButtonWidget.builder(Text.literal("grind"), button -> {
+                //this.mode = RainglowMode.get("grind");
+               // this.saveButton.active = true;
+            }).width(100).build(), LayoutSettings::alignVerticallyBottom);
+            headerLayout.add(getInfoText(), settings -> settings.alignHorizontallyCenter().alignVerticallyBottom().setBottomPadding(1));
 
             // contents
             LinearLayoutWidget contentLayout = LinearLayoutWidget.createVertical();
@@ -138,22 +153,39 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
 		));
     }
 
-    public CyclingButtonWidget<RainglowMode> createModeButton() {
-        return CyclingButtonWidget.builder(RainglowMode::getText)
-                .values(RainglowMode.values())
-                .initially(this.mode)
-                .tooltip(this::createColourListLabel)
-                .build(
-                        0,
-                        0,
-                        308,
-                        20,
-                        Rainglow.translatableText("config.mode"),
-                        (cyclingButtonWidget, mode) -> {
-                            this.saveButton.active = true;
-                            RainglowConfigScreen.this.mode = mode;
-                        }
-                );
+    public ClickableWidget createModeButton() {
+        if (mode != null) {
+            return CyclingButtonWidget.builder(RainglowMode::getText)
+                    .values(RainglowMode.values())
+                    .initially(this.mode)
+                    .tooltip(this::createColourListLabel)
+                    .build(
+                            0,
+                            0,
+                            200,
+                            20,
+                            Rainglow.translatableText("config.mode"),
+                            (cyclingButtonWidget, mode) -> {
+                                this.saveButton.active = true;
+                                this.mode = mode;
+                            }
+                    );
+        } else {
+            return ButtonWidget.builder(Text.literal("Mode: Mixed"), button -> {
+                this.mode = RainglowMode.get(Rainglow.CONFIG.defaultMode.getRealValue());
+                this.saveButton.active = true;
+                this.clearAndInit();
+            }).tooltip(createTooltip()).width(200).build();
+        }
+    }
+
+    private Tooltip createTooltip() {
+        MutableText text = Text.empty().append("Modes:");
+        for (RainglowEntity entity : RainglowEntity.values()) {
+            text.append("\n").append(Text.translatable("entity.minecraft." + entity.getId())).append(": ").append(this.getMode(entity).getText());
+        }
+
+        return Tooltip.create(text);
     }
 
     private void save() {

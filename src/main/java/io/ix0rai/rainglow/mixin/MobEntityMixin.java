@@ -41,6 +41,6 @@ public abstract class MobEntityMixin extends LivingEntity {
         int i = random.nextInt(100);
         int rarity = Rainglow.CONFIG.getRarity(entity);
 
-        return i >= rarity ? entity.getDefaultColour() : RainglowColour.get(Rainglow.generateRandomColourId(this.getWorld(), this.random));
+        return i >= rarity ? entity.getDefaultColour() : RainglowColour.get(Rainglow.generateRandomColourId(this.getWorld(), this.random, entity));
     }
 }

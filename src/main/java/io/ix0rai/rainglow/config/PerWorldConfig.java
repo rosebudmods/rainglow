@@ -8,41 +8,91 @@ import folk.sisby.kaleido.lib.quiltconfig.api.metadata.NamingSchemes;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueMap;
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.RainglowMode;
 import io.ix0rai.rainglow.mixin.MinecraftServerAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 @SerializedNameConvention(NamingSchemes.SNAKE_CASE)
 public class PerWorldConfig extends ReflectiveConfig {
 	@Comment("The mode used for each non-local world.")
 	@Comment("Note that for singleplayer worlds, the mode is saved in the world folder in the file \"config/rainglow.json\".")
-	public final TrackedValue<ValueMap<String>> modesByWorld = this.map("").build();
+	public final TrackedValue<ValueMap<ValueMap<String>>> modesByWorld = this.map(ValueMap.builder("").build()).build();
 
-	public RainglowMode getMode(World world) {
+	// todo hot garbage
+	public Map<RainglowEntity, RainglowMode> getModes(World world) {
 		var saveName = getSaveName(world);
-		String mode = null;
+		Either<Map<String, String>, ValueMap<String>> modes = null;
 
 		if (saveName.right().isPresent()) {
-			mode = modesByWorld.value().get(saveName.right().get());
+			modes = Either.right(modesByWorld.value().get(saveName.right().get()));
 		} else if (saveName.left().isPresent()) {
 			Path path = getJsonPath(saveName.left().get());
 			if (Files.exists(path)) {
 				try {
-					var data = Rainglow.GSON.fromJson(Files.readString(path), RainglowJson.class);
-					if (data != null) {
-						mode = data.mode;
-					}
+					var data = readJson(path);
+					modes = Either.left(data.entities);
 				} catch (Exception e) {
 					Rainglow.LOGGER.error("Failed to load Rainglow config for world " + saveName.left().get(), e);
 				}
 			} else {
-				save(saveName.left().get(), RainglowMode.get(Rainglow.CONFIG.defaultMode.value()));
+				save(saveName.left().get(), RainglowMode.get(Rainglow.CONFIG.defaultMode.value()), null);
+			}
+		}
+
+		if (modes == null) {
+			var map = new HashMap<RainglowEntity, RainglowMode>();
+			for (RainglowEntity entity : RainglowEntity.values()) {
+				map.put(entity, RainglowMode.get(Rainglow.CONFIG.defaultMode.value()));
+			}
+
+			return map;
+		} else {
+			if (modes.left().isPresent()) {
+				var map = new HashMap<RainglowEntity, RainglowMode>();
+				for (RainglowEntity entity : RainglowEntity.values()) {
+					map.put(entity, RainglowMode.get(modes.left().get().get(entity.getId())));
+				}
+
+				return map;
+			} else {
+				var map = new HashMap<RainglowEntity, RainglowMode>();
+				for (RainglowEntity entity : RainglowEntity.values()) {
+					map.put(entity, RainglowMode.get(modes.right().get().get(entity.getId())));
+				}
+
+				return map;
+			}
+		}
+	}
+
+	public RainglowMode getMode(World world, RainglowEntity entity) {
+		var saveName = getSaveName(world);
+		String mode = null;
+
+		if (saveName.right().isPresent()) {
+			mode = modesByWorld.value().get(entity.getId()).get(saveName.right().get());
+		} else if (saveName.left().isPresent()) {
+			Path path = getJsonPath(saveName.left().get());
+			if (Files.exists(path)) {
+				try {
+					var data = readJson(path);
+					mode = data.entities.get(entity.getId());
+				} catch (Exception e) {
+					Rainglow.LOGGER.error("Failed to load Rainglow config for world " + saveName.left().get(), e);
+				}
+			} else {
+				save(saveName.left().get(), RainglowMode.get(Rainglow.CONFIG.defaultMode.value()), entity);
 			}
 		}
 
@@ -53,18 +103,47 @@ public class PerWorldConfig extends ReflectiveConfig {
 		}
 	}
 
-	public void setMode(World world, RainglowMode mode) {
-		var saveName = getSaveName(world);
-		if (saveName.right().isPresent()) {
-			modesByWorld.value().put(saveName.right().get(), mode.getId());
-		} else if (saveName.left().isPresent()) {
-			save(saveName.left().get(), mode);
+	private static RainglowJson readJson(Path path) {
+		if (Files.exists(path)) {
+			try {
+				return Rainglow.GSON.fromJson(Files.readString(path), RainglowJson.class);
+			} catch (Exception e) {
+				Rainglow.LOGGER.error("Failed to load Rainglow config for world " + path, e);
+			}
+		}
+
+		return new RainglowJson(RainglowMode.get(Rainglow.CONFIG.defaultMode.value()));
+	}
+
+	public void setMode(World world, RainglowMode mode, @Nullable RainglowEntity entity) {
+		Consumer<String> setter = (id) -> {
+			var saveName = getSaveName(world);
+			if (saveName.right().isPresent()) {
+				modesByWorld.value().get(id).put(saveName.right().get(), mode.getId());
+			} else if (saveName.left().isPresent()) {
+				save(saveName.left().get(), mode, entity);
+			}
+		};
+
+		if (entity != null) {
+			setter.accept(entity.getId());
+		} else {
+			for (RainglowEntity e : RainglowEntity.values()) {
+				setter.accept(e.getId());
+			}
 		}
 	}
 
-	private static void save(Path worldPath, RainglowMode mode) {
+	private static void save(Path worldPath, RainglowMode mode, @Nullable RainglowEntity entity) {
 		Path path = getJsonPath(worldPath);
-		var data = new RainglowJson(mode.getId());
+		RainglowJson data;
+
+		if (Files.exists(path) && entity != null) {
+			data = readJson(path);
+			data.entities.put(entity.getId(), mode.getId());
+		} else {
+			data = new RainglowJson(mode);
+		}
 
 		try {
 			Path configPath = getConfigFolderPath(worldPath);
@@ -108,7 +187,12 @@ public class PerWorldConfig extends ReflectiveConfig {
 		return ((MinecraftServerAccessor) server).getSession().method_54543().path();
 	}
 
-	private record RainglowJson(String mode) {
-
+	private record RainglowJson(Map<String, String> entities) {
+		public RainglowJson(RainglowMode mode) {
+			this(new HashMap<>());
+			for (RainglowEntity entity : RainglowEntity.values()) {
+				this.entities.put(entity.getId(), mode.getId());
+			}
+		}
 	}
 }
