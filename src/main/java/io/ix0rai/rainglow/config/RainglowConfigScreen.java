@@ -10,41 +10,25 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.button.ButtonWidget;
 import net.minecraft.client.gui.widget.button.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.layout.GridWidget;
-import net.minecraft.client.gui.widget.layout.HeaderFooterLayoutWidget;
 import net.minecraft.client.gui.widget.layout.LayoutSettings;
 import net.minecraft.client.gui.widget.layout.LinearLayoutWidget;
 import net.minecraft.client.gui.widget.text.TextWidget;
-import net.minecraft.client.option.Option;
-import net.minecraft.text.CommonTexts;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWarning {
+public class RainglowConfigScreen extends SaveableGameOptionsScreen {
     private static final Text TITLE = Rainglow.translatableText("config.title");
     public static final Text YES = Text.translatable("gui.yes").styled(style -> style.withColor(0x00FF00));
     public static final Text NO = Text.translatable("gui.no").styled(style -> style.withColor(0xFF0000));
 
-    private final Screen parent;
-    private final Map<RainglowEntity, DeferredSaveOption<Boolean>> toggles = new HashMap<>();
-    private final Map<RainglowEntity, DeferredSaveOption<Integer>> sliders = new HashMap<>();
-    private final ButtonWidget saveButton;
-
     private RainglowMode mode;
-    private boolean isConfirming;
 
     public RainglowConfigScreen(@Nullable Screen parent) {
-        super(TITLE);
-        this.parent = parent;
+        super(parent, TITLE);
+
         this.mode = getMode();
-        this.saveButton = ButtonWidget.builder(Rainglow.translatableText("config.save"), button -> this.save()).build();
-        this.saveButton.active = false;
     }
 
     private void setMode(RainglowMode mode) {
@@ -74,68 +58,66 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
     }
 
     @Override
-    public void init() {
-        HeaderFooterLayoutWidget headerFooterWidget = new HeaderFooterLayoutWidget(this, 61, 33);
-        LinearLayoutWidget headerLayout = headerFooterWidget.addToHeader(LinearLayoutWidget.createVertical().setSpacing(8));
-
-        if (!this.isConfirming) {
-            // header
-            headerLayout.add(new TextWidget(TITLE, this.textRenderer), settings -> settings.alignHorizontallyCenter().alignVerticallyTop().setPadding(12));
-            headerLayout.add(createModeButton(), LayoutSettings::alignVerticallyBottom);
-            headerLayout.add(getInfoText(), LayoutSettings::alignHorizontallyCenter);
-
-            // contents
-            LinearLayoutWidget contentLayout = LinearLayoutWidget.createVertical();
-
-            GridWidget gridWidget = new GridWidget();
-            gridWidget.getDefaultSettings().setHorizontalPadding(4).setBottomPadding(4).alignHorizontallyCenter();
-
-            GridWidget.AdditionHelper mainAdditionHelper = gridWidget.createAdditionHelper(2);
-            for (RainglowEntity entity : RainglowEntity.values()) {
-                DeferredSaveOption<Boolean> entityToggle = createEntityToggle(entity);
-                mainAdditionHelper.add(entityToggle.createButton(MinecraftClient.getInstance().options));
-                entityToggle.set(entityToggle.deferredValue);
-
-                mainAdditionHelper.add(createColourRaritySlider(entity).createButton(MinecraftClient.getInstance().options));
-            }
-
-            contentLayout.add(gridWidget);
-            contentLayout.add(ButtonWidget.builder(Rainglow.translatableText("config.custom"), button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))).width(308).position(4, 0).build(), LayoutSettings.create().setPadding(4, 0));
-
-            headerFooterWidget.addToContents(contentLayout);
-
-            // footer
-            LinearLayoutWidget linearLayout = headerFooterWidget.addToFooter(LinearLayoutWidget.createHorizontal().setSpacing(8));
-            linearLayout.add(ButtonWidget.builder(CommonTexts.DONE, button -> this.closeScreen()).build());
-            linearLayout.add(this.saveButton);
-        } else {
-            this.setUpUnsavedWarning(headerFooterWidget, this.textRenderer, this.parent);
-        }
-
-        headerFooterWidget.visitWidgets(this::addDrawableSelectableElement);
-        headerFooterWidget.arrangeElements();
+    protected void save() {
+        super.save();
+        this.setMode(this.mode);
     }
 
+    @Override
+    protected void method_60329() {
+        LinearLayoutWidget contentLayout = LinearLayoutWidget.createVertical().setSpacing(8);
+
+        contentLayout.add(createModeButton(), LayoutSettings::alignHorizontallyCenter);
+        contentLayout.add(getInfoText(), LayoutSettings::alignHorizontallyCenter);
+
+        GridWidget gridWidget = new GridWidget();
+        gridWidget.getDefaultSettings().setHorizontalPadding(4).setBottomPadding(4).alignHorizontallyCenter();
+
+        GridWidget.AdditionHelper mainAdditionHelper = gridWidget.createAdditionHelper(2);
+        for (RainglowEntity entity : RainglowEntity.values()) {
+            DeferredSaveOption<Boolean> entityToggle = createEntityToggle(entity);
+            mainAdditionHelper.add(entityToggle.createButton(MinecraftClient.getInstance().options));
+            entityToggle.set(entityToggle.deferredValue);
+            this.options.add(entityToggle);
+
+            DeferredSaveOption<Integer> raritySlider = createColourRaritySlider(entity);
+            mainAdditionHelper.add(raritySlider.createButton(MinecraftClient.getInstance().options));
+            this.options.add(raritySlider);
+        }
+
+        contentLayout.add(gridWidget);
+        contentLayout.add(ButtonWidget.builder(
+                        Rainglow.translatableText("config.custom"),
+                        button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
+                ).width(308).build(),
+                LayoutSettings::alignHorizontallyCenter);
+
+        this.field_49503.addToContents(contentLayout);
+    }
+
+    @Override
+    protected void method_60325() {}
+
     private DeferredSaveOption<Boolean> createEntityToggle(RainglowEntity entity) {
-        return toggles.computeIfAbsent(entity, e -> DeferredSaveOption.createDeferredBoolean(
-                "config.enable_" + e.getId(),
+        return DeferredSaveOption.createDeferredBoolean(
+                "config.enable_" + entity.getId(),
                 "tooltip.entity_toggle",
-                Rainglow.CONFIG.toggles.getRealValue().get(e.getId()),
-                enabled -> Rainglow.CONFIG.toggles.getRealValue().put(e.getId(), enabled),
+                Rainglow.CONFIG.toggles.getRealValue().get(entity.getId()),
+                enabled -> Rainglow.CONFIG.toggles.getRealValue().put(entity.getId(), enabled),
                 enabled -> this.saveButton.active = true
-        ));
+        );
     }
 
     private DeferredSaveOption<Integer> createColourRaritySlider(RainglowEntity entity) {
-        return sliders.computeIfAbsent(entity, e -> DeferredSaveOption.createDeferredRangedInt(
-				"config." + e.getId() + "_rarity",
-				"tooltip.rarity",
-				Rainglow.CONFIG.rarities.getRealValue().get(e.getId()),
-				0,
-				100,
-				rarity -> Rainglow.CONFIG.rarities.getRealValue().put(e.getId(), rarity),
+        return DeferredSaveOption.createDeferredRangedInt(
+                "config." + entity.getId() + "_rarity",
+                "tooltip.rarity",
+                Rainglow.CONFIG.rarities.getRealValue().get(entity.getId()),
+                0,
+                100,
+                rarity -> Rainglow.CONFIG.rarities.getRealValue().put(entity.getId(), rarity),
                 rarity -> this.saveButton.active = true
-		));
+        );
     }
 
     public CyclingButtonWidget<RainglowMode> createModeButton() {
@@ -151,23 +133,9 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
                         Rainglow.translatableText("config.mode"),
                         (cyclingButtonWidget, mode) -> {
                             this.saveButton.active = true;
-                            RainglowConfigScreen.this.mode = mode;
+                            this.mode = mode;
                         }
                 );
-    }
-
-    private void save() {
-        Collection<Option<?>> options = new ArrayList<>(this.sliders.values());
-        options.addAll(this.toggles.values());
-
-        for (Option<?> option : options) {
-            if (option instanceof DeferredSaveOption) {
-                ((DeferredSaveOption<?>) option).save();
-            }
-        }
-
-        this.setMode(this.mode);
-        this.saveButton.active = false;
     }
 
     private Tooltip createColourListLabel(RainglowMode mode) {
@@ -198,25 +166,5 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
         // set colour to the mode's text colour
         Style style = Style.EMPTY.withColor(mode.getText().getStyle().getColor());
         return Tooltip.create(Text.literal(text.toString()).setStyle(style));
-    }
-
-    @Override
-    public void closeScreen() {
-        if (this.saveButton.active) {
-            this.isConfirming = true;
-            this.clearAndInit();
-        } else {
-            MinecraftClient.getInstance().setScreen(this.parent);
-        }
-    }
-
-    @Override
-    public void setConfirming(boolean confirming) {
-        this.isConfirming = confirming;
-    }
-
-    @Override
-    public void clearAndInit() {
-        super.clearAndInit();
     }
 }

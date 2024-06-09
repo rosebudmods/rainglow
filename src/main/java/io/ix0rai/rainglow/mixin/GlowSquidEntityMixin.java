@@ -34,13 +34,13 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.getRandom());
+        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.random);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.setVariant(RainglowEntity.GLOW_SQUID.readNbt(this.getWorld(), nbt, this.getRandom()));
+        this.setVariant(RainglowEntity.GLOW_SQUID.readNbt(this.getWorld(), nbt, this.random));
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
      */
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"), cancellable = true)
     public void tickMovement(CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.getRandom());
+        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.random);
 
         if (colour != RainglowColour.BLUE) {
             // we add 100 to g to let the mixin know that we want to override the method
@@ -60,7 +60,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(this.getWorld(), RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.getRandom());
+        return Rainglow.getColour(this.getWorld(), RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.random);
     }
 
     @Override
@@ -85,7 +85,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
         private int spawnParticles(ServerWorld instance, ParticleEffect particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed) {
             if (((Object) this) instanceof GlowSquidEntity) {
                 // send in custom colour data
-                RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.getRandom());
+                RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.GLOW_SQUID, this.getDataTracker(), this.random);
                 int index = colour.ordinal();
                 // round x to 1 decimal place and append index data to the next two
                 return ((ServerWorld) this.getWorld()).spawnParticles(particle, (Math.round(x * 10)) / 10D + index / 1000D, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);
