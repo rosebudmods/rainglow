@@ -30,22 +30,22 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 		super(parent, MinecraftClient.getInstance().options, TITLE);
 
 		this.saveButton = ButtonWidget.builder(
-			Rainglow.translatableText("config.save"),
-			button -> {
-				boolean hasColourSelected = false;
-				for (DeferredSaveOption<Boolean> option : this.options) {
-					if (option.deferredValue) {
-						hasColourSelected = true;
-						break;
+				Rainglow.translatableText("config.save"),
+				button -> {
+					boolean hasColourSelected = false;
+					for (DeferredSaveOption<Boolean> option : this.options) {
+						if (option.deferredValue) {
+							hasColourSelected = true;
+							break;
+						}
 					}
-				}
 
-				if (!hasColourSelected) {
-					sendNoColoursToast();
-				} else {
-					this.save();
-				}
-			}).build();
+					if (!hasColourSelected) {
+						sendNoColoursToast();
+					} else {
+						this.save();
+					}
+				}).build();
 		this.saveButton.active = false;
 	}
 
@@ -54,15 +54,15 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 
 		for (RainglowColour colour : RainglowColour.values()) {
 			this.options.add(DeferredSaveOption.createDeferredBoolean(
-				"colour." + colour.getId(),
-				null,
-				Rainglow.CONFIG.customColours.getRealValue().contains(colour.getId()),
-				enabled -> {
-					if (enabled) {
-						Rainglow.CONFIG.customColours.getRealValue().add(colour.getId());
-					}
-				},
-				enabled -> this.saveButton.active = true
+					"colour." + colour.getId(),
+					null,
+					Rainglow.CONFIG.customColours.getRealValue().contains(colour.getId()),
+					enabled -> {
+						if (enabled) {
+							Rainglow.CONFIG.customColours.getRealValue().add(colour.getId());
+						}
+					},
+					enabled -> this.saveButton.active = true
 			));
 		}
 	}
