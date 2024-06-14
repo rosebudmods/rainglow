@@ -100,7 +100,11 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
             }
 
             contentLayout.add(gridWidget);
-            contentLayout.add(ButtonWidget.builder(Rainglow.translatableText("config.custom"), button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))).width(308).position(4, 0).build(), LayoutSettings.create().setPadding(4, 0));
+            contentLayout.add(ButtonWidget.builder(
+                            Rainglow.translatableText("config.custom"),
+                            button -> MinecraftClient.getInstance().setScreen(new CustomModeScreen(this))
+                    ).width(308).position(4, 0).build(),
+                    LayoutSettings.create().setPadding(4, 0));
 
             headerFooterWidget.addToContents(contentLayout);
 
@@ -128,14 +132,14 @@ public class RainglowConfigScreen extends Screen implements ScreenWithUnsavedWar
 
     private DeferredSaveOption<Integer> createColourRaritySlider(RainglowEntity entity) {
         return sliders.computeIfAbsent(entity, e -> DeferredSaveOption.createDeferredRangedInt(
-				"config." + e.getId() + "_rarity",
-				"tooltip.rarity",
-				Rainglow.CONFIG.rarities.getRealValue().get(e.getId()),
-				0,
-				100,
-				rarity -> Rainglow.CONFIG.rarities.getRealValue().put(e.getId(), rarity),
+                "config." + e.getId() + "_rarity",
+                "tooltip.rarity",
+                Rainglow.CONFIG.rarities.getRealValue().get(e.getId()),
+                0,
+                100,
+                rarity -> Rainglow.CONFIG.rarities.getRealValue().put(e.getId(), rarity),
                 rarity -> this.saveButton.active = true
-		));
+        ));
     }
 
     public CyclingButtonWidget<RainglowMode> createModeButton() {

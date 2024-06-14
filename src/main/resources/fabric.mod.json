@@ -37,14 +37,14 @@
   },
 
   "depends": {
-    "fabricloader": ">=0.14.19",
+    "fabricloader": ">=0.15.11",
     "fabric-resource-loader-v0": "*",
     "fabric-networking-api-v1": "*",
-    "minecraft": ">=1.20.6"
+    "minecraft": ">=1.21-"
   },
 
   "suggests": {
-    "modmenu": ">=7.0.0"
+    "modmenu": ">=11.0.0-"
   },
 
   "custom": {

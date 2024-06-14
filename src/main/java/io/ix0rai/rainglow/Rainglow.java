@@ -54,7 +54,7 @@ public class Rainglow implements ModInitializer {
     }
 
     public static Identifier id(String id) {
-        return new Identifier(MOD_ID, id);
+        return Identifier.of(MOD_ID, id);
     }
 
     public static String generateRandomColourId(World world, RandomGenerator random) {
