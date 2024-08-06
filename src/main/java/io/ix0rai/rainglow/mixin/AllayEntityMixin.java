@@ -11,6 +11,7 @@ import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -18,19 +19,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AllayEntity.class)
 public abstract class AllayEntityMixin extends Entity implements AllayVariantProvider {
+    @Shadow public abstract void writeCustomDataToNbt(NbtCompound nbt);
+
     protected AllayEntityMixin(EntityType<? extends AllayEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
     }
 
-    @Inject(method = "initDataTracker", at = @At("TAIL"))
-    protected void initDataTracker(Builder builder, CallbackInfo ci) {
-        builder.add(RainglowEntity.ALLAY.getTrackedData(), RainglowEntity.ALLAY.getDefaultColour().getId());
-    }
-
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.ALLAY, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(this);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
@@ -42,18 +40,18 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
     // triggered when an allay duplicates, to apply the same colour as parent
     @Redirect(method = "duplicate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     public boolean spawnWithColour(World instance, Entity entity) {
-        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.ALLAY, this.getDataTracker(), this.random);
-        entity.getDataTracker().set(RainglowEntity.ALLAY.getTrackedData(), colour.getId());
+        RainglowColour colour = Rainglow.getColour(this);
+        ((AllayVariantProvider) entity).setVariant(colour);
         return this.getWorld().spawnEntity(entity);
     }
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(this.getWorld(), RainglowEntity.ALLAY, this.getDataTracker(), this.random);
+        return Rainglow.getColour(this);
     }
 
     @Override
     public void setVariant(RainglowColour colour) {
-        this.getDataTracker().set(RainglowEntity.ALLAY.getTrackedData(), colour.getId());
+        Rainglow.setColour(this, colour);
     }
 }
