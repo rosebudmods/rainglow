@@ -2,10 +2,10 @@ package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.text.TextColor;
+import net.minecraft.util.Language;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,12 +25,11 @@ public class RainglowMode {
         this(
                 mode.id,
                 mode.colourIds,
-                Rainglow.translatableText("mode." + mode.id).copy().setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt(mode.textColour, 16)))),
                 existsLocally
         );
     }
 
-    public RainglowMode(String id, List<String> colourIds, Text text, boolean existsLocally) {
+    public RainglowMode(String id, List<String> colourIds, boolean existsLocally) {
         if (!id.matches("^[a-z0-9_]+$")) {
             Rainglow.LOGGER.error("loaded rainglow mode with id {} which contains invalid characters! (only lowercase letters, numbers, and underscores are allowed)", id);
         }
@@ -50,7 +49,24 @@ public class RainglowMode {
             Rainglow.LOGGER.error("cannot load mode with id {}: no colours found!", id);
         }
 
-        this.text = text;
+        // todo possible improvements: split remainder between first and last section, ignore spaces in char count and sections, split sections at spaces
+        if (!colours.isEmpty()) {
+            String fullText = Language.getInstance().get(Rainglow.translatableTextKey("mode." + id));
+            int textLength = fullText.length();
+            int charsPerSection = textLength / colours.size();
+            int extraCharsOnLastSection = textLength % colours.size();
+
+            MutableText formatted = Text.empty();
+            for (int i = 0; i < colours.size(); i++) {
+                int start = i * charsPerSection;
+                int end = start + charsPerSection + (i == colours.size() - 1 ? extraCharsOnLastSection : 0);
+                formatted.append(Text.literal(fullText.substring(start, end)).setStyle(Style.EMPTY.withColor((colours.get(i).getHex()))));
+            }
+
+            this.text = formatted;
+        } else {
+            this.text = Rainglow.translatableText("mode." + id);
+        }
         this.existsLocally = existsLocally;
 
         MODES.put(this.id, this);
@@ -120,17 +136,15 @@ public class RainglowMode {
 
     public static void write(PacketByteBuf buf, RainglowMode mode) {
         buf.writeString(mode.getId());
-        TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.encode(buf, mode.getText());
         List<String> colourIds = mode.getColours().stream().map(RainglowColour::getId).toList();
         buf.writeCollection(colourIds, PacketByteBuf::writeString);
     }
 
     public static RainglowMode read(PacketByteBuf buf) {
         String id = buf.readString();
-        Text text = TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.decode(buf);
         List<String> colourIds = buf.readList(PacketByteBuf::readString);
 
-        return new RainglowMode(id, colourIds, text, RainglowMode.get(id) != null);
+        return new RainglowMode(id, colourIds, RainglowMode.get(id) != null);
     }
 
 
