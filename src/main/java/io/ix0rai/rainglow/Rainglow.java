@@ -10,9 +10,10 @@ import io.ix0rai.rainglow.data.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.Entity;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -22,7 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class Rainglow implements ModInitializer {
     public static final String MOD_ID = "rainglow";
@@ -37,12 +41,16 @@ public class Rainglow implements ModInitializer {
     public static final Identifier SERVER_MODE_DATA_ID = id("server_mode_data");
     public static final List<String> RAINGLOW_DATAPACKS = new ArrayList<>();
 
+    private static final Map<UUID, RainglowColour> colours = new HashMap<>();
+
     @Override
     public void onInitialize() {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener((RainglowResourceReloader) () -> SERVER_MODE_DATA_ID);
 
         PayloadTypeRegistry.playS2C().register(RainglowNetworking.ConfigSyncPayload.PACKET_ID, RainglowNetworking.ConfigSyncPayload.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(RainglowNetworking.ModeSyncPayload.PACKET_ID, RainglowNetworking.ModeSyncPayload.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(RainglowNetworking.ColourPayload.PACKET_ID, RainglowNetworking.ColourPayload.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(RainglowNetworking.ColourPayload.PACKET_ID, RainglowNetworking.ColourPayload.PACKET_CODEC);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             // send modes to client
@@ -50,6 +58,16 @@ public class Rainglow implements ModInitializer {
 
             // send config to client
             RainglowNetworking.syncConfig(handler.player);
+
+            // send all colours to client
+            RainglowNetworking.sendColoursTo(handler.player);
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(RainglowNetworking.ColourPayload.PACKET_ID, (payload, context) -> {
+            for (var entry : payload.colours().entrySet()) {
+                RainglowColour colour = entry.getValue();
+                Rainglow.setColour(entry.getKey(), colour);
+            }
         });
     }
 
@@ -57,14 +75,14 @@ public class Rainglow implements ModInitializer {
         return Identifier.of(MOD_ID, id);
     }
 
-    public static String generateRandomColourId(World world, RandomGenerator random) {
+    public static RainglowColour generateRandomColour(World world, RandomGenerator random) {
         var colours = MODE_CONFIG.getMode(world).getColours();
-        return colours.get(random.nextInt(colours.size())).getId();
+        return colours.get(random.nextInt(colours.size()));
     }
 
-    public static boolean colourUnloaded(World world, RainglowEntity entityType, String colour) {
+    public static boolean colourUnloaded(World world, RainglowEntity entityType, RainglowColour colour) {
         var colours = MODE_CONFIG.getMode(world).getColours();
-        return !colours.contains(RainglowColour.get(colour)) && !colour.equals(entityType.getDefaultColour().getId());
+        return !colours.contains(colour) && colour != entityType.getDefaultColour();
     }
 
     public static String translatableTextKey(String key) {
@@ -80,15 +98,37 @@ public class Rainglow implements ModInitializer {
         return Text.translatable(translatableTextKey(key));
     }
 
-    public static RainglowColour getColour(World world, RainglowEntity entityType, DataTracker tracker, RandomGenerator random) {
+    public static RainglowColour getColour(Entity entity) {
+        RainglowColour colour = colours.get(entity.getUuid());
+        RainglowEntity entityType = RainglowEntity.get(entity);
+
         // generate random colour if the squid's colour isn't currently loaded
-        String colour = tracker.get(entityType.getTrackedData());
-        if (colourUnloaded(world, entityType, colour)) {
+        if (colourUnloaded(entity.getWorld(), entityType, colour)) {
             // Use last generated colour if not null else generate a new colour
-            tracker.set(entityType.getTrackedData(), generateRandomColourId(world, random));
-            colour = tracker.get(entityType.getTrackedData());
+            colour = generateRandomColour(entity.getWorld(), entity.getRandom());
+            colours.put(entity.getUuid(), colour);
         }
 
-        return RainglowColour.get(colour);
+        return colour;
+    }
+
+    public static void setColour(Entity entity, RainglowColour colour) {
+        setColour(entity.getUuid(), colour);
+
+        if (entity.getWorld().isClient()) {
+            // sync to server; will then be synced to all clients
+            RainglowNetworking.sendColourChangeToServer(entity, colour);
+        } else if (entity.getWorld().getServer().isDedicated()) {
+            // sync to all clients
+            RainglowNetworking.sendColourChangeToClients(entity, colour);
+        }
+    }
+
+    public static void setColour(UUID uuid, RainglowColour colour) {
+        colours.put(uuid, colour);
+    }
+
+    public static Map<UUID, RainglowColour> getColours() {
+        return colours;
     }
 }

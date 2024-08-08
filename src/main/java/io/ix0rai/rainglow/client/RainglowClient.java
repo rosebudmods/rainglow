@@ -1,9 +1,11 @@
 package io.ix0rai.rainglow.client;
 
+import com.mojang.datafixers.util.Either;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueList;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueMap;
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.config.PerWorldConfig;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowMode;
 import io.ix0rai.rainglow.data.RainglowResourceReloader;
@@ -18,6 +20,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +77,16 @@ public class RainglowClient implements ClientModInitializer {
             });
         });
 
+        ClientPlayNetworking.registerGlobalReceiver(RainglowNetworking.ColourPayload.PACKET_ID, (payload, context) -> {
+            MinecraftClient client = context.client();
+            client.execute(() -> {
+                for (var entry : payload.colours().entrySet()) {
+                    RainglowColour colour = entry.getValue();
+                    Rainglow.setColour(entry.getKey(), colour);
+                }
+            });
+        });
+
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
             client.execute(() -> {
                 // reset values to those configured in file
@@ -94,5 +107,13 @@ public class RainglowClient implements ClientModInitializer {
                 Rainglow.LOGGER.info("loaded default modes");
             }
         });
+    }
+
+    public static Either<Path, String> getSaveNameClient() {
+        if (MinecraftClient.getInstance().isInSingleplayer()) {
+            return Either.left(PerWorldConfig.getWorldPath(MinecraftClient.getInstance().getServer()));
+        } else {
+            return Either.right(MinecraftClient.getInstance().getCurrentServerEntry().address);
+        }
     }
 }

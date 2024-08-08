@@ -100,7 +100,9 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 	}
 
 	@Override
-	protected void initOptionButtons() {}
+	protected void initOptionButtons() {
+		// no-op
+	}
 
 	@Override
 	protected void repositionElements() {
