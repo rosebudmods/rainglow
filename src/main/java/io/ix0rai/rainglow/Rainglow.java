@@ -10,6 +10,7 @@ import io.ix0rai.rainglow.data.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
@@ -61,6 +62,13 @@ public class Rainglow implements ModInitializer {
             // send all colours to client
             RainglowNetworking.sendColoursTo(handler.player);
         });
+
+        ServerPlayNetworking.registerGlobalReceiver(RainglowNetworking.ColourPayload.PACKET_ID, (payload, context) -> {
+            for (var entry : payload.colours().entrySet()) {
+                RainglowColour colour = entry.getValue();
+                Rainglow.setColour(entry.getKey(), colour);
+            }
+        });
     }
 
     public static Identifier id(String id) {
@@ -74,7 +82,7 @@ public class Rainglow implements ModInitializer {
 
     public static boolean colourUnloaded(World world, RainglowEntity entityType, RainglowColour colour) {
         var colours = MODE_CONFIG.getMode(world).getColours();
-        return !colours.contains(colour) && !colour.equals(entityType.getDefaultColour());
+        return !colours.contains(colour) && colour != entityType.getDefaultColour();
     }
 
     public static String translatableTextKey(String key) {
@@ -105,15 +113,19 @@ public class Rainglow implements ModInitializer {
     }
 
     public static void setColour(Entity entity, RainglowColour colour) {
-        colours.put(entity.getUuid(), colour);
+        setColour(entity.getUuid(), colour);
 
         if (entity.getWorld().isClient()) {
             // sync to server; will then be synced to all clients
             RainglowNetworking.sendColourChangeToServer(entity, colour);
-        } else {
+        } else if (entity.getWorld().getServer().isDedicated()) {
             // sync to all clients
             RainglowNetworking.sendColourChangeToClients(entity, colour);
         }
+    }
+
+    public static void setColour(UUID uuid, RainglowColour colour) {
+        colours.put(uuid, colour);
     }
 
     public static Map<UUID, RainglowColour> getColours() {

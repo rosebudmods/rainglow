@@ -84,12 +84,10 @@ public class RainglowNetworking {
     public static void sendColourChangeToClients(Entity entity, RainglowColour colour) {
         if (entity.getWorld() instanceof ServerWorld serverWorld) {
             serverWorld.getPlayers().forEach(player -> ServerPlayNetworking.send(player, new ColourPayload(Map.of(entity.getUuid(), colour))));
+        } else {
+            throw new RuntimeException("Cannot send colour change to clients from client");
         }
-
-        throw new RuntimeException("Cannot send colour change to clients from client");
     }
-
-    // todo: receivers
 
     public record ColourPayload(Map<UUID, RainglowColour> colours) implements CustomPayload {
         public static final CustomPayload.Id<ColourPayload> PACKET_ID = new CustomPayload.Id<>(Rainglow.id("colour_change"));

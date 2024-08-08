@@ -6,7 +6,6 @@ import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.data.DataTracker.Builder;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
