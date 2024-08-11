@@ -41,7 +41,7 @@ public class Rainglow implements ModInitializer {
     public static final Identifier SERVER_MODE_DATA_ID = id("server_mode_data");
     public static final List<String> RAINGLOW_DATAPACKS = new ArrayList<>();
 
-    private static final Map<UUID, RainglowColour> colours = new HashMap<>();
+    private static final Map<UUID, RainglowColour> COLOURS = new HashMap<>();
 
     @Override
     public void onInitialize() {
@@ -68,6 +68,10 @@ public class Rainglow implements ModInitializer {
                 RainglowColour colour = entry.getValue();
                 Rainglow.setColour(entry.getKey(), colour);
             }
+        });
+
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            COLOURS.clear();
         });
     }
 
@@ -99,14 +103,14 @@ public class Rainglow implements ModInitializer {
     }
 
     public static RainglowColour getColour(Entity entity) {
-        RainglowColour colour = colours.get(entity.getUuid());
+        RainglowColour colour = COLOURS.get(entity.getUuid());
         RainglowEntity entityType = RainglowEntity.get(entity);
 
         // generate random colour if the squid's colour isn't currently loaded
         if (colourUnloaded(entity.getWorld(), entityType, colour)) {
             // Use last generated colour if not null else generate a new colour
             colour = generateRandomColour(entity.getWorld(), entity.getRandom());
-            colours.put(entity.getUuid(), colour);
+            COLOURS.put(entity.getUuid(), colour);
         }
 
         return colour;
@@ -125,10 +129,10 @@ public class Rainglow implements ModInitializer {
     }
 
     public static void setColour(UUID uuid, RainglowColour colour) {
-        colours.put(uuid, colour);
+        COLOURS.put(uuid, colour);
     }
 
     public static Map<UUID, RainglowColour> getColours() {
-        return colours;
+        return COLOURS;
     }
 }
