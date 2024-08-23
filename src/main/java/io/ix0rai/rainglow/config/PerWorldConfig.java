@@ -46,11 +46,14 @@ public class PerWorldConfig extends ReflectiveConfig {
 			}
 		}
 
-		if (mode == null) {
-			return RainglowMode.get(Rainglow.CONFIG.defaultMode.value());
-		} else {
-			return RainglowMode.get(mode);
+		if (mode != null) {
+			RainglowMode rainglowMode = RainglowMode.get(mode);
+			if (rainglowMode != null) {
+				return rainglowMode;
+			}
 		}
+
+		return RainglowMode.get(Rainglow.CONFIG.defaultMode.value());
 	}
 
 	public void setMode(World world, RainglowMode mode) {
