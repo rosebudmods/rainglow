@@ -1,7 +1,7 @@
 plugins {
     id "fabric-loom" version "1.6.+"
     id "com.github.johnrengelman.shadow" version "7.1.+"
-    id "com.modrinth.minotaur" version "2.+"
+    id "me.modmuss50.mod-publish-plugin" version "0.5.2"
 }
 
 version = project.mod_version
@@ -56,26 +56,44 @@ loom {
     accessWidenerPath = file("src/main/resources/rainglow.accesswidener")
 }
 
-//modrinth {
-//    syncBodyFrom = rootProject.file("README.md").text
-//    changelog = rootProject.file("CHANGELOG.md").text
-//    System.out.println("Enter your Modrinth API key: ")
-//    BufferedReader br = new BufferedReader(new InputStreamReader(System.in))
-//    token = br.readLine()
-//    projectId = "rainglow"
-//    versionNumber = project.version
-//    versionName = "rainglow " + project.version.toString().split("\\+")[0] + " for mc " + project.version.toString().split("\\+mc")[1]
-//    versionType = "release"
-//    uploadFile = remapJar
-//    gameVersions = ["1.19", "1.19.1", "1.19.2"]
-//    loaders = ["quilt", "fabric"]
-//    dependencies {
-//        optional.project "modmenu"
-//    }
-//
-//    // sync readme
-//    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
-//}
+publishMods {
+    displayName = "rainglow ${project.version}"
+    file = remapJar.archiveFile
+    changelog = rootProject.file("CHANGELOG.md").getText()
+    type = STABLE
+
+    modLoaders.add("quilt")
+    modLoaders.add("fabric")
+
+    dryRun = !providers.environmentVariable("MODRINTH_TOKEN").isPresent()
+            || !providers.environmentVariable("CURSEFORGE_TOKEN").isPresent()
+            || property("pub.should_publish") == "false"
+    dryRun = false
+
+    var mcVersions = [project.minecraft_version]
+    mcVersions.addAll(property("pub.additional_versions").toString().split(" ").findAll { !it.empty })
+
+    modrinth {
+        projectId = "Bk6pUD7R"
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        mcVersions.forEach(minecraftVersions::add)
+
+        requires "fabric-api"
+        optional "modmenu"
+    }
+
+    curseforge {
+        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+        projectId = "576755"
+        mcVersions.forEach(minecraftVersions::add)
+
+        clientRequired = true
+        serverRequired = false
+
+        requires("fabric-api")
+        optional("modmenu")
+    }
+}
 
 def targetJavaVersion = Integer.parseInt(project.java_version)
 tasks.withType(JavaCompile).configureEach {
