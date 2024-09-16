@@ -84,7 +84,7 @@ publishMods {
 
     curseforge {
         accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
-        projectId = "576755"
+        projectId = "682310"
         mcVersions.forEach(minecraftVersions::add)
 
         clientRequired = true
