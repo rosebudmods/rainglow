@@ -5,7 +5,7 @@ import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.GlowSquidVariantProvider;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.WaterCreatureEntity;
+import net.minecraft.entity.passive.WaterCreatureEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.nbt.NbtCompound;

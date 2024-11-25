@@ -37,7 +37,7 @@ public class DyeItemMixin {
                 }
 
                 Rainglow.setColour(entity, colour);
-                cir.setReturnValue(ActionResult.success(user.getWorld().isClient()));
+                cir.setReturnValue(ActionResult.SUCCESS);
             }
         }
     }
