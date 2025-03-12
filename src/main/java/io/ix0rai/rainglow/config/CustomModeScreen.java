@@ -100,7 +100,9 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 	}
 
 	@Override
-	protected void method_60325() {}
+	protected void initOptionButtons() {
+		// no-op
+	}
 
 	@Override
 	protected void repositionElements() {
@@ -109,7 +111,7 @@ public class CustomModeScreen extends GameOptionsScreen implements ScreenWithUns
 
 	private static void sendNoColoursToast() {
 		Toast toast = new SystemToast(SystemToast.Id.PACK_LOAD_FAILURE, Rainglow.translatableText("config.no_custom_colours"), Rainglow.translatableText("config.no_custom_colours_description"));
-		MinecraftClient.getInstance().getToastManager().add(toast);
+		MinecraftClient.getInstance().method_1566().method_1999(toast);
 	}
 
 	@Override

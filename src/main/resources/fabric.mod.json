@@ -19,7 +19,7 @@
   "license": "MIT",
   "icon": "assets/rainglow/icon.png",
   "environment": "*",
-  "accessWidener" : "rainglow.accesswidener",
+  "accessWidener": "rainglow.accesswidener",
   "mixins": [
     "rainglow.mixins.json"
   ],
@@ -37,14 +37,14 @@
   },
 
   "depends": {
-    "fabricloader": ">=0.15.11",
+    "fabricloader": ">=0.16.7",
     "fabric-resource-loader-v0": "*",
     "fabric-networking-api-v1": "*",
-    "minecraft": ">=1.21-"
+    "minecraft": ">=1.21.2"
   },
 
   "suggests": {
-    "modmenu": ">=11.0.0-"
+    "modmenu": ">=12.0.0-"
   },
 
   "custom": {

@@ -4,19 +4,17 @@ import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import io.ix0rai.rainglow.data.SlimeVariantProvider;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.*;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -30,14 +28,9 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
         throw new UnsupportedOperationException();
     }
 
-    @Inject(method = "initDataTracker", at = @At("TAIL"))
-    protected void initDataTracker(DataTracker.Builder builder, CallbackInfo ci) {
-        builder.add(RainglowEntity.SLIME.getTrackedData(), RainglowEntity.SLIME.getDefaultColour().getId());
-    }
-
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.SLIME, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(this);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
@@ -49,11 +42,40 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     /**
      * @reason make smaller slimes spawn with the same colour as the parent in a split
      */
-    @Redirect(method = "remove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
-    public boolean spawnWithParentColour(World instance, Entity entity) {
-        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.SLIME, this.getDataTracker(), this.random);
-        entity.getDataTracker().set(RainglowEntity.SLIME.getTrackedData(), colour.getId());
-        return this.getWorld().spawnEntity(entity);
+    @Inject(method = "remove", at = @At("HEAD"), cancellable = true)
+    private void preserveColorOnSplit(Entity.RemovalReason reason, CallbackInfo ci) {
+        SlimeEntity thisSlime = (SlimeEntity) (Object) this;
+        int size = thisSlime.getSize();
+
+        if (!thisSlime.getWorld().isClient && size > 1 && thisSlime.isDead()) {
+            RainglowColour parentColor = Rainglow.getColour(thisSlime.getUuid());
+
+            float width = thisSlime.getDimensions(thisSlime.getPose()).width();
+            float halfWidth = width / 2.0F;
+            int newSize = size / 2;
+            Team team = thisSlime.getScoreboardTeam();
+
+            int count = 2 + thisSlime.getRandom().nextInt(3);
+
+            // Create multiple slimes individually while making sure it matches vanilla
+            for (int i = 0; i < count; i++) {
+                float offsetX = ((float) (i % 2) - 0.5F) * halfWidth;
+                float offsetZ = ((float) (i / 2) - 0.5F) * halfWidth;
+
+                //noinspection unchecked
+                thisSlime.convert((EntityType<SlimeEntity>) thisSlime.getType(), new EntityConversionParameters(EntityConversionType.SPLIT_ON_DEATH, false, false, team), SpawnReason.TRIGGERED, (newSlime) -> {
+                    newSlime.setSize(newSize, true);
+                    newSlime.refreshPositionAndAngles(thisSlime.getX() + offsetX, thisSlime.getY() + 0.5, thisSlime.getZ() + offsetZ, thisSlime.getRandom().nextFloat() * 360.0F, 0.0F);
+
+                    // Now that headache is done, finally set the child slime color to match the parent
+                    ((SlimeVariantProvider) newSlime).setVariant(parentColor);
+                });
+            }
+
+            // Don't forget this, boy was that a mistake
+            super.remove(reason);
+            ci.cancel();
+        }
     }
 
     /**
@@ -68,7 +90,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     )
     public void tick(CallbackInfo ci) {
         float size = this.getDimensions(this.getPose()).width();
-        RainglowColour colour = Rainglow.getColour(this.getWorld(), RainglowEntity.SLIME, this.getDataTracker(), this.random);
+        RainglowColour colour = Rainglow.getColour(this);
         int index = colour.ordinal();
 
         for (int j = 0; j < size / 2; j ++) {
@@ -83,11 +105,11 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(this.getWorld(), RainglowEntity.SLIME, this.getDataTracker(), this.random);
+        return Rainglow.getColour(this);
     }
 
     @Override
     public void setVariant(RainglowColour colour) {
-        this.getDataTracker().set(RainglowEntity.SLIME.getTrackedData(), colour.getId());
+        Rainglow.setColour(this, colour);
     }
 }

@@ -8,9 +8,9 @@ import folk.sisby.kaleido.lib.quiltconfig.api.metadata.NamingSchemes;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueMap;
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.client.RainglowClient;
 import io.ix0rai.rainglow.data.RainglowMode;
 import io.ix0rai.rainglow.mixin.MinecraftServerAccessor;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.World;
@@ -46,11 +46,14 @@ public class PerWorldConfig extends ReflectiveConfig {
 			}
 		}
 
-		if (mode == null) {
-			return RainglowMode.get(Rainglow.CONFIG.defaultMode.value());
-		} else {
-			return RainglowMode.get(mode);
+		if (mode != null) {
+			RainglowMode rainglowMode = RainglowMode.get(mode);
+			if (rainglowMode != null) {
+				return rainglowMode;
+			}
 		}
+
+		return RainglowMode.get(Rainglow.CONFIG.defaultMode.value());
 	}
 
 	public void setMode(World world, RainglowMode mode) {
@@ -95,16 +98,12 @@ public class PerWorldConfig extends ReflectiveConfig {
 				return Either.left(getWorldPath(world.getServer()));
 			}
 		} else {
-			if (MinecraftClient.getInstance().isInSingleplayer()) {
-				return Either.left(getWorldPath(MinecraftClient.getInstance().getServer()));
-			} else {
-				return Either.right(MinecraftClient.getInstance().getCurrentServerEntry().address);
-			}
+			return RainglowClient.getSaveNameClient();
 		}
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private static Path getWorldPath(MinecraftServer server) {
+	public static Path getWorldPath(MinecraftServer server) {
 		return ((MinecraftServerAccessor) server).getSession().method_54543().path();
 	}
 

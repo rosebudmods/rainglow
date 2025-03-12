@@ -6,9 +6,9 @@ import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.particle.SquidInkParticle;
-import net.minecraft.client.util.ColorUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.ArgbHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,7 +50,7 @@ public class SquidInkParticleMixin {
                 rgb = RainglowColour.WHITE.getInkRgb();
             }
 
-            cir.setReturnValue(new SquidInkParticle(clientWorld, d, e, f, g, h, i, ColorUtil.Argb32.of(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider));
+            cir.setReturnValue(new SquidInkParticle(clientWorld, d, e, f, g, h, i, ArgbHelper.color(255, (int) rgb.r(), (int) rgb.g(), (int) rgb.b()), this.spriteProvider));
         }
     }
 }

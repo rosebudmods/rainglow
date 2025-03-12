@@ -14,9 +14,12 @@
   ],
   "client": [
     "client.AllayEntityRendererMixin",
+    "client.EntityRendererMixin",
+    "client.EntityRenderStateMixin",
     "client.GlowParticleMixin",
     "client.GlowSquidEntityRendererMixin",
     "client.SlimeEntityRendererMixin",
+    "client.SlimeOverlayFeatureRendererMixin",
     "client.SlimeParticleMixin",
     "client.SquidInkParticleMixin",
     "client.screen.CyclingValueSetMixin",
