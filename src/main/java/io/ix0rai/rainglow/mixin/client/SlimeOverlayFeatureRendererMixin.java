@@ -52,7 +52,7 @@ public class SlimeOverlayFeatureRendererMixin {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
                     try {
-                        return RainglowEntity.SLIME.overrideTexture(entityUuid);
+                        return RainglowEntity.SLIME.overrideTexture(world, entityUuid);
                     } catch (Exception e) {
                         // ignore any errors and just let return null for default textures
                     }

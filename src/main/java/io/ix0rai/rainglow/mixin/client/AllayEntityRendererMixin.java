@@ -23,7 +23,9 @@ public class AllayEntityRendererMixin {
             if (entityUuid != null) {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
-                    RainglowEntity.ALLAY.overrideTexture(entityUuid, cir);
+                    RainglowEntity type = RainglowEntity.ALLAY;
+                    Identifier texture = type.overrideTexture(world, entityUuid);
+                    cir.setReturnValue(texture != null ? texture : type.getDefaultTexture());
                 }
             }
         }

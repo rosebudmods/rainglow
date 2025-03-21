@@ -23,7 +23,9 @@ public class SlimeEntityRendererMixin {
             if (entityUuid != null) {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
-                    RainglowEntity.SLIME.overrideTexture(entityUuid, cir);
+                    RainglowEntity type = RainglowEntity.SLIME;
+                    Identifier texture = type.overrideTexture(world, entityUuid);
+                    cir.setReturnValue(texture != null ? texture : type.getDefaultTexture());
                 }
             }
         }

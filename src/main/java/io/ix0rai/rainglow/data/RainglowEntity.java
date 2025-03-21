@@ -1,6 +1,7 @@
 package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.mob.SlimeEntity;
@@ -13,11 +14,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 public enum RainglowEntity {
@@ -100,19 +101,21 @@ public enum RainglowEntity {
         return null;
     }
 
-    public void overrideTexture(UUID entity, CallbackInfoReturnable<Identifier> cir) {
-        RainglowColour colour = Rainglow.getColour(entity);
+    @Nullable
+    public Identifier overrideTexture(ClientWorld world, UUID uuid) {
+        AtomicReference<Identifier> texture = new AtomicReference<>();
 
-        // if the colour is default we don't need to override the method
-        // this optimises a tiny bit
-        if (Rainglow.CONFIG.isEntityEnabled(this) && colour != this.getDefaultColour()) {
-            Identifier texture = colour.getTexture(this);
-            cir.setReturnValue(texture != null ? texture : this.getDefaultTexture());
-        }
+        world.getEntities().forEach(entity -> {
+            if (entity.getUuid().equals(uuid)) {
+                texture.set(this.overrideTexture(entity));
+            }
+        });
+
+        return texture.get();
     }
 
     // Return the override texture instead of applying through callback
-    public Identifier overrideTexture(UUID entity) {
+    public Identifier overrideTexture(Entity entity) {
         RainglowColour colour = Rainglow.getColour(entity);
 
         // Returning null will just use default texture, no need for extra checks
