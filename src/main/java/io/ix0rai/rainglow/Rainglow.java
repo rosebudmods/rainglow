@@ -8,6 +8,7 @@ import io.ix0rai.rainglow.config.PerWorldConfig;
 import io.ix0rai.rainglow.config.RainglowConfig;
 import io.ix0rai.rainglow.data.*;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -71,8 +72,14 @@ public class Rainglow implements ModInitializer {
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            COLOURS.clear();
+            // Only clear colours on disconnect if server is NOT single-player to prevent NBT save failure (Unsure how this works with Lan-instances)
+            if (!server.isSingleplayer()) {
+                COLOURS.clear();
+            }
         });
+
+        // Instead use SERVER_STOPPED for clearing colours from single-player worlds. (Doesn't affect others because mod would most likely be shutdown in non-single-player instances)
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> COLOURS.clear());
     }
 
     public static Identifier id(String id) {
@@ -114,6 +121,11 @@ public class Rainglow implements ModInitializer {
         }
 
         return colour;
+    }
+
+    // Simplified method without any colour checks (Entity information isn't being passed through Rendering anymore, can be adjusted to apply in the RenderStateInteract if needed)
+    public static RainglowColour getColour(UUID entity) {
+        return COLOURS.get(entity);
     }
 
     public static void setColour(Entity entity, RainglowColour colour) {
