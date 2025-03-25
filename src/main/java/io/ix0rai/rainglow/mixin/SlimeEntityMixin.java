@@ -30,7 +30,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(this);
+        RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
@@ -48,7 +48,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
         int size = thisSlime.getSize();
 
         if (!thisSlime.getWorld().isClient && size > 1 && thisSlime.isDead()) {
-            RainglowColour parentColor = Rainglow.getColour(thisSlime.getUuid());
+            RainglowColour parentColor = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
 
             float width = thisSlime.getDimensions(thisSlime.getPose()).width();
             float halfWidth = width / 2.0F;
@@ -90,7 +90,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     )
     public void tick(CallbackInfo ci) {
         float size = this.getDimensions(this.getPose()).width();
-        RainglowColour colour = Rainglow.getColour(this);
+        RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
         int index = colour.ordinal();
 
         for (int j = 0; j < size / 2; j ++) {
@@ -105,7 +105,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(this);
+        return Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
     }
 
     @Override

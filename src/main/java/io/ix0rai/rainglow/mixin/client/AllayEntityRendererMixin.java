@@ -26,7 +26,7 @@ public class AllayEntityRendererMixin {
                     boolean rainbowState = ((EntityRenderStateTracker) state).rainglow$isRainbow();
 
                     RainglowEntity type = RainglowEntity.ALLAY;
-                    Identifier texture = type.overrideTexture(world, entityUuid, rainbowState);
+                    Identifier texture = type.overrideTexture(entityUuid, world, rainbowState);
                     cir.setReturnValue(texture != null ? texture : type.getDefaultTexture());
                 }
             }

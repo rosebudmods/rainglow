@@ -86,8 +86,7 @@ public class SlimeOverlayFeatureRendererMixin {
                 if (world != null) {
                     try {
                         boolean rainbowState = ((EntityRenderStateTracker) state).rainglow$isRainbow();
-
-                        return RainglowEntity.SLIME.overrideTexture(world, entityUuid, rainbowState);
+                        return RainglowEntity.SLIME.overrideTexture(entityUuid, world, rainbowState);
                     } catch (Exception e) {
                         // ignore any errors and just let return null for default textures
                     }

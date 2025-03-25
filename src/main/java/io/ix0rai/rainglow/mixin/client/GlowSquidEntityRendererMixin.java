@@ -30,7 +30,7 @@ public class GlowSquidEntityRendererMixin {
                     boolean rainbowState = ((EntityRenderStateTracker) state).rainglow$isRainbow();
 
                     RainglowEntity type = RainglowEntity.GLOW_SQUID;
-                    Identifier texture = type.overrideTexture(world, entityUuid, rainbowState);
+                    Identifier texture = type.overrideTexture(entityUuid, world, rainbowState);
                     cir.setReturnValue(texture != null ? texture : type.getDefaultTexture());
                 }
             }

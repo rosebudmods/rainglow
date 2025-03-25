@@ -26,7 +26,7 @@ public class SlimeEntityRendererMixin {
                     boolean rainbowState = ((EntityRenderStateTracker) state).rainglow$isRainbow();
 
                     RainglowEntity type = RainglowEntity.SLIME;
-                    Identifier texture = type.overrideTexture(world, entityUuid, rainbowState);
+                    Identifier texture = type.overrideTexture(entityUuid, world, rainbowState);
                     cir.setReturnValue(texture != null ? texture : type.getDefaultTexture());
                 }
             }

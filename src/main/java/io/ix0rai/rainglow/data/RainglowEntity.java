@@ -1,7 +1,6 @@
 package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.mob.SlimeEntity;
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 public enum RainglowEntity {
@@ -102,30 +100,14 @@ public enum RainglowEntity {
     }
 
     @Nullable
-    public Identifier overrideTexture(ClientWorld world, UUID uuid, boolean rainbowState) {
-        AtomicReference<Identifier> texture = new AtomicReference<>();
-
-        // Switch to a full statement so can break when uuid matches for slightly better performance and avoid unnecessary processing
-
-        for (Entity entity : world.getEntities()) {
-            if (entity.getUuid().equals(uuid)) {
-                texture.set(this.overrideTexture(entity, rainbowState));
-                break;
-            }
-        }
-
-        return texture.get();
-    }
-
-    // Return the override texture instead of applying through callback
-    public Identifier overrideTexture(Entity entity, boolean rainbowState) {
-        if (rainbowState) {
+    public Identifier overrideTexture(UUID uuid, World world, boolean rainbowState) {
+       if (rainbowState) {
             // Set the texture to light gray, best for overlaying colours as white is a bit too bright
             Identifier texture = RainglowColour.LIGHT_GRAY.getTexture(this);
             return texture != null ? texture : this.getDefaultTexture();
         }
-
-        RainglowColour colour = Rainglow.getColour(entity);
+  
+        RainglowColour colour = Rainglow.getColour(uuid, world, this);
 
         // Returning null will just use default texture, no need for extra checks
 
