@@ -20,4 +20,16 @@ public interface EntityRenderStateTracker {
      * @return The UUID of the associated entity, or null if not set
      */
     UUID rainglow$getEntityUuid();
+
+    /**
+     * Set the Rainbow Rendering for the associated entity
+     * @param isRainbow boolean value to toggle the rainbow rendering
+     */
+    void rainglow$setRainbow(boolean isRainbow);
+
+    /**
+     * Get the Rainbow Rendering for the associated entity
+     * @return boolean for entity should have the rainbow rendering
+     */
+    boolean rainglow$isRainbow();
 }

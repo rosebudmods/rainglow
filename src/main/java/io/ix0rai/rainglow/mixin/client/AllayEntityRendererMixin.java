@@ -23,8 +23,10 @@ public class AllayEntityRendererMixin {
             if (entityUuid != null) {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
+                    boolean rainbowState = ((EntityRenderStateTracker) state).rainglow$isRainbow();
+
                     RainglowEntity type = RainglowEntity.ALLAY;
-                    Identifier texture = type.overrideTexture(world, entityUuid);
+                    Identifier texture = type.overrideTexture(world, entityUuid, rainbowState);
                     cir.setReturnValue(texture != null ? texture : type.getDefaultTexture());
                 }
             }

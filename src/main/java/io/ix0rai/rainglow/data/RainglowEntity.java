@@ -102,20 +102,29 @@ public enum RainglowEntity {
     }
 
     @Nullable
-    public Identifier overrideTexture(ClientWorld world, UUID uuid) {
+    public Identifier overrideTexture(ClientWorld world, UUID uuid, boolean rainbowState) {
         AtomicReference<Identifier> texture = new AtomicReference<>();
 
-        world.getEntities().forEach(entity -> {
+        // Switch to a full statement so can break when uuid matches for slightly better performance and avoid unnecessary processing
+
+        for (Entity entity : world.getEntities()) {
             if (entity.getUuid().equals(uuid)) {
-                texture.set(this.overrideTexture(entity));
+                texture.set(this.overrideTexture(entity, rainbowState));
+                break;
             }
-        });
+        }
 
         return texture.get();
     }
 
     // Return the override texture instead of applying through callback
-    public Identifier overrideTexture(Entity entity) {
+    public Identifier overrideTexture(Entity entity, boolean rainbowState) {
+        if (rainbowState) {
+            // Set the texture to light gray, best for overlaying colours as white is a bit too bright
+            Identifier texture = RainglowColour.LIGHT_GRAY.getTexture(this);
+            return texture != null ? texture : this.getDefaultTexture();
+        }
+
         RainglowColour colour = Rainglow.getColour(entity);
 
         // Returning null will just use default texture, no need for extra checks
