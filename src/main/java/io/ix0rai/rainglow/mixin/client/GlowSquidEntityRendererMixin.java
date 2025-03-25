@@ -28,7 +28,7 @@ public class GlowSquidEntityRendererMixin {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
                     RainglowEntity type = RainglowEntity.GLOW_SQUID;
-                    Identifier texture = type.overrideTexture(world, entityUuid);
+                    Identifier texture = type.overrideTexture(entityUuid, world);
                     cir.setReturnValue(texture != null ? texture : type.getDefaultTexture());
                 }
             }

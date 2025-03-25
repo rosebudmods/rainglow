@@ -109,23 +109,17 @@ public class Rainglow implements ModInitializer {
         return Text.translatable(translatableTextKey(key));
     }
 
-    public static RainglowColour getColour(Entity entity) {
-        RainglowColour colour = COLOURS.get(entity.getUuid());
-        RainglowEntity entityType = RainglowEntity.get(entity);
+    public static RainglowColour getColour(UUID uuid, World world, RainglowEntity type) {
+        RainglowColour colour = COLOURS.get(uuid);
 
         // generate random colour if the squid's colour isn't currently loaded
-        if (colourUnloaded(entity.getWorld(), entityType, colour)) {
+        if (colourUnloaded(world, type, colour)) {
             // Use last generated colour if not null else generate a new colour
-            colour = generateRandomColour(entity.getWorld(), entity.getRandom());
-            COLOURS.put(entity.getUuid(), colour);
+            colour = generateRandomColour(world, world.getRandom());
+            COLOURS.put(uuid, colour);
         }
 
         return colour;
-    }
-
-    // Simplified method without any colour checks (Entity information isn't being passed through Rendering anymore, can be adjusted to apply in the RenderStateInteract if needed)
-    public static RainglowColour getColour(UUID entity) {
-        return COLOURS.get(entity);
     }
 
     public static void setColour(Entity entity, RainglowColour colour) {

@@ -28,7 +28,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(this);
+        RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.GLOW_SQUID);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
@@ -43,7 +43,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
      */
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"), cancellable = true)
     public void tickMovement(CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(this);
+        RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.GLOW_SQUID);
 
         if (colour != RainglowColour.BLUE) {
             // we add 100 to g to let the mixin know that we want to override the method
@@ -54,7 +54,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(this);
+        return Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.GLOW_SQUID);
     }
 
     @Override
@@ -79,7 +79,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
         private int spawnParticles(ServerWorld instance, ParticleEffect particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed) {
             if (((Object) this) instanceof GlowSquidEntity) {
                 // send in custom colour data
-                RainglowColour colour = Rainglow.getColour(this);
+                RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.GLOW_SQUID);
                 int index = colour.ordinal();
                 // round x to 1 decimal place and append index data to the next two
                 return ((ServerWorld) this.getWorld()).spawnParticles(particle, (Math.round(x * 10)) / 10D + index / 1000D, y + 0.5, z, 0, deltaX, deltaY, deltaZ, speed);

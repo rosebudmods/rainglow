@@ -30,7 +30,7 @@ public class DyeItemMixin {
             if (entityType != null
                     && !Rainglow.colourUnloaded(user.getWorld(), entityType, colour)
                     && Rainglow.CONFIG.isEntityEnabled(entityType)
-                    && Rainglow.getColour(entity) != colour) {
+                    && Rainglow.getColour(entity.getUuid(), entity.getWorld(), entityType) != colour) {
                 entity.getWorld().playSoundFromEntity(user, entity, SoundEvents.BLOCK_AMETHYST_CLUSTER_BREAK, SoundCategory.PLAYERS, 5.0f, 1.0f);
                 if (!user.getWorld().isClient()) {
                     stack.decrement(1);
