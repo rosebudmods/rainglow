@@ -23,8 +23,10 @@ public class SlimeEntityRendererMixin {
             if (entityUuid != null) {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
+                    boolean rainbowState = ((EntityRenderStateTracker) state).rainglow$isRainbow();
+
                     RainglowEntity type = RainglowEntity.SLIME;
-                    Identifier texture = type.overrideTexture(entityUuid, world);
+                    Identifier texture = type.overrideTexture(entityUuid, world, rainbowState);
                     cir.setReturnValue(texture != null ? texture : type.getDefaultTexture());
                 }
             }

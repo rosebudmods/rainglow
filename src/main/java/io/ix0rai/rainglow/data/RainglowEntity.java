@@ -100,7 +100,13 @@ public enum RainglowEntity {
     }
 
     @Nullable
-    public Identifier overrideTexture(UUID uuid, World world) {
+    public Identifier overrideTexture(UUID uuid, World world, boolean rainbowState) {
+       if (rainbowState) {
+            // Set the texture to light gray, best for overlaying colours as white is a bit too bright
+            Identifier texture = RainglowColour.LIGHT_GRAY.getTexture(this);
+            return texture != null ? texture : this.getDefaultTexture();
+        }
+  
         RainglowColour colour = Rainglow.getColour(uuid, world, this);
 
         // Returning null will just use default texture, no need for extra checks

@@ -15,6 +15,14 @@ public class EntityRendererMixin<T extends Entity, S extends class_10017> {
     private void updateRenderState(T entity, S state, float f, CallbackInfo ci) {
         if (state instanceof EntityRenderStateTracker) {
             ((EntityRenderStateTracker) state).rainglow$setEntity(entity);
+
+            // TODO: This is a placeholder, better to add a new variant.
+            if (entity.hasCustomName()) {
+                ((EntityRenderStateTracker) state).rainglow$setRainbow(entity.getCustomName().getString().contains("rainbow"));
+            } else {
+                // Reset it just in case
+                ((EntityRenderStateTracker) state).rainglow$setRainbow(false);
+            }
         }
     }
 }
