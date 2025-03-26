@@ -27,7 +27,7 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        RainglowColour colour = Rainglow.getColour(this);
+        RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.ALLAY);
         nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
@@ -39,14 +39,14 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
     // triggered when an allay duplicates, to apply the same colour as parent
     @Redirect(method = "duplicate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     public boolean spawnWithColour(World instance, Entity entity) {
-        RainglowColour colour = Rainglow.getColour(this);
+        RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.ALLAY);
         ((AllayVariantProvider) entity).setVariant(colour);
         return this.getWorld().spawnEntity(entity);
     }
 
     @Override
     public RainglowColour getVariant() {
-        return Rainglow.getColour(this);
+        return Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.ALLAY);
     }
 
     @Override

@@ -25,7 +25,7 @@ public class RainglowNetworking {
 
     public record ConfigSyncPayload(String currentMode, List<RainglowColour> customMode, Map<RainglowEntity, Boolean> enabledMobs, Map<RainglowEntity, Integer> rarities) implements CustomPayload {
         public static final CustomPayload.Id<ConfigSyncPayload> PACKET_ID = new CustomPayload.Id<>(Rainglow.id("config_sync"));
-        public static final PacketCodec<RegistryByteBuf, ConfigSyncPayload> PACKET_CODEC = PacketCodec.create(ConfigSyncPayload::write, ConfigSyncPayload::read);
+        public static final PacketCodec<RegistryByteBuf, ConfigSyncPayload> PACKET_CODEC = PacketCodec.of(ConfigSyncPayload::write, ConfigSyncPayload::read);
 
         public void write(RegistryByteBuf buf) {
             buf.writeString(this.currentMode);
@@ -55,7 +55,7 @@ public class RainglowNetworking {
 
     public record ModeSyncPayload(Collection<RainglowMode> modes) implements CustomPayload {
         public static final CustomPayload.Id<ModeSyncPayload> PACKET_ID = new CustomPayload.Id<>(Rainglow.id("mode_sync"));
-        public static final PacketCodec<RegistryByteBuf, ModeSyncPayload> PACKET_CODEC = PacketCodec.create(ModeSyncPayload::write, ModeSyncPayload::read);
+        public static final PacketCodec<RegistryByteBuf, ModeSyncPayload> PACKET_CODEC = PacketCodec.of(ModeSyncPayload::write, ModeSyncPayload::read);
 
         public void write(RegistryByteBuf buf) {
             buf.writeCollection(this.modes, RainglowMode::write);
@@ -91,7 +91,7 @@ public class RainglowNetworking {
 
     public record ColourPayload(Map<UUID, RainglowColour> colours) implements CustomPayload {
         public static final CustomPayload.Id<ColourPayload> PACKET_ID = new CustomPayload.Id<>(Rainglow.id("colour_change"));
-        public static final PacketCodec<RegistryByteBuf, ColourPayload> PACKET_CODEC = PacketCodec.create(ColourPayload::write, ColourPayload::read);
+        public static final PacketCodec<RegistryByteBuf, ColourPayload> PACKET_CODEC = PacketCodec.of(ColourPayload::write, ColourPayload::read);
 
         public void write(RegistryByteBuf buf) {
             buf.writeMap(this.colours, (b, uuid) -> b.writeUuid(uuid), RainglowColour::write);

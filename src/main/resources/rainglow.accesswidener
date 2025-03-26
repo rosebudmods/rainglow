@@ -14,7 +14,7 @@ accessible class net/minecraft/client/option/Option$CyclingValueSet
 accessible  method   net/minecraft/client/particle/GlowParticle <init>  (Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/client/particle/SpriteProvider;)V
 accessible field net/minecraft/client/particle/GlowParticle RANDOM Lnet/minecraft/util/random/RandomGenerator;
 
-accessible  method   net/minecraft/client/particle/ItemBreakParticle <init>  (Lnet/minecraft/client/world/ClientWorld;DDDLnet/minecraft/item/ItemStack;)V
+accessible class net/minecraft/client/particle/ItemBreakParticle
 
 accessible  method   net/minecraft/client/particle/SquidInkParticle <init>  (Lnet/minecraft/client/world/ClientWorld;DDDDDDILnet/minecraft/client/particle/SpriteProvider;)V
 

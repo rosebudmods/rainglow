@@ -8,6 +8,7 @@ import io.ix0rai.rainglow.config.PerWorldConfig;
 import io.ix0rai.rainglow.config.RainglowConfig;
 import io.ix0rai.rainglow.data.*;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -71,8 +72,14 @@ public class Rainglow implements ModInitializer {
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            COLOURS.clear();
+            // Only clear colours on disconnect if server is NOT single-player to prevent NBT save failure (Unsure how this works with Lan-instances)
+            if (!server.isSingleplayer()) {
+                COLOURS.clear();
+            }
         });
+
+        // Instead use SERVER_STOPPED for clearing colours from single-player worlds. (Doesn't affect others because mod would most likely be shutdown in non-single-player instances)
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> COLOURS.clear());
     }
 
     public static Identifier id(String id) {
@@ -102,15 +109,14 @@ public class Rainglow implements ModInitializer {
         return Text.translatable(translatableTextKey(key));
     }
 
-    public static RainglowColour getColour(Entity entity) {
-        RainglowColour colour = COLOURS.get(entity.getUuid());
-        RainglowEntity entityType = RainglowEntity.get(entity);
+    public static RainglowColour getColour(UUID uuid, World world, RainglowEntity type) {
+        RainglowColour colour = COLOURS.get(uuid);
 
         // generate random colour if the squid's colour isn't currently loaded
-        if (colourUnloaded(entity.getWorld(), entityType, colour)) {
+        if (colourUnloaded(world, type, colour)) {
             // Use last generated colour if not null else generate a new colour
-            colour = generateRandomColour(entity.getWorld(), entity.getRandom());
-            COLOURS.put(entity.getUuid(), colour);
+            colour = generateRandomColour(world, world.getRandom());
+            COLOURS.put(uuid, colour);
         }
 
         return colour;

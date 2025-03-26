@@ -1,5 +1,6 @@
+//file:noinspection GroovyAssignabilityCheck
 plugins {
-    id "fabric-loom" version "1.6.+"
+    id "fabric-loom" version "1.7.+"
     id "com.github.johnrengelman.shadow" version "7.1.+"
     id "me.modmuss50.mod-publish-plugin" version "0.5.2"
 }
