@@ -1,8 +1,8 @@
 package io.ix0rai.rainglow.data;
 
-import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.passive.AgingEntity;
 
-public class GlowSquidEntityData extends PassiveEntity.PassiveData {
+public class GlowSquidEntityData extends AgingEntity.Data {
 	private final RainglowColour colour;
 
 	public GlowSquidEntityData(RainglowColour colour) {

@@ -7,11 +7,11 @@ import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.DataReader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -63,8 +63,8 @@ public enum RainglowEntity {
         return RainglowColour.values()[index].getItem();
     }
 
-    public RainglowColour readNbt(World world, NbtCompound nbt, RandomGenerator random) {
-        RainglowColour colour = RainglowColour.get(nbt.method_68564(Rainglow.CUSTOM_NBT_KEY, null));
+    public RainglowColour readData(World world, DataReader reader, RandomGenerator random) {
+        RainglowColour colour = RainglowColour.get(reader.readStringOrDefault(Rainglow.CUSTOM_NBT_KEY, null));
 
         if (Rainglow.colourUnloaded(world, this, colour)) {
             colour = Rainglow.generateRandomColour(world, random);

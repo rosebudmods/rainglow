@@ -8,11 +8,12 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.WaterCreatureEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.entity.passive.SquidEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.DataReader;
+import net.minecraft.world.storage.DataWriter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,15 +28,15 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements Entity
         throw new UnsupportedOperationException();
     }
 
-    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-    public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
+    @Inject(method = "writeCustomData", at = @At("TAIL"))
+    public void writeCustomData(DataWriter writer, CallbackInfo ci) {
         RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.GLOW_SQUID);
-        nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
+        writer.writeString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
-    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-    public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.rainglow$setVariant(RainglowEntity.GLOW_SQUID.readNbt(this.getWorld(), nbt, this.random));
+    @Inject(method = "readCustomData", at = @At("TAIL"))
+    public void readCustomData(DataReader reader, CallbackInfo ci) {
+        this.rainglow$setVariant(RainglowEntity.GLOW_SQUID.readData(this.getWorld(), reader, this.random));
     }
 
     /**

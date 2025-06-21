@@ -6,11 +6,12 @@ import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.SlimeEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.DataReader;
+import net.minecraft.world.storage.DataWriter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,15 +30,15 @@ public abstract class SlimeEntityMixin extends Entity implements EntityVariantPr
         throw new UnsupportedOperationException();
     }
 
-    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-    public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
+    @Inject(method = "writeCustomData", at = @At("TAIL"))
+    public void writeCustomData(DataWriter writer, CallbackInfo ci) {
         RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
-        nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
+        writer.writeString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
-    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-    public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.rainglow$setVariant(RainglowEntity.SLIME.readNbt(this.getWorld(), nbt, this.random));
+    @Inject(method = "readCustomData", at = @At("TAIL"))
+    public void readCustomData(DataReader reader, CallbackInfo ci) {
+        this.rainglow$setVariant(RainglowEntity.SLIME.readData(this.getWorld(), reader, this.random));
     }
 
     /**
@@ -66,7 +67,7 @@ public abstract class SlimeEntityMixin extends Entity implements EntityVariantPr
                 //noinspection unchecked
                 thisSlime.convert((EntityType<SlimeEntity>) thisSlime.getType(), new EntityConversionParameters(EntityConversionType.SPLIT_ON_DEATH, false, false, team), SpawnReason.TRIGGERED, (newSlime) -> {
                     newSlime.setSize(newSize, true);
-                    newSlime.setPosAndAngles(thisSlime.getX() + offsetX, thisSlime.getY() + 0.5, thisSlime.getZ() + offsetZ, thisSlime.getRandom().nextFloat() * 360.0F, 0.0F);
+                    newSlime.refreshPositionAndAngles(thisSlime.getX() + offsetX, thisSlime.getY() + 0.5, thisSlime.getZ() + offsetZ, thisSlime.getRandom().nextFloat() * 360.0F, 0.0F);
 
                     // Now that headache is done, finally set the child slime color to match the parent
                     ((EntityVariantProvider) newSlime).rainglow$setVariant(parentColor);
