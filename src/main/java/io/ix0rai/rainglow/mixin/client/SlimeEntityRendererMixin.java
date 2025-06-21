@@ -16,7 +16,8 @@ import java.util.UUID;
 
 @Mixin(SlimeEntityRenderer.class)
 public class SlimeEntityRendererMixin {
-    @Inject(method = "getTexture*", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getTexture(Lnet/minecraft/client/render/entity/state/SlimeRenderState;)Lnet/minecraft/util/Identifier;",
+            at = @At("HEAD"), cancellable = true)
     public void getTexture(SlimeRenderState state, CallbackInfoReturnable<Identifier> cir) {
         if (state instanceof EntityRenderStateTracker) {
             UUID entityUuid = ((EntityRenderStateTracker) state).rainglow$getEntityUuid();

@@ -1,7 +1,7 @@
 //file:noinspection GroovyAssignabilityCheck
 plugins {
-    id "fabric-loom" version "1.10.+"
-    id "com.github.johnrengelman.shadow" version "7.1.+"
+    id "fabric-loom" version "1.10-SNAPSHOT"
+    id "com.gradleup.shadow" version "8.3.6"
     id "me.modmuss50.mod-publish-plugin" version "0.5.2"
 }
 
@@ -40,7 +40,7 @@ dependencies {
     ]
 
     apiModules.forEach {
-        include(modImplementation(fabricApi.module(it, project.fabric_api_version)))
+        modImplementation(fabricApi.module(it, project.fabric_api_version))
     }
 }
 

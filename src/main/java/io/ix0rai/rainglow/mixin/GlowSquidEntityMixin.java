@@ -14,6 +14,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -53,11 +54,13 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements Entity
     }
 
     @Override
+    @Unique
     public RainglowColour rainglow$getVariant() {
         return Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.GLOW_SQUID);
     }
 
     @Override
+    @Unique
     public void rainglow$setVariant(RainglowColour colour) {
         Rainglow.setColour(this, colour);
     }

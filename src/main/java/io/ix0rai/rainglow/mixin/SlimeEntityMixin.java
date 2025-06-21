@@ -13,6 +13,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
@@ -104,11 +105,13 @@ public abstract class SlimeEntityMixin extends Entity implements EntityVariantPr
     }
 
     @Override
+    @Unique
     public RainglowColour rainglow$getVariant() {
         return Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
     }
 
     @Override
+    @Unique
     public void rainglow$setVariant(RainglowColour colour) {
         Rainglow.setColour(this, colour);
     }

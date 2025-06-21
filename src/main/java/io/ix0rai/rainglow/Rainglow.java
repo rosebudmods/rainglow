@@ -92,6 +92,8 @@ public class Rainglow implements ModInitializer {
     }
 
     public static boolean colourUnloaded(World world, RainglowEntity entityType, RainglowColour colour) {
+        if (colour == null) return true;
+
         var colours = MODE_CONFIG.getMode(world).getColours();
         return !colours.contains(colour) && colour != entityType.getDefaultColour();
     }

@@ -29,7 +29,9 @@ public class SlimeOverlayFeatureRendererMixin {
      */
     @Redirect(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/SlimeRenderState;FF)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getOutline(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;"))
-    private RenderLayer rainglow$getOutline(Identifier defaultTexture, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, SlimeRenderState state, float f, float g) {
+    private RenderLayer rainglow$getOutline(Identifier defaultTexture, MatrixStack matrixStack,
+                                            VertexConsumerProvider vertexConsumerProvider, int i,
+                                            SlimeRenderState state, float f, float g) {
         Identifier overrideTexture = getOverrideTexture(state);
         return overrideTexture != null ? RenderLayer.getOutline(overrideTexture) : RenderLayer.getOutline(SlimeEntityRenderer.TEXTURE);
     }
@@ -39,7 +41,9 @@ public class SlimeOverlayFeatureRendererMixin {
      */
     @Redirect(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/SlimeRenderState;FF)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getEntityTranslucent(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;"))
-    private RenderLayer rainglow$getEntityTranslucent(Identifier defaultTexture, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, SlimeRenderState state, float f, float g) {
+    private RenderLayer rainglow$getEntityTranslucent(Identifier defaultTexture, MatrixStack matrixStack,
+                                                      VertexConsumerProvider vertexConsumerProvider, int i,
+                                                      SlimeRenderState state, float f, float g) {
         Identifier overrideTexture = getOverrideTexture(state);
         return overrideTexture != null ? RenderLayer.getEntityTranslucent(overrideTexture) : RenderLayer.getEntityTranslucent(SlimeEntityRenderer.TEXTURE);
     }

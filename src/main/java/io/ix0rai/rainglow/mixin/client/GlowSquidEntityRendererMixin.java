@@ -20,7 +20,8 @@ public class GlowSquidEntityRendererMixin {
      * @reason use the colour from the entity's NBT data for textures
      * @author ix0rai
      */
-    @Inject(method = "getTexture*", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getTexture(Lnet/minecraft/client/render/entity/state/SquidRenderState;)Lnet/minecraft/util/Identifier;",
+            at = @At("HEAD"), cancellable = true)
     public void getTexture(SquidRenderState state, CallbackInfoReturnable<Identifier> cir) {
         if (state instanceof EntityRenderStateTracker) {
             UUID entityUuid = ((EntityRenderStateTracker) state).rainglow$getEntityUuid();

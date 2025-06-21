@@ -16,7 +16,8 @@ import java.util.UUID;
 
 @Mixin(AllayEntityRenderer.class)
 public class AllayEntityRendererMixin {
-    @Inject(method = "getTexture*", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getTexture(Lnet/minecraft/client/render/entity/state/AllayRenderState;)Lnet/minecraft/util/Identifier;",
+            at = @At("HEAD"), cancellable = true)
     public void getTexture(AllayRenderState state, CallbackInfoReturnable<Identifier> cir) {
         if (state instanceof EntityRenderStateTracker) {
             UUID entityUuid = ((EntityRenderStateTracker) state).rainglow$getEntityUuid();
