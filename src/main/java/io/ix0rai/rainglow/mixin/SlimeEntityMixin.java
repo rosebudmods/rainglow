@@ -1,25 +1,27 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.data.EntityVariantProvider;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
-import io.ix0rai.rainglow.data.SlimeVariantProvider;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.SlimeEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.DataReader;
+import net.minecraft.world.storage.DataWriter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SlimeEntity.class)
-public abstract class SlimeEntityMixin extends Entity implements SlimeVariantProvider {
+public abstract class SlimeEntityMixin extends Entity implements EntityVariantProvider {
     @Shadow
     protected abstract ParticleEffect getParticles();
 
@@ -28,15 +30,15 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
         throw new UnsupportedOperationException();
     }
 
-    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-    public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
+    @Inject(method = "writeCustomData", at = @At("TAIL"))
+    public void writeCustomData(DataWriter writer, CallbackInfo ci) {
         RainglowColour colour = Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
-        nbt.putString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
+        writer.writeString(Rainglow.CUSTOM_NBT_KEY, colour.getId());
     }
 
-    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-    public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.setVariant(RainglowEntity.SLIME.readNbt(this.getWorld(), nbt, this.random));
+    @Inject(method = "readCustomData", at = @At("TAIL"))
+    public void readCustomData(DataReader reader, CallbackInfo ci) {
+        this.rainglow$setVariant(RainglowEntity.SLIME.readData(this.getWorld(), reader, this.random));
     }
 
     /**
@@ -68,7 +70,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
                     newSlime.refreshPositionAndAngles(thisSlime.getX() + offsetX, thisSlime.getY() + 0.5, thisSlime.getZ() + offsetZ, thisSlime.getRandom().nextFloat() * 360.0F, 0.0F);
 
                     // Now that headache is done, finally set the child slime color to match the parent
-                    ((SlimeVariantProvider) newSlime).setVariant(parentColor);
+                    ((EntityVariantProvider) newSlime).rainglow$setVariant(parentColor);
                 });
             }
 
@@ -104,12 +106,14 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     }
 
     @Override
-    public RainglowColour getVariant() {
+    @Unique
+    public RainglowColour rainglow$getVariant() {
         return Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
     }
 
     @Override
-    public void setVariant(RainglowColour colour) {
+    @Unique
+    public void rainglow$setVariant(RainglowColour colour) {
         Rainglow.setColour(this, colour);
     }
 }

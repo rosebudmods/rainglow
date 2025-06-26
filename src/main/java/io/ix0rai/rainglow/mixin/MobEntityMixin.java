@@ -1,13 +1,13 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.data.EntityVariantProvider;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.VariantProvider;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -31,7 +31,7 @@ public abstract class MobEntityMixin extends LivingEntity {
         RainglowEntity entity = RainglowEntity.get(this);
         if (entity != null) {
             RainglowColour colour = generateColour(entity);
-            ((VariantProvider<RainglowColour>) this).setVariant(colour);
+            ((EntityVariantProvider) this).rainglow$setVariant(colour);
             cir.setReturnValue(entity.createEntityData(colour));
         }
     }

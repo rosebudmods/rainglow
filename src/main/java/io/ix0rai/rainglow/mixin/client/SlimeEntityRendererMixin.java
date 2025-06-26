@@ -2,9 +2,9 @@ package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.data.EntityRenderStateTracker;
 import io.ix0rai.rainglow.data.RainglowEntity;
-import net.minecraft.class_10067;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.SlimeEntityRenderer;
+import net.minecraft.client.render.entity.state.SlimeRenderState;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,8 +16,9 @@ import java.util.UUID;
 
 @Mixin(SlimeEntityRenderer.class)
 public class SlimeEntityRendererMixin {
-    @Inject(method = "m_vhdjjpxx", at = @At("HEAD"), cancellable = true)
-    public void getTexture(class_10067 state, CallbackInfoReturnable<Identifier> cir) {
+    @Inject(method = "getTexture(Lnet/minecraft/client/render/entity/state/SlimeRenderState;)Lnet/minecraft/util/Identifier;",
+            at = @At("HEAD"), cancellable = true)
+    public void getTexture(SlimeRenderState state, CallbackInfoReturnable<Identifier> cir) {
         if (state instanceof EntityRenderStateTracker) {
             UUID entityUuid = ((EntityRenderStateTracker) state).rainglow$getEntityUuid();
             if (entityUuid != null) {
