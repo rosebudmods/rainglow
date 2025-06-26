@@ -1,14 +1,14 @@
 package io.ix0rai.rainglow.mixin.client;
 
 import io.ix0rai.rainglow.data.EntityRenderStateTracker;
-import net.minecraft.class_10017;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.UUID;
 
-@Mixin(class_10017.class)
+@Mixin(EntityRenderState.class)
 public class EntityRenderStateMixin implements EntityRenderStateTracker {
     @Unique
     private UUID entityUuid;

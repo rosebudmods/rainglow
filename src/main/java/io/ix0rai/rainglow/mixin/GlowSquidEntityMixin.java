@@ -1,9 +1,9 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.data.EntityVariantProvider;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
-import io.ix0rai.rainglow.data.GlowSquidVariantProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.WaterCreatureEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
@@ -14,13 +14,14 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GlowSquidEntity.class)
-public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSquidVariantProvider {
+public abstract class GlowSquidEntityMixin extends SquidEntity implements EntityVariantProvider {
     protected GlowSquidEntityMixin(EntityType<? extends SquidEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
@@ -34,7 +35,7 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.setVariant(RainglowEntity.GLOW_SQUID.readNbt(this.getWorld(), nbt, this.random));
+        this.rainglow$setVariant(RainglowEntity.GLOW_SQUID.readNbt(this.getWorld(), nbt, this.random));
     }
 
     /**
@@ -53,12 +54,14 @@ public abstract class GlowSquidEntityMixin extends SquidEntity implements GlowSq
     }
 
     @Override
-    public RainglowColour getVariant() {
+    @Unique
+    public RainglowColour rainglow$getVariant() {
         return Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.GLOW_SQUID);
     }
 
     @Override
-    public void setVariant(RainglowColour colour) {
+    @Unique
+    public void rainglow$setVariant(RainglowColour colour) {
         Rainglow.setColour(this, colour);
     }
 

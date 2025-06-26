@@ -40,7 +40,7 @@
     "fabricloader": ">=0.16.7",
     "fabric-resource-loader-v0": "*",
     "fabric-networking-api-v1": "*",
-    "minecraft": "1.21.4"
+    "minecraft": "1.21.5"
   },
 
   "suggests": {
@@ -48,9 +48,6 @@
   },
 
   "custom": {
-    "loom:injected_interfaces": {
-      "net/minecraft/class_5776": ["io/ix0rai/rainglow/data/GlowSquidVariantProvider"]
-    },
     "modmenu": {
       "links": {
         "modmenu.discord": "https://discord.gg/TN9gaXJ6E8",

@@ -1,9 +1,9 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.data.EntityVariantProvider;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
-import io.ix0rai.rainglow.data.SlimeVariantProvider;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -13,13 +13,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SlimeEntity.class)
-public abstract class SlimeEntityMixin extends Entity implements SlimeVariantProvider {
+public abstract class SlimeEntityMixin extends Entity implements EntityVariantProvider {
     @Shadow
     protected abstract ParticleEffect getParticles();
 
@@ -36,7 +37,7 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.setVariant(RainglowEntity.SLIME.readNbt(this.getWorld(), nbt, this.random));
+        this.rainglow$setVariant(RainglowEntity.SLIME.readNbt(this.getWorld(), nbt, this.random));
     }
 
     /**
@@ -65,10 +66,10 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
                 //noinspection unchecked
                 thisSlime.convert((EntityType<SlimeEntity>) thisSlime.getType(), new EntityConversionParameters(EntityConversionType.SPLIT_ON_DEATH, false, false, team), SpawnReason.TRIGGERED, (newSlime) -> {
                     newSlime.setSize(newSize, true);
-                    newSlime.refreshPositionAndAngles(thisSlime.getX() + offsetX, thisSlime.getY() + 0.5, thisSlime.getZ() + offsetZ, thisSlime.getRandom().nextFloat() * 360.0F, 0.0F);
+                    newSlime.setPosAndAngles(thisSlime.getX() + offsetX, thisSlime.getY() + 0.5, thisSlime.getZ() + offsetZ, thisSlime.getRandom().nextFloat() * 360.0F, 0.0F);
 
                     // Now that headache is done, finally set the child slime color to match the parent
-                    ((SlimeVariantProvider) newSlime).setVariant(parentColor);
+                    ((EntityVariantProvider) newSlime).rainglow$setVariant(parentColor);
                 });
             }
 
@@ -104,12 +105,14 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
     }
 
     @Override
-    public RainglowColour getVariant() {
+    @Unique
+    public RainglowColour rainglow$getVariant() {
         return Rainglow.getColour(this.getUuid(), this.getWorld(), RainglowEntity.SLIME);
     }
 
     @Override
-    public void setVariant(RainglowColour colour) {
+    @Unique
+    public void rainglow$setVariant(RainglowColour colour) {
         Rainglow.setColour(this, colour);
     }
 }

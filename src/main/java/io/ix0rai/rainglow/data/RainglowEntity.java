@@ -64,7 +64,7 @@ public enum RainglowEntity {
     }
 
     public RainglowColour readNbt(World world, NbtCompound nbt, RandomGenerator random) {
-        RainglowColour colour = RainglowColour.get(nbt.getString(Rainglow.CUSTOM_NBT_KEY));
+        RainglowColour colour = RainglowColour.get(nbt.method_68564(Rainglow.CUSTOM_NBT_KEY, null));
 
         if (Rainglow.colourUnloaded(world, this, colour)) {
             colour = Rainglow.generateRandomColour(world, random);
@@ -86,7 +86,6 @@ public enum RainglowEntity {
         return BY_ID.get(id);
     }
 
-    @SuppressWarnings("all")
     public static RainglowEntity get(Entity entity) {
         if (entity instanceof GlowSquidEntity) {
             return GLOW_SQUID;
