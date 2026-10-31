@@ -7,7 +7,7 @@
   "rainglow.config.save": "Enregistrer",
   "rainglow.config.clear": "Effacer",
   "rainglow.config.custom": "Configurer le mode personnalisé",
-  "rainglow.config.enable_glow_squid": "Poulpes arc-en-ciel",
+  "rainglow.config.enable_glow_squid": "Poulpes luisants arc-en-ciel",
   "rainglow.config.enable_slime": "Slimes arc-en-ciel",
   "rainglow.config.enable_allay": "Allays arc-en-ciel",
   "rainglow.config.server_locked_title": "La configuration est verrouillée par le serveur",
@@ -38,7 +38,7 @@
   "rainglow.colour.cyan": "Cyan",
   "rainglow.colour.light_blue": "Bleu Clair",
   "rainglow.colour.light_gray": "Gris Clair",
-  "rainglow.colour.lime": "Citron Vert",
+  "rainglow.colour.lime": "Vert Clair",
   "rainglow.colour.magenta": "Magenta",
   "rainglow.colour.indigo": "Indigo"
 }
